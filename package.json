@@ -4,7 +4,11 @@
   "main": "index.js",
   "license": "Proprietary",
   "private": true,
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "raw-body": "^2.3.3"
   }
 }
