@@ -1,0 +1,91 @@
+#!/bin/sh
+
+set -e
+
+D=`dirname $0`
+DAYS=36524
+
+pushd "$D"
+mkdir -p pki
+
+# Generate CA
+
+openssl genpkey \
+        -algorithm RSA \
+        -out pki/ca.key \
+        -pkeyopt rsa_keygen_bits:2048 \
+
+openssl req \
+        -new \
+        -key pki/ca.key \
+        -extensions v3_ca \
+        -batch \
+        -out /tmp/ca.csr \
+        -utf8 \
+        -subj "/CN=DummyCA/O=DummyPKI" \
+
+openssl req \
+        -x509 \
+        -sha256 \
+        -key pki/ca.key \
+        -in /tmp/ca.csr \
+        -out pki/ca.pem \
+        -days $DAYS \
+
+# Generate matching service key
+
+openssl genpkey \
+        -algorithm RSA \
+        -out pki/matching.key \
+        -pkeyopt rsa_keygen_bits:2048 \
+
+openssl req \
+        -new \
+        -key pki/matching.key \
+        -extensions v3_ca \
+        -batch \
+        -out /tmp/matching.csr \
+        -utf8 \
+        -subj "/CN=haikui-matching.local" \
+
+openssl x509 \
+        -req \
+        -sha256 \
+        -days $DAYS \
+        -in /tmp/matching.csr \
+        -CAkey pki/ca.key \
+        -CA pki/ca.pem \
+        -set_serial 0 \
+        -out pki/matching.pem \
+
+# Generate accepter service key
+
+openssl genpkey \
+        -algorithm RSA \
+        -out pki/accepter.key \
+        -pkeyopt rsa_keygen_bits:2048 \
+
+openssl req \
+        -new \
+        -key pki/accepter.key \
+        -extensions v3_ca \
+        -batch \
+        -out /tmp/accepter.csr \
+        -utf8 \
+        -subj "/CN=damrey-accepter.local" \
+
+openssl x509 \
+        -req \
+        -sha256 \
+        -days $DAYS \
+        -in /tmp/accepter.csr \
+        -CAkey pki/ca.key \
+        -CA pki/ca.pem \
+        -set_serial 1 \
+        -out pki/accepter.pem \
+
+# Clean up
+
+rm -f /tmp/ca.csr
+rm -f /tmp/matching.csr
+rm -f /tmp/accepter.csr
