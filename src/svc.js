@@ -1,6 +1,7 @@
-const bodyParser = require("body-parser");
 const express = require("express");
+const fs = require("fs");
 const protobuf = require("protobufjs");
+const read = require("raw-body");
 
 //
 // Infrastructure
@@ -10,28 +11,33 @@ const api = protobuf.loadSync("./protobuf/v403db.proto");
 
 const app = express();
 
-app.use(bodyParser.raw());
-
 // Logging
-app.use(function(req, res, next) {
-  console.log("--- Request %s ---\n", req.url);
-  next();
+app.use(function loggingStep(req, res, next) {
+  console.log("--- %s %s ---\n", req.method, req.url);
+
+  return next();
 });
 
 // Protobuf boilerplate
-app.use(function(req, res, next) {
-  req.recv = function(typename) {
+app.use(async function protobufStep(req, res, next) {
+  if (req.method !== "POST") {
+    return next();
+  }
+
+  req.body = await read(req);
+
+  req.recv = function protobufRecv(typename) {
     const decoded = api.lookupType(typename).decode(req.body);
 
-    console.log("Received request", decoded);
+    console.log("Received request\n", decoded);
 
     return decoded;
   };
 
   const send_ = res.send;
 
-  res.send = function(typename, obj) {
-    console.log("Sending response", obj);
+  res.send = function protobufSend(typename, obj) {
+    console.log("\nSending response\n", obj);
 
     const encoded = api
       .lookupType(typename)
@@ -41,7 +47,22 @@ app.use(function(req, res, next) {
     send_.apply(this, [encoded]);
   };
 
-  next();
+  return next();
+});
+
+// Dumping
+app.use(function dumpStep(req, res, next) {
+  if (fs.existsSync("./dump")) {
+    const recv_ = req.recv;
+
+    req.recv = function dumpRecv(typename) {
+      fs.writeFileSync(`./dump/${typename}`, req.body);
+
+      return recv_.apply(this, [typename]);
+    };
+  }
+
+  return next();
 });
 
 // Generic success header
@@ -56,7 +77,7 @@ const header = {
 //
 
 app.post("/v403/client/update", function(req, res) {
-  const msg = req.recv("v403db.V403REQ_ClientUpdate");
+  req.recv("v403db.V403REQ_ClientUpdate");
 
   res.send("v403db.V403RES_ClientUpdate", {
     header,
@@ -64,13 +85,17 @@ app.post("/v403/client/update", function(req, res) {
 });
 
 app.post("/v403/client/update-errlog", function(req, res) {
-  const msg = req.recv("v403db.V403REQ_ClientUpdateErrlog");
+  req.recv("v403db.V403REQ_ClientUpdateErrlog");
 
-  console.log(msg);
-
-  const respCodec = res.send("v403db.V403RES_ClientUpdateErrlog", {
+  res.send("v403db.V403RES_ClientUpdateErrlog", {
     header,
   });
+});
+
+app.post("/v403/shop/info", function(req, res) {
+  req.recv("v403db.V403REQ_ShopInfo");
+
+  res.send("v403db.V403RES_ShopInfo", {});
 });
 
 module.exports = app;
