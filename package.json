@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "express": "^4.16.4",
+    "protobufjs": "^6.8.8",
     "raw-body": "^2.3.3"
   }
 }
