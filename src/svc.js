@@ -164,4 +164,13 @@ app.post("/v403/warevent/status", function(req, res) {
   });
 });
 
+app.post("/v403/notice/config", function(req, res) {
+  req.recv("v403db.V403REQ_NoticeConfig");
+
+  res.send("v403db.V403RES_NoticeConfig", {
+    header,
+    // A repeated field listing update packages? follows
+  });
+});
+
 module.exports = app;
