@@ -1,0 +1,59 @@
+syntax = "proto2";
+
+package v403db;
+
+import "v403db_common.proto";
+
+message V403REQ_PilotReplayUploadHistory {
+    required RequestHeader header = 1;
+    repeated uint32 pilot_id = 2;
+}
+
+message V403RES_PilotReplayUploadHistory {
+    required ResponseHeader header = 1;
+    
+    repeated ReplayUploadHistory upload_history = 2;
+    message ReplayUploadHistory {
+        required uint32 pilot_id = 1;
+        required uint32 last_request = 2;
+        required uint32 request_count = 3;
+        
+        repeated ReplayRecord replay_record = 4;
+        message ReplayRecord {
+            required uint32 battle_id = 1;
+            required uint32 prev_battle_id = 2;
+            required uint32 battle_date = 3;
+            required uint32 mission_info = 4;
+            required uint32 battle_mode = 5;
+            required uint32 battle_result = 6;
+            required uint32 matching_class = 7;
+            required uint32 replay_status = 8;
+        }
+    }
+}
+
+message V403REQ_PilotUpdateReplayUploadHistory {
+    required RequestHeader header = 1;
+    required uint32 pilot_id = 2;
+    required uint32 request_count = 3;
+    required uint32 battle_id = 4;
+    required uint32 movie_type = 5;
+}
+
+message V403RES_PilotUpdateReplayUploadHistory {
+    required ResponseHeader header = 1;
+}
+
+message V403REQ_ReplayUpdateStatus {
+    required RequestHeader header = 1;
+    required uint32 battle_id = 2;
+    required bool upload_success = 3;
+}
+
+message V403RES_ReplayUpdateStatus {
+    required ResponseHeader header = 1;
+}
+
+enum ProtocolVersions_rev303 {
+    PROTOCOL_VERSION_REV303 = 20110928;
+}

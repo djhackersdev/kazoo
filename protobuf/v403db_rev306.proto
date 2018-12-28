@@ -1,0 +1,54 @@
+syntax = "proto2";
+
+package v403db;
+
+import "v403db_common.proto";
+
+message V403REQ_WarEventStatus {
+    required RequestHeader header = 1;
+    required string country_code = 2;
+    required uint32 shop_id = 3;
+}
+
+message V403RES_WarEventStatus {
+    required ResponseHeader header = 1;
+    required uint32 event_id = 2;
+    optional uint32 client_ver = 3;
+    optional uint64 announce_time = 4;
+    optional uint64 start_time = 5;
+    optional uint32 period = 6;
+    optional uint64 result_time = 7;
+    optional string title = 8;
+    optional uint64 last_update = 9;
+    
+    optional EventStatus total_status = 10;
+    message EventStatus {
+        required ForceStatus efsf_status = 1;
+        message ForceStatus {
+            required uint32 sclass_score = 1;
+            required uint32 aclass_score = 2;
+        }
+        
+        required ForceStatus zeon_status = 2;
+    }
+    
+    repeated EventStatus daily_status = 11;
+    
+    optional EventRankInfo efsf_rank = 12;
+    message EventRankInfo {
+        required uint32 shop_point = 1;
+        required uint32 country_rank = 2;
+        optional string battalion_name = 3;
+        optional uint32 area_id = 4;
+    }
+    
+    optional EventRankInfo zeon_rank = 13;
+    optional EventRankInfo efsf_rank_lower = 14;
+    optional EventRankInfo zeon_rank_lower = 15;
+    optional EventRankInfo efsf_rank_upper = 16;
+    optional EventRankInfo zeon_rank_upper = 17;
+}
+
+enum ProtocolVersions_rev306 {
+    PROTOCOL_VERSION_REV306 = 20111121;
+}

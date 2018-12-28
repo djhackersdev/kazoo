@@ -1,0 +1,19 @@
+syntax = "proto2";
+
+package v403db;
+
+import "v403db_common.proto";
+
+message V403REQ_PilotUpdateSortieId {
+    required RequestHeader header = 1;
+    required uint32 pilot_id = 2;
+    required string sortie_id = 3;
+}
+
+message V403RES_PilotUpdateSortieId {
+    required ResponseHeader header = 1;
+}
+
+enum ProtocolVersions_rev329 {
+    PROTOCOL_VERSION_REV329 = 20140526;
+}

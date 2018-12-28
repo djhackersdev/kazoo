@@ -1,0 +1,27 @@
+syntax = "proto2";
+
+package v403db;
+
+import "v403db_common.proto";
+
+message V403REQ_CampaignConfig {
+    required RequestHeader header = 1;
+    required string country_code = 2;
+}
+
+message V403RES_CampaignConfig {
+    required ResponseHeader header = 1;
+    
+    optional ConfigItem config = 2;
+    message ConfigItem {
+        required uint32 campaign_id = 1;
+        required string start_date = 2;
+        required uint32 period = 3;
+        required uint32 terms = 4;
+        optional string option = 5;
+    }
+}
+
+enum ProtocolVersions_rev320 {
+    PROTOCOL_VERSION_REV320 = 20130517;
+}

@@ -1,0 +1,551 @@
+syntax = "proto2";
+
+package v403db;
+
+import "v403db_common.proto";
+
+message V403REQ_ClientUpdate {
+    required RequestHeader header = 1;
+    required uint32 shop_id = 2;
+    required uint32 netid = 3;
+    required uint32 platform = 4;
+    required string macaddr = 5;
+    optional uint32 projector = 6;
+    optional string vrpcb = 7;
+    optional bool enable_playpass = 8;
+}
+
+message V403RES_ClientUpdate {
+    required ResponseHeader header = 1;
+}
+
+message V403REQ_ClientUpdateErrlog {
+    required RequestHeader header = 1;
+    required uint32 netid = 2;
+    
+    repeated ErrorInfo err = 3;
+    message ErrorInfo {
+        required uint64 date = 1;
+        required uint32 unit = 2;
+        required uint32 error = 3;
+        required uint32 sequence = 4;
+        required uint32 data = 5;
+    }
+}
+
+message V403RES_ClientUpdateErrlog {
+    required ResponseHeader header = 1;
+}
+
+message V403REQ_ShopInfo {
+    required RequestHeader header = 1;
+    required uint32 shop_id = 2;
+}
+
+message V403RES_ShopInfo {
+    required ResponseHeader header = 1;
+    required string battalion_name = 2;
+    required string country_code = 3;
+    required uint32 area_id = 4;
+    required uint32 region_id1 = 5;
+    required uint32 region_id2 = 6;
+    required string shop_name = 7;
+    required string shop_address = 8;
+    optional int32 score = 9;
+    optional uint32 country_rank = 10;
+    optional uint32 region_rank = 11;
+    optional uint32 area_rank = 12;
+    optional uint32 active_pilot = 13;
+    optional uint32 control_flag = 14;
+    optional bool available_banacoin = 15;
+    optional uint32 sem_last_use_day = 16;
+    optional uint32 sem_use_count = 17;
+}
+
+message V403REQ_ShopUpdate {
+    required RequestHeader header = 1;
+    required string country_code = 2;
+    required string battalion_name = 3;
+    required uint32 area_id = 4;
+    required uint32 region_id1 = 5;
+    required uint32 region_id2 = 6;
+    required string shop_name = 7;
+    required string shop_address = 8;
+}
+
+message V403RES_ShopUpdate {
+    required ResponseHeader header = 1;
+}
+
+message V403REQ_GameConfig {
+    required RequestHeader header = 1;
+    required string country_code = 2;
+}
+
+message V403RES_GameConfig {
+    required ResponseHeader header = 1;
+    required uint32 normal_mission1 = 2;
+    required uint32 normal_mission2 = 3;
+    required uint32 event_mission1 = 4;
+    required uint32 event_mission2 = 5;
+    required uint32 event_option = 6;
+    required uint32 option_info1 = 7;
+    required uint32 option_info2 = 8;
+    required string event_text = 9;
+    required string telop = 10;
+    required uint64 server_flag1 = 11;
+    required uint64 server_flag2 = 12;
+    optional uint32 event_regulation1 = 13;
+    optional uint32 event_regulation2 = 14;
+    
+    optional TitleCampaign title_campaign_info = 15;
+    message TitleCampaign {
+        required uint32 event_id = 1;
+        required uint32 event_title_id = 2;
+        required uint32 event_stamp_max = 3;
+    }
+    
+    optional EXMSCampaign exms_campaign_info = 16;
+    message EXMSCampaign {
+        required uint32 campaign_id = 1;
+        required string start_date = 2;
+        required uint32 period = 3;
+    }
+    
+    repeated RentalMSCampaign rentalms_campaign_info = 17;
+    message RentalMSCampaign {
+        required uint32 set_no = 1;
+        required uint32 ms_num = 2;
+    }
+    
+    optional bool is_bfday = 18;
+    optional uint32 required_client_version = 19;
+}
+
+message V403REQ_EventConfig {
+    required RequestHeader header = 1;
+    required string country_code = 2;
+}
+
+message V403RES_EventConfig {
+    required ResponseHeader header = 1;
+    required uint32 event_id = 2;
+    optional uint32 client_ver = 3;
+    optional uint64 announce_time = 4;
+    optional uint64 start_time = 5;
+    optional uint32 period = 6;
+    optional uint64 result_time = 7;
+    optional string title = 8;
+    optional string sub_title = 9;
+    optional string summary = 10;
+    optional uint32 sf = 11;
+    optional uint32 event_type = 12;
+    optional bool reward_arm = 13;
+    optional bool reward_bs_bonus = 14;
+    
+    repeated RewardMs reward_ms = 15;
+    message RewardMs {
+        required uint32 sf = 1;
+        required uint32 win = 2;
+        required uint32 pts = 3;
+        required uint32 lv = 4;
+        required uint32 opt = 5;
+        required uint32 efsf_ms = 6;
+        required uint32 zeon_ms = 7;
+        required bool is_rental = 8;
+    }
+}
+
+message V403REQ_EventStatus {
+    required RequestHeader header = 1;
+    required uint32 event_id = 2;
+    required uint32 shop_id = 3;
+}
+
+message V403RES_EventStatus {
+    required ResponseHeader header = 1;
+    
+    required EventStatus efsf_status = 2;
+    message EventStatus {
+        required uint32 sclass_score = 1;
+        required uint32 abclass_score = 2;
+    }
+    
+    required EventStatus zeon_status = 3;
+    
+    optional EventRankInfo efsf_rank = 4;
+    message EventRankInfo {
+        required uint32 shop_point = 1;
+        required uint32 country_rank = 2;
+        optional string battalion_name = 3;
+    }
+    
+    optional EventRankInfo zeon_rank = 5;
+    optional EventRankInfo efsf_rank_lower = 6;
+    optional EventRankInfo zeon_rank_lower = 7;
+    optional EventRankInfo efsf_rank_upper = 8;
+    optional EventRankInfo zeon_rank_upper = 9;
+}
+
+message V403REQ_NoticeConfig {
+    required RequestHeader header = 1;
+    required uint32 client_ver = 2;
+    required string country_code = 3;
+}
+
+message V403RES_NoticeConfig {
+    required ResponseHeader header = 1;
+    
+    repeated NoticeInfo notice = 2;
+    message NoticeInfo {
+        required uint32 type = 1;
+        required string file_url = 2;
+        required string check_sum = 3;
+        required uint32 file_size = 4;
+    }
+}
+
+message V403REQ_ClientUpdateNetstat {
+    required RequestHeader header = 1;
+    required uint32 netid = 2;
+    
+    repeated NetstatRecord record = 3;
+    message NetstatRecord {
+        required uint64 date = 1;
+        required uint32 online_play = 2;
+        required uint32 offline_play = 3;
+        required uint32 free_play = 4;
+        required uint32 shop_event = 5;
+        required uint32 guest_play = 6;
+        required uint32 service_play = 7;
+        required uint32 disconnect_count = 8;
+        required uint32 noexecute_count = 9;
+        required uint32 max_noexecute = 10;
+        required uint32 delay_avg = 11;
+        required uint32 delay_max = 12;
+    }
+}
+
+message V403RES_ClientUpdateNetstat {
+    required ResponseHeader header = 1;
+}
+
+message V403REQ_PilotInfo {
+    required RequestHeader header = 1;
+    required BAIDLookupRequest device = 2;
+    optional FaceCameraData facedata = 3;
+    optional uint32 event_id = 4;
+    optional uint32 sf = 5 [default = 255];
+}
+
+message V403RES_PilotInfo {
+    required ResponseHeader header = 1;
+    optional int32 baid = 2;
+    optional int32 personal_id = 3;
+    
+    optional BanapassportAMIDInfo baid_info = 4;
+    message BanapassportAMIDInfo {
+        optional int32 mobile_id = 1;
+        optional uint32 mss = 2 [default = 2];
+        optional uint64 extdata = 3;
+        optional RecruitInfo recruit_info = 6;
+        repeated ExternalService external_service = 7;
+        
+        optional EmergencyMessage emergency_message = 8;
+        message EmergencyMessage {
+            required uint32 id = 1;
+            required uint64 last_date = 2;
+            required uint32 type = 3;
+            required string msgstr = 4;
+        }
+        
+        repeated PilotInfo pilot = 9;
+        optional uint32 mobile_user_type = 10;
+        optional uint64 sequence_flag = 11;
+        
+        optional PlayPass play_pass = 12;
+        message PlayPass {
+            repeated string available_date = 1;
+        }
+    }
+    
+    optional string access_code = 5;
+    optional string person_id = 6;
+    optional int32 coin_coupon = 7;
+}
+
+message V403REQ_PilotUpdate {
+    required RequestHeader header = 1;
+    repeated PilotInfo pilot = 2;
+    optional int32 baid = 3;
+    optional uint64 sequence_flag = 4;
+}
+
+message V403RES_PilotUpdate {
+    required ResponseHeader header = 1;
+}
+
+message V403REQ_TeamCreate {
+    required RequestHeader header = 1;
+    required uint32 pilot_id = 2;
+    required uint32 sf = 3;
+    required uint32 shop_id = 4;
+    required string team_name = 5;
+    required uint32 layer0 = 6;
+    required uint32 layer1 = 7;
+    required uint32 layer2 = 8;
+}
+
+message V403RES_TeamCreate {
+    required ResponseHeader header = 1;
+    optional TeamInfo teaminfo = 2;
+}
+
+message V403REQ_PilotUpdateTeam {
+    required RequestHeader header = 1;
+    required uint32 pilot_id = 2;
+    required uint32 sf = 3;
+    required uint32 current_shop_id = 4;
+    required uint32 current_team_id = 5;
+    required uint32 next_shop_id = 6;
+    required uint32 next_team_id = 7;
+    optional uint32 event_id = 8;
+}
+
+message V403RES_PilotUpdateTeam {
+    required ResponseHeader header = 1;
+    optional TeamInfo teaminfo = 2;
+}
+
+message V403REQ_TeamInfo {
+    required RequestHeader header = 1;
+    required uint32 sf = 2;
+    required uint32 shop_id = 3;
+    required uint32 team_id = 4;
+}
+
+message V403RES_TeamInfo {
+    required ResponseHeader header = 1;
+    optional TeamInfo teaminfo = 2;
+}
+
+message V403REQ_PilotUnlock {
+    required RequestHeader header = 1;
+    required int32 baid = 2;
+    optional FaceCameraData facedata = 3;
+    optional string person_id = 4;
+}
+
+message V403RES_PilotUnlock {
+    required ResponseHeader header = 1;
+}
+
+message V403REQ_PilotCreate {
+    required RequestHeader header = 1;
+    optional int32 baid = 2;
+    optional BAIDLookupRequest device = 3;
+    optional FaceCameraData facedata = 4;
+    repeated PilotInfo pilot = 5;
+}
+
+message V403RES_PilotCreate {
+    required ResponseHeader header = 1;
+    optional int32 baid = 2;
+    optional int32 personal_id = 3;
+    repeated uint32 pilot_id = 4;
+}
+
+message V403REQ_PilotMigration {
+    required RequestHeader header = 1;
+    optional int32 baid = 2;
+    optional BAIDLookupRequest device = 3;
+    optional FaceCameraData facedata = 4;
+    repeated PilotInfo pilot = 5;
+}
+
+message V403RES_PilotMigration {
+    required ResponseHeader header = 1;
+    optional int32 baid = 2;
+    optional int32 personal_id = 3;
+}
+
+message V403REQ_PilotMigrationStatus {
+    required RequestHeader header = 1;
+    required uint32 pilot_id = 2;
+    required uint32 reissue_count = 3;
+}
+
+message V403RES_PilotMigrationStatus {
+    required ResponseHeader header = 1;
+    repeated uint32 win_of_map = 2;
+}
+
+message V403REQ_TeamList {
+    required RequestHeader header = 1;
+    required uint32 sf = 2;
+    required uint32 shop_id = 3;
+}
+
+message V403RES_TeamList {
+    required ResponseHeader header = 1;
+    required uint32 sf = 2;
+    required uint32 shop_id = 3;
+    
+    repeated NormalTeamInfo team_info = 4;
+    message NormalTeamInfo {
+        required uint32 team_id = 1;
+        required uint32 member = 2;
+        required uint32 kill_count = 3;
+    }
+}
+
+message V403REQ_PilotUpdateCampaign {
+    required RequestHeader header = 1;
+    required uint32 pilot_id = 2;
+    required uint32 shop_id = 3;
+    required uint32 campaign_id = 4;
+    required uint32 unique_id = 5;
+    required string campaign_code = 6;
+}
+
+message V403RES_PilotUpdateCampaign {
+    required ResponseHeader header = 1;
+}
+
+message V403REQ_BattleUpdate {
+    required RequestHeader header = 1;
+    optional PilotInfo pilot = 2;
+    
+    required BattleInfo info = 3;
+    message BattleInfo {
+        required uint32 battle_id = 1;
+        required uint32 prev_battle_id = 2;
+        required uint32 mission_info = 3;
+        required uint32 battle_mode = 4;
+        repeated uint32 pilot_ids = 5;
+        repeated uint32 msids = 6;
+        required uint32 online_status = 7;
+        required uint32 battle_result = 8;
+        required uint32 efsf_base_kill = 9;
+        required uint32 zeon_base_kill = 10;
+        required uint32 efsf_ms_kill = 11;
+        required uint32 zeon_ms_kill = 12;
+        required uint32 play_count = 13;
+        required uint32 team_flag = 14;
+        required uint32 efsf_guage = 15;
+        required uint32 zeon_guage = 16;
+        required uint32 matching_class = 17;
+        required uint32 matching_type = 18;
+        optional uint32 event_id = 19;
+        optional uint32 event_days = 20;
+        required uint32 stage_no = 21;
+        required uint32 rule_no = 22;
+        required uint32 minovsky_rate = 23;
+        required uint32 visit_no = 24;
+    }
+    
+    required GameResult result = 4;
+    message GameResult {
+        required uint32 pilot_id = 1;
+        required uint32 matching_no = 2;
+        required uint32 play_shop_id = 3;
+        required uint32 play_area_id = 4;
+        required uint32 shop_id = 5;
+        required uint32 team_id = 6;
+        required uint32 burst_teammates = 7;
+        required uint32 burst_members = 8;
+        required uint32 before_level = 9;
+        required uint32 before_matching_class = 10;
+        required uint32 before_pilot_level = 11;
+        required uint32 after_level = 12;
+        required uint32 ms_category = 13;
+        required uint32 msid = 14;
+        required uint32 mssetting = 15;
+        required bool use_rental_ms = 16;
+        required uint32 battle_score = 17;
+        required uint32 total_battle_score = 18;
+        required int32 pilot_point = 19;
+        required int32 team_point = 20;
+        required int32 shop_point = 21;
+        required uint32 battle_rank = 22;
+        required uint32 play_status = 23;
+        required bool no_count_flag = 24;
+        required bool no_save_flag = 25;
+        required bool ranking_flag = 26;
+        required int32 ranking_point = 27;
+        required int32 mil_point_efsf = 28;
+        required int32 mil_point_zeon = 29;
+        required int32 mil_point_shop = 30;
+        required int32 mil_point_team = 31;
+        required int32 mil_point = 32;
+        required uint32 kill_base_count = 33;
+        required uint32 kill_ms_total = 34;
+        repeated uint32 kill_ms_by_category = 35;
+        required uint32 down_count = 36;
+        required uint32 assist_count = 37;
+        required uint32 recovery_count = 38;
+        required uint32 saving_count = 39;
+        required uint32 triple_attack = 40;
+        required uint32 quick_draw = 41;
+        required uint32 anti_fire = 42;
+        required uint32 anti_grapple = 43;
+        required uint32 anti_tackle = 44;
+        required uint32 rigid_land = 45;
+        required uint32 quick_strike = 46;
+        required uint32 cd_count = 47;
+        required uint32 anti_tank = 48;
+        required uint32 fire_sever = 49;
+        required uint32 fire_prediction = 50;
+        required uint32 nolock_tank = 51;
+        required uint32 sever_loop = 52;
+        required uint32 tackle_draw = 53;
+        required uint32 double_sever = 54;
+        required uint32 jump_sniping = 55;
+        required uint32 escape_attack = 56;
+        optional uint32 event_rate = 57;
+        optional uint32 team_burst_count = 58;
+        optional uint64 match_group_id = 59;
+        optional uint32 ms_cost = 60;
+        optional uint32 ms_score = 61;
+        optional uint32 base_score = 62;
+        optional uint32 escort_score = 63;
+        optional uint32 defense_score = 64;
+        optional uint32 contribution_score = 65;
+    }
+    
+    required bool is_charges = 5;
+    required bool is_guest = 6;
+    optional int32 baid = 7;
+    optional uint32 mss = 8 [default = 2];
+    optional bool is_shopevent = 9;
+    optional bool use_playpass = 10;
+    optional uint32 service_sw_count = 11;
+}
+
+message V403RES_BattleUpdate {
+    required ResponseHeader header = 1;
+    optional uint32 current_ranking_rank = 2;
+}
+
+message V403REQ_ClientlogUpdate {
+    required RequestHeader header = 1;
+    
+    repeated ClientLogRecord records = 2;
+    message ClientLogRecord {
+        required uint32 log_type = 1;
+        required string log_data = 2;
+    }
+}
+
+message V403RES_ClientlogUpdate {
+    required ResponseHeader header = 1;
+}
+
+message V403REQ_ServerStatus {
+    required RequestHeader header = 1;
+}
+
+message V403RES_ServerStatus {
+    required ResponseHeader header = 1;
+    repeated bool server_status = 2;
+}

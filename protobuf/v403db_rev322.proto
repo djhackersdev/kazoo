@@ -1,0 +1,31 @@
+syntax = "proto2";
+
+package v403db;
+
+import "v403db_common.proto";
+
+message V403REQ_FeedUpdate {
+    required RequestHeader header = 1;
+    
+    repeated FeedItem feed_items = 2;
+    message FeedItem {
+        required uint32 feed_type = 1;
+        required uint32 feed_sub_type = 2;
+        required uint32 feed_pilot_id = 3;
+        required uint32 feed_pilot_force_type = 4;
+        required string feed_pilot_name = 5;
+        required string convenience_id = 6;
+        required uint32 convenience_number = 7;
+        optional uint32 feed_pilot_baid = 8;
+        optional uint32 feed_pilot_shop_id = 9;
+        optional uint32 feed_pilot_team_id = 10;
+    }
+}
+
+message V403RES_FeedUpdate {
+    required ResponseHeader header = 1;
+}
+
+enum ProtocolVersions_rev322 {
+    PROTOCOL_VERSION_REV322 = 20130828;
+}
