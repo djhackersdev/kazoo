@@ -7,7 +7,10 @@ const read = require("raw-body");
 // Infrastructure
 //
 
-const api = protobuf.loadSync("./protobuf/v403db.proto");
+const api = protobuf.loadSync([
+  "./protobuf/v403db.proto",
+  "./protobuf/v403db_rev306.proto",
+]);
 
 const app = express();
 
@@ -134,19 +137,30 @@ app.post("/v403/game/config", function(req, res) {
 
   res.send("v403db.V403RES_GameConfig", {
     header,
-    normalMission1: 1,
-    normalMission2: 2,
-    eventMission1: 3,
-    eventMission2: 4,
+    normalMission1: 0,
+    normalMission2: 0,
+    eventMission1: 0,
+    eventMission2: 0,
     eventOption: 0,
-    optionInfo1: 5,
-    optionInfo2: 6,
+    optionInfo1: 0,
+    optionInfo2: 0,
     eventText: "evtext",
     telop: "telop",
     serverFlag1: 0,
     serverFlag2: 0,
-    /*eventRegulation1: 7,
-    eventRegulation2: 8,*/
+    /*eventRegulation1: 0,
+    eventRegulation2: 0,*/
+  });
+});
+
+app.post("/v403/warevent/status", function(req, res) {
+  req.recv("v403db.V403REQ_WarEventStatus");
+
+  res.send("v403db.V403RES_WarEventStatus", {
+    header,
+    eventId: 0,
+    // A whole shitload of optional fields. Let's try to disable this
+    // "war event".
   });
 });
 
