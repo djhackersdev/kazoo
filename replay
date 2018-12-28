@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# Usage: [file] [uri]
+# Remember to add "127.0.0.1 damrey-accepter.local" to /etc/hosts.
+
+exec curl -v --cacert pki/ca.pem -X POST -T $1 -H "Content-Type: application/octet-stream" https://damrey-accepter.local:32635$2
