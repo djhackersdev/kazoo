@@ -1,21 +1,21 @@
 function dispatch(socket) {
-  console.log('Connected, waiting for hello')
-  delete socket._readableState.decoder
+  console.log("Connected, waiting for hello");
+  delete socket._readableState.decoder;
 
-  let input = ''
+  let input = "";
 
-  socket.on('data', startup)
+  socket.on("data", startup);
 
   function startup(msg) {
-    input += msg.toString('ascii')
+    input += msg.toString("ascii");
 
-    if (msg.indexOf('}') === -1) {
-      return
+    if (msg.indexOf("}") === -1) {
+      return;
     }
 
-    console.log('<<< ', input)
+    console.log("<<< ", input);
 
-    const now = new Date()
+    const now = new Date();
 
     const json = JSON.stringify({
       time: now.toISOString(),
@@ -23,18 +23,20 @@ function dispatch(socket) {
       minorVer: 7,
       localVer: 35707,
       sessionId: 1234,
-    })
+    });
 
-    const output = `HELLO OK ${json}\r\n`
+    const output = `HELLO OK ${json}\r\n`;
 
-    console.log('>>> ', output)
+    console.log(">>> ", output);
 
-    socket.write(output)
-    socket.off('data', startup)
-    socket.on('data', function (asdf) { console.log('data lol', asdf) })
+    socket.write(output);
+    socket.off("data", startup);
+    socket.on("data", function(asdf) {
+      console.log("data lol", asdf);
+    });
   }
 
   // ..?
 }
 
-module.exports = dispatch
+module.exports = dispatch;
