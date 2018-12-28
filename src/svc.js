@@ -129,4 +129,25 @@ app.post("/v403/shop/update", function(req, res) {
   });
 });
 
+app.post("/v403/game/config", function(req, res) {
+  req.recv("v403db.V403REQ_GameConfig");
+
+  res.send("v403db.V403RES_GameConfig", {
+    header,
+    normalMission1: 1,
+    normalMission2: 2,
+    eventMission1: 3,
+    eventMission2: 4,
+    eventOption: 0,
+    optionInfo1: 5,
+    optionInfo2: 6,
+    eventText: "evtext",
+    telop: "telop",
+    serverFlag1: 0,
+    serverFlag2: 0,
+    /*eventRegulation1: 7,
+    eventRegulation2: 8,*/
+  });
+});
+
 module.exports = app;
