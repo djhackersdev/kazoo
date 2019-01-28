@@ -9,6 +9,7 @@ class Deframer extends Transform {
       ...options,
     });
 
+    this.logger = options.logger;
     this.state = "";
   }
 
@@ -24,7 +25,7 @@ class Deframer extends Transform {
     const line = this.state.substring(0, pos);
 
     this.state = this.state.substring(pos + 2, this.state.length);
-    console.log(`Matching: Deframe: ${line}`);
+    this.logger.log(`Deframe: ${line}`);
 
     return callback(null, line);
   }
@@ -37,10 +38,12 @@ class Framer extends Transform {
       writableObjectMode: true,
       ...options,
     });
+
+    this.logger = options.logger;
   }
 
   _transform(chunk, encoding, callback) {
-    console.log(`Matching: Frame: ${chunk}`);
+    this.logger.log(`Frame: ${chunk}`);
 
     return callback(null, chunk + "\r\n");
   }

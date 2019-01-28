@@ -1,9 +1,9 @@
 const setup = require("./pipeline");
 
 async function matching(socket) {
-  const { input, output } = setup(socket);
+  const { logger, input, output } = setup(socket);
 
-  console.log("Matching: Connection opened");
+  logger.log("Connection opened");
 
   for await (const req of input) {
     const { cmd } = req;
@@ -29,11 +29,11 @@ async function matching(socket) {
         break;
 
       default:
-        console.log("Received unknown command");
+        logger.log("Received unknown command");
     }
   }
 
-  console.log("Matching: Connection closed");
+  logger.log("Connection closed");
 }
 
 module.exports = matching;

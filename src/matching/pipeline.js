@@ -2,14 +2,22 @@ const { pipeline } = require("stream");
 
 const { Decoder } = require("./cmd");
 const { Deframer, Framer } = require("./frame");
+const { Logger } = require("./logger");
 
 function setup(socket) {
-  const input = pipeline(socket, new Deframer(), new Decoder());
-  const output = new Framer();
+  const logger = new Logger(socket.remoteAddress);
+
+  const input = pipeline(
+    socket,
+    new Deframer({ logger }),
+    new Decoder({ logger }),
+  );
+
+  const output = new Framer({ logger });
 
   pipeline(output, socket);
 
-  return { input, output };
+  return { logger, input, output };
 }
 
 module.exports = setup;
