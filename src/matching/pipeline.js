@@ -1,8 +1,8 @@
 const { pipeline } = require("stream");
 
-const { Decoder } = require("./cmd");
 const { Deframer, Framer } = require("./frame");
 const { Logger } = require("./logger");
+const { Decoder, Encoder } = require("./msg");
 
 function setup(socket) {
   const logger = new Logger(socket.remoteAddress);
@@ -13,9 +13,9 @@ function setup(socket) {
     new Decoder({ logger }),
   );
 
-  const output = new Framer({ logger });
+  const output = new Encoder();
 
-  pipeline(output, socket);
+  pipeline(output, new Framer({ logger }), socket);
 
   return { logger, input, output };
 }
