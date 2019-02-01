@@ -32,6 +32,15 @@ const decoders = {
       json: JSON.parse(tokens[4]),
     };
   },
+
+  STS_OPEN: line => {
+    const tokens = split(line, 3);
+
+    return {
+      key: tokens[1],
+      data: Buffer.from(tokens[2], "base64"),
+    };
+  },
 };
 
 class Decoder extends Transform {
