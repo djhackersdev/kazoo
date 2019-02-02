@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "./bin/",
+    "strictNullChecks": true,
+    "target": "es2017"
+  },
+  "include": ["./src/"]
+}

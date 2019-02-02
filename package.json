@@ -13,10 +13,12 @@
     "git-pre-commit": "^2.1.4",
     "jest": "^24.0.0",
     "lint-staged": "^8.1.0",
-    "prettier": "^1.15.3"
+    "prettier": "^1.15.3",
+    "ts-node": "^8.0.2",
+    "typescript": "^3.3.1"
   },
   "scripts": {
-    "start": "node src/index.js",
+    "start": "ts-node src/index.js",
     "test": "jest",
     "precommit": "lint-staged"
   },
