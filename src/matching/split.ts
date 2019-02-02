@@ -1,5 +1,5 @@
-function split(line, max) {
-  const tokens = [];
+export function split(line: string, max: number): string[] {
+  const tokens: string[] = [];
   let start = 0;
 
   for (let i = 0; i < max - 1; i++) {
@@ -19,5 +19,3 @@ function split(line, max) {
 
   return tokens;
 }
-
-module.exports = { split };
