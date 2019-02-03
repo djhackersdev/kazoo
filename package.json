@@ -19,6 +19,7 @@
     "typescript": "^3.3.1"
   },
   "scripts": {
+    "build": "tsc",
     "start": "ts-node src/index.ts",
     "test": "jest",
     "precommit": "lint-staged && tsc --noEmit"
