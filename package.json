@@ -20,7 +20,7 @@
   "scripts": {
     "start": "ts-node src/index.js",
     "test": "jest",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged && tsc --noEmit"
   },
   "lint-staged": {
     "src/**/*.js": [
