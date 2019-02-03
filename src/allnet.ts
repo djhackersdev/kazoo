@@ -1,7 +1,6 @@
-const express = require("express");
-const read = require("raw-body");
-const zlib = require("zlib");
-const os = require("os");
+import express = require("express");
+import read = require("raw-body");
+import zlib = require("zlib");
 
 const app = express();
 
@@ -44,7 +43,8 @@ app.use(async function(req, resp, next) {
         .join("&") + "\r\n";
 
     resp.set("content-type", "text/plain");
-    send_.apply(this, [str]);
+
+    return send_.apply(this, [str]);
   };
 
   return next();
@@ -86,4 +86,4 @@ app.post("/sys/servlet/PowerOn", function(req, resp) {
   resp.send(respParams);
 });
 
-module.exports = app;
+export default app;
