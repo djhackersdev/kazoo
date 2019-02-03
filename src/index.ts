@@ -1,4 +1,4 @@
-import fs = require("fs");
+import { readFileSync } from "fs";
 import http = require("http");
 import tls = require("tls");
 
@@ -10,8 +10,8 @@ http.createServer(allnet).listen(80);
 tls
   .createServer(
     {
-      key: fs.readFileSync("pki/matching.key"),
-      cert: fs.readFileSync("pki/matching.pem"),
+      key: readFileSync("pki/matching.key"),
+      cert: readFileSync("pki/matching.pem"),
     },
     matching,
   )
