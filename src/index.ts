@@ -1,10 +1,9 @@
-const fs = require("fs");
-const http = require("http");
-const https = require("https");
-const tls = require("tls");
+import fs = require("fs");
+import http = require("http");
+import tls = require("tls");
 
-const allnet = require("./allnet");
-const matching = require("./matching");
+import allnet from "./allnet";
+import matching from "./matching";
 
 http.createServer(allnet).listen(80);
 

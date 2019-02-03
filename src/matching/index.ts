@@ -2,7 +2,7 @@ import { Socket } from "net";
 
 import { setup } from "./pipeline";
 
-async function matching(socket: Socket) {
+export default async function matching(socket: Socket) {
   const { logger, input, output } = setup(socket);
 
   logger.log("Connection opened");
@@ -49,5 +49,3 @@ async function matching(socket: Socket) {
 
   logger.log("Connection closed");
 }
-
-module.exports = matching;
