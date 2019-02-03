@@ -1,3 +1,4 @@
+import { Socket } from "net";
 import { pipeline } from "stream";
 
 import { Command, Decoder } from "./decoder";
@@ -16,7 +17,11 @@ interface Output {
   write(n: Notification): void;
 }
 
-export function setup(socket) {
+export function setup(socket: Socket) {
+  if (!socket.remoteAddress) {
+    throw new ReferenceError();
+  }
+
   const logger = new Logger(socket.remoteAddress);
 
   const input = pipeline(socket, new Deframer({ logger }), new Decoder());
