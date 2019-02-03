@@ -1,32 +1,8 @@
-const setup = require("./pipeline");
+import { Socket } from "net";
 
-const groups = {};
-let nextGroupId = 100;
+import { setup } from "./pipeline";
 
-function createGroup(msg) {
-  const { json, key } = msg;
-  const { max, attr } = json;
-
-  const id = nextGroupId++;
-  const group = {
-    max,
-    attr: {
-      ...attr,
-      member: [[], []],
-    },
-  };
-
-  groups[id] = group;
-
-  return {
-    status: "OK",
-    key,
-    id,
-    json: group,
-  };
-}
-
-async function matching(socket) {
+async function matching(socket: Socket) {
   const { logger, input, output } = setup(socket);
 
   logger.log("Connection opened");
@@ -63,13 +39,8 @@ async function matching(socket) {
 
           break;
 
-        case "GROUP_CREATE":
-          output.write({ type, ...createGroup(msg) });
-
-          break;
-
         default:
-          logger.log("Received unknown command");
+          logger.log("Received unimplemented command");
       }
     }
   } catch (e) {
