@@ -16,3 +16,5 @@ tls
     matching,
   )
   .listen(32639);
+
+console.log("Startup OK");
