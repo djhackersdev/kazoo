@@ -9,11 +9,11 @@ import { Logger } from "./logger";
 // Stock node.js stream stdlib typings are almost completely fucking useless
 // why yes i would like to read/write a stream of `any`
 
-interface Input {
+export interface Input {
   [Symbol.asyncIterator]: () => AsyncIterableIterator<Command>;
 }
 
-interface Output {
+export interface Output {
   write(n: Notification): void;
 }
 

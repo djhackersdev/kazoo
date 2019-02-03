@@ -1,7 +1,7 @@
 import { Transform, TransformOptions } from "stream";
 
-import * as Msg from "./msg";
 import { split } from "./split";
+import * as Model from "./model";
 
 export interface HelloCommand {
   type: "HELLO";
@@ -25,18 +25,18 @@ export interface ClientLogCommand {
 
 export interface GroupCreateCommand {
   type: "GROUP_CREATE";
-  groupId: string;
-  faction: Msg.FactionCode;
-  joinType: Msg.JoinType;
+  groupId: Model.GroupId;
+  faction: Model.FactionCode;
+  joinType: Model.JoinType;
   json: {
     max: number[];
-    attr: Msg.GroupAttrs;
+    attr: Model.GroupAttrs;
   };
 }
 
 export interface StsOpenCommand {
   type: "STS_OPEN";
-  groupId: string;
+  groupId: Model.GroupId;
   data: Buffer;
 }
 
@@ -61,7 +61,7 @@ export class Decoder extends Transform {
   _transform(line: string, encoding: string, callback: DecoderCallback): void {
     const space = line.indexOf(" ");
     const type = space >= 0 ? line.substring(0, space) : line;
-    let tokens;
+    let tokens: string[];
 
     switch (type) {
       case "HELLO":
@@ -89,9 +89,9 @@ export class Decoder extends Transform {
 
         return callback(null, {
           type,
-          groupId: tokens[1],
-          faction: parseInt(tokens[2], 10) as Msg.FactionCode,
-          joinType: tokens[3] as Msg.JoinType,
+          groupId: tokens[1] as Model.GroupId,
+          faction: parseInt(tokens[2], 10) as Model.FactionCode,
+          joinType: tokens[3] as Model.JoinType,
           json: JSON.parse(tokens[4]),
         });
 
@@ -100,9 +100,10 @@ export class Decoder extends Transform {
 
         return callback(null, {
           type,
-          groupId: tokens[1],
+          groupId: tokens[1] as Model.GroupId,
           data: Buffer.from(tokens[2], "base64"),
         });
+
       default:
         return callback(new Error(`Unknown command "${type}"`));
     }

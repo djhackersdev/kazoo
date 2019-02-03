@@ -25,15 +25,18 @@ export class Deframer extends Transform {
   _transform(chunk, encoding, callback) {
     this._state += chunk;
 
-    const pos = this._state.indexOf("\r\n");
+    const lfPos = this._state.indexOf("\n");
 
-    if (pos < 0) {
+    if (lfPos < 0) {
       return;
     }
 
-    const line = this._state.substring(0, pos);
+    // Deal with both LF (for hand-debugging) and CRLF (for real client)
 
-    this._state = this._state.substring(pos + 2, this._state.length);
+    const endPos = lfPos > 0 && chunk[lfPos - 1] == "\r" ? lfPos - 1 : lfPos;
+    const line = this._state.substring(0, endPos);
+
+    this._state = this._state.substring(lfPos + 2, this._state.length);
     this._logger.log(`Deframe: ${line}`);
 
     return callback(null, line);

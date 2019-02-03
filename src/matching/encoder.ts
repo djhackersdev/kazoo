@@ -1,6 +1,6 @@
 import { Transform, TransformOptions } from "stream";
 
-import * as Msg from "./msg";
+import * as Model from "./model";
 
 type Status = "OK" | "NG";
 
@@ -28,20 +28,24 @@ export interface ClientlogNotification {
 export interface GroupCreateNotification {
   type: "GROUP_CREATE";
   status: Status;
-  groupId: string;
-  partId: number;
-  json: {
-    max: number[];
-    attr: Msg.GroupAttrs;
-    member: number[][];
-  };
+  groupId: Model.GroupId;
+  memberId: Model.MemberId;
+  json: Model.GroupAttrs | null;
+}
+
+export interface StsOpenNotification {
+  type: "STS_OPEN";
+  status: Status;
+  groupId: Model.GroupId;
+  json: Model.GroupStatus | null;
 }
 
 export type Notification =
   | HelloNotification
   | PongNotification
   | ClientlogNotification
-  | GroupCreateNotification;
+  | GroupCreateNotification
+  | StsOpenNotification;
 
 type EncoderCallback = ((e: Error) => void) & ((e: null, ln: string) => void);
 
@@ -75,7 +79,7 @@ export class Encoder extends Transform {
       case "GROUP_CREATE":
         return callback(
           null,
-          `${n.type} ${n.status} ${n.groupId} ${n.partId} ${JSON.stringify(
+          `${n.type} ${n.status} ${n.groupId} ${n.memberId} ${JSON.stringify(
             n.json,
           )}`,
         );
