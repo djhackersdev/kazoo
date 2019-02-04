@@ -37,12 +37,19 @@ export interface StsOpenCommand {
   data: Buffer;
 }
 
+export interface SubscribeCommand {
+  type: "SUBSCRIBE";
+  topicId: Model.TopicId;
+  unknown: number;
+}
+
 export type Command =
   | HelloCommand
   | PingCommand
   | ClientLogCommand
   | GroupCreateCommand
-  | StsOpenCommand;
+  | StsOpenCommand
+  | SubscribeCommand;
 
 type DecoderCallback = ((e: Error) => void) & ((e: null, c: Command) => void);
 
@@ -99,6 +106,15 @@ export class Decoder extends Transform {
           type,
           groupId: tokens[1] as Model.GroupId,
           data: Buffer.from(tokens[2], "base64"),
+        });
+
+      case "SUBSCRIBE":
+        tokens = split(line, 3);
+
+        return callback(null, {
+          type,
+          topicId: tokens[1] as Model.TopicId,
+          unknown: parseInt(tokens[2], 10),
         });
 
       default:

@@ -43,6 +43,9 @@ export class Session implements GroupMember {
       case "STS_OPEN":
         return this._stsOpen(cmd);
 
+      case "SUBSCRIBE":
+        return this._subscribe(cmd);
+
       default:
         throw new Error("Unsupported command");
     }
@@ -109,6 +112,17 @@ export class Session implements GroupMember {
         groupStatus: null,
       });
     }
+  }
+
+  private _subscribe(cmd: Decoder.SubscribeCommand) {
+    const { topicId } = cmd;
+
+    // ???????
+    return this._output.write({
+      type: "SUBSCRIBE",
+      status: "OK",
+      topicId,
+    });
   }
 
   attrsChanged(group: Group, memberId: Model.MemberId) {

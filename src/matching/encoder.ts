@@ -40,12 +40,19 @@ export interface StsOpenNotification {
   groupStatus: Model.GroupStatus | null;
 }
 
+export interface SubscribeNotification {
+  type: "SUBSCRIBE";
+  topicId: Model.TopicId;
+  status: Status;
+}
+
 export type Notification =
   | HelloNotification
   | PongNotification
   | ClientlogNotification
   | GroupCreateNotification
-  | StsOpenNotification;
+  | StsOpenNotification
+  | SubscribeNotification;
 
 type EncoderCallback = ((e: Error) => void) & ((e: null, ln: string) => void);
 
@@ -90,6 +97,12 @@ export class Encoder extends Transform {
           `${n.type} ${n.status} ${n.groupId} ${Encoder._encodeStatuses(
             n.groupStatus,
           )}`,
+        );
+
+      case "SUBSCRIBE":
+        return callback(
+          null,
+          `${n.type} ${n.status} null`, // TODO figure JSON payload
         );
 
       default:
