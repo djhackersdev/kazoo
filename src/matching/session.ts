@@ -125,11 +125,21 @@ export class Session implements GroupMember {
     });
   }
 
-  attrsChanged(group: Group, memberId: Model.MemberId) {
-    console.log("*** TODO ATTRSCHANGED ***");
+  jsonChanged(group: Group, memberId: Model.MemberId) {
+    this._output.write({
+      type: "GROUP_UPDATE_NOTIFY",
+      groupId: group.id,
+      memberId,
+      json: group.json(),
+    });
   }
 
-  statusChanged(group: Group) {
-    console.log("*** TODO STATUSCHANGED ***");
+  statusChanged(group: Group, memberId: Model.MemberId) {
+    this._output.write({
+      type: "STS_NOTIFY",
+      groupId: group.id,
+      memberId,
+      data: group.statusLookup(memberId),
+    });
   }
 }

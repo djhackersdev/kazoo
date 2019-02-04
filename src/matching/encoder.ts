@@ -46,13 +46,29 @@ export interface SubscribeNotification {
   status: Status;
 }
 
+export interface GroupUpdateNotification {
+  type: "GROUP_UPDATE_NOTIFY";
+  groupId: Model.GroupId;
+  memberId: Model.MemberId;
+  json: Model.GroupJson;
+}
+
+export interface StatusNotification {
+  type: "STS_NOTIFY";
+  groupId: Model.GroupId;
+  memberId: Model.MemberId;
+  data: Buffer;
+}
+
 export type Notification =
   | HelloNotification
   | PongNotification
   | ClientlogNotification
   | GroupCreateNotification
   | StsOpenNotification
-  | SubscribeNotification;
+  | SubscribeNotification
+  | GroupUpdateNotification
+  | StatusNotification;
 
 type EncoderCallback = ((e: Error) => void) & ((e: null, ln: string) => void);
 
@@ -103,6 +119,18 @@ export class Encoder extends Transform {
         return callback(
           null,
           `${n.type} ${n.status} null`, // TODO figure JSON payload
+        );
+
+      case "GROUP_UPDATE_NOTIFY":
+        return callback(
+          null,
+          `${n.type} ${n.groupId} ${n.memberId} ${JSON.stringify(n.json)}`,
+        );
+
+      case "STS_NOTIFY":
+        return callback(
+          null,
+          `${n.type} ${n.groupId} ${n.memberId} ${n.data.toString("base64")}`,
         );
 
       default:

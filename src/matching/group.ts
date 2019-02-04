@@ -1,12 +1,12 @@
 import * as Model from "./model";
 
 export interface GroupMember {
-  attrsChanged(group: Group, memberId: Model.MemberId): void;
-  statusChanged(group: Group): void;
+  jsonChanged(group: Group, memberId: Model.MemberId): void;
+  statusChanged(group: Group, memberId: Model.MemberId): void;
 }
 
 export class Group {
-  readonly id: string;
+  readonly id: Model.GroupId;
 
   private _json: Model.GroupJson;
   private _status: Model.GroupStatus;
@@ -16,7 +16,7 @@ export class Group {
 
   private _nextMemberId: Model.MemberId;
 
-  constructor(id: string, create: Model.GroupCreateJson) {
+  constructor(id: Model.GroupId, create: Model.GroupCreateJson) {
     const { max, attr } = create;
 
     this.id = id;
@@ -55,7 +55,7 @@ export class Group {
     // existing members, otherwise the notification stream will be a little
     // weird.
 
-    this._members.forEach((v, k) => k.attrsChanged(this, v));
+    this._members.forEach((v, k) => k.jsonChanged(this, v));
     this._members.set(member, memberId);
 
     return memberId;
@@ -81,7 +81,7 @@ export class Group {
 
     // Send leave notification after member has left I think
 
-    this._members.forEach((v, k) => k.attrsChanged(this, v));
+    this._members.forEach((v, k) => k.jsonChanged(this, v));
   }
 
   statusOpen(member: GroupMember, src: Buffer) {
@@ -93,8 +93,18 @@ export class Group {
 
     // Re-opening seems harmless since no IDs get leaked
 
-    this._status[memberId.toString()] = Buffer.from(src);
-    this._statusListeners.forEach(item => item.statusChanged(this));
+    this._status[memberId] = Buffer.from(src);
+    this._statusListeners.forEach(item => item.statusChanged(this, memberId));
     this._statusListeners.add(member);
+  }
+
+  statusLookup(memberId: Model.MemberId): Buffer {
+    const data = this._status[memberId];
+
+    if (data === undefined) {
+      throw new Error("No status data for requested member");
+    }
+
+    return Buffer.from(data);
   }
 }
