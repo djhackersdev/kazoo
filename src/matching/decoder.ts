@@ -43,13 +43,21 @@ export interface SubscribeCommand {
   unknown: number;
 }
 
+export interface GroupSearchCommand {
+  type: "GROUP_SEARCH";
+  groupId: Model.GroupId;
+  unknown: number;
+  filter: any;
+}
+
 export type Command =
   | HelloCommand
   | PingCommand
   | ClientLogCommand
   | GroupCreateCommand
   | StsOpenCommand
-  | SubscribeCommand;
+  | SubscribeCommand
+  | GroupSearchCommand;
 
 type DecoderCallback = ((e: Error) => void) & ((e: null, c: Command) => void);
 
@@ -115,6 +123,16 @@ export class Decoder extends Transform {
           type,
           topicId: tokens[1] as Model.TopicId,
           unknown: parseInt(tokens[2], 10),
+        });
+
+      case "GROUP_SEARCH":
+        tokens = split(line, 4);
+
+        return callback(null, {
+          type,
+          groupId: tokens[1] as Model.GroupId,
+          unknown: parseInt(tokens[2], 10),
+          filter: JSON.parse(tokens[3]),
         });
 
       default:

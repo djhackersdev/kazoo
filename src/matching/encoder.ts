@@ -60,6 +60,15 @@ export interface StatusNotification {
   data: Buffer;
 }
 
+export interface GroupSearchNotification {
+  type: "GROUP_SEARCH";
+  status: Status;
+  groupId: Model.GroupId;
+  json: {
+    [key: string]: Model.GroupJson;
+  };
+}
+
 export type Notification =
   | HelloNotification
   | PongNotification
@@ -68,7 +77,8 @@ export type Notification =
   | StsOpenNotification
   | SubscribeNotification
   | GroupUpdateNotification
-  | StatusNotification;
+  | StatusNotification
+  | GroupSearchNotification;
 
 type EncoderCallback = ((e: Error) => void) & ((e: null, ln: string) => void);
 
@@ -131,6 +141,12 @@ export class Encoder extends Transform {
         return callback(
           null,
           `${n.type} ${n.groupId} ${n.memberId} ${n.data.toString("base64")}`,
+        );
+
+      case "GROUP_SEARCH":
+        return callback(
+          null,
+          `${n.type} ${n.status} ${n.groupId} ${JSON.stringify(n.json)}`,
         );
 
       default:

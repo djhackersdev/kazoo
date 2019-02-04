@@ -46,6 +46,9 @@ export class Session implements GroupMember {
       case "SUBSCRIBE":
         return this._subscribe(cmd);
 
+      case "GROUP_SEARCH":
+        return this._groupSearch(cmd);
+
       default:
         throw new Error("Unsupported command");
     }
@@ -91,6 +94,17 @@ export class Session implements GroupMember {
       groupId,
       memberId,
       json: group.json(),
+    });
+  }
+
+  private _groupSearch(cmd: Decoder.GroupSearchCommand) {
+    const { groupId } = cmd;
+
+    return this._output.write({
+      type: "GROUP_SEARCH",
+      status: "OK",
+      groupId,
+      json: {},
     });
   }
 
