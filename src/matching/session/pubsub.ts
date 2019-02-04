@@ -26,13 +26,14 @@ export class PubSubSession {
   }
 
   private _subscribe(cmd: Decoder.SubscribeCommand) {
-    const { topicId } = cmd;
+    const { topicId, unknown } = cmd;
 
     // ???????
     return this._output.write({
       type: "SUBSCRIBE",
-      status: "NG",
+      status: "OK",
       topicId,
+      json: [],
     });
   }
 }

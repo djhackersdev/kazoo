@@ -44,6 +44,7 @@ export interface SubscribeNotification {
   type: "SUBSCRIBE";
   topicId: Model.TopicId;
   status: Status;
+  json: string[] | null;
 }
 
 export interface GroupUpdateNotification {
@@ -69,6 +70,12 @@ export interface GroupSearchNotification {
   };
 }
 
+export interface MsgNotifyNotification {
+  type: "MSG_NOTIFY";
+  topicId: Model.TopicId;
+  datum: Buffer;
+}
+
 export type Notification =
   | HelloNotification
   | PongNotification
@@ -78,7 +85,8 @@ export type Notification =
   | SubscribeNotification
   | GroupUpdateNotification
   | StatusNotification
-  | GroupSearchNotification;
+  | GroupSearchNotification
+  | MsgNotifyNotification;
 
 type EncoderCallback = ((e: Error) => void) & ((e: null, ln: string) => void);
 
@@ -128,7 +136,7 @@ export class Encoder extends Transform {
       case "SUBSCRIBE":
         return callback(
           null,
-          `${n.type} ${n.status} null`, // TODO figure JSON payload
+          `${n.type} ${n.status} ${n.topicId} ${JSON.stringify(n.json)}`,
         );
 
       case "GROUP_UPDATE_NOTIFY":
@@ -149,6 +157,12 @@ export class Encoder extends Transform {
         return callback(
           null,
           `${n.type} ${n.status} ${n.groupId} ${JSON.stringify(n.json)}`,
+        );
+
+      case "MSG_NOTIFY":
+        return callback(
+          null,
+          `${n.type} ${n.topicId} ${n.datum.toString("base64")}`,
         );
 
       default:

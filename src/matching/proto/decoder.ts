@@ -50,6 +50,12 @@ export interface GroupSearchCommand {
   filter: any;
 }
 
+export interface PublishCommand {
+  type: "PUBLISH";
+  topicId: Model.TopicId;
+  datum: Buffer;
+}
+
 export type Command =
   | HelloCommand
   | PingCommand
@@ -57,7 +63,8 @@ export type Command =
   | GroupCreateCommand
   | StsOpenCommand
   | SubscribeCommand
-  | GroupSearchCommand;
+  | GroupSearchCommand
+  | PublishCommand;
 
 type DecoderCallback = ((e: Error) => void) & ((e: null, c: Command) => void);
 
@@ -133,6 +140,15 @@ export class Decoder extends Transform {
           groupId: tokens[1] as Model.GroupId,
           unknown: parseInt(tokens[2], 10),
           filter: JSON.parse(tokens[3]),
+        });
+
+      case "PUBLISH":
+        tokens = split(line, 3);
+
+        return callback(null, {
+          type,
+          topicId: tokens[1] as Model.TopicId,
+          datum: Buffer.from(tokens[2], "base64"),
         });
 
       default:
