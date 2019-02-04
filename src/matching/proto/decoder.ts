@@ -1,7 +1,7 @@
 import { Transform, TransformOptions } from "stream";
 
 import { split } from "./split";
-import * as Model from "./model";
+import * as Model from "../model";
 
 export interface HelloCommand {
   type: "HELLO";
@@ -33,8 +33,8 @@ export interface GroupCreateCommand {
 
 export interface StsOpenCommand {
   type: "STS_OPEN";
-  groupId: Model.GroupId;
-  data: Buffer;
+  statusId: Model.StatusId;
+  datum: Buffer;
 }
 
 export interface SubscribeCommand {
@@ -112,8 +112,8 @@ export class Decoder extends Transform {
 
         return callback(null, {
           type,
-          groupId: tokens[1] as Model.GroupId,
-          data: Buffer.from(tokens[2], "base64"),
+          statusId: tokens[1] as Model.StatusId,
+          datum: Buffer.from(tokens[2], "base64"),
         });
 
       case "SUBSCRIBE":

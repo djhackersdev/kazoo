@@ -1,6 +1,6 @@
 import { Transform, TransformOptions } from "stream";
 
-import * as Model from "./model";
+import * as Model from "../model";
 
 type Status = "OK" | "NG";
 
@@ -29,15 +29,15 @@ export interface GroupCreateNotification {
   type: "GROUP_CREATE";
   status: Status;
   groupId: Model.GroupId;
-  memberId: Model.MemberId;
+  sessionId: Model.SessionId;
   json: Model.GroupJson | null;
 }
 
 export interface StsOpenNotification {
   type: "STS_OPEN";
   status: Status;
-  groupId: Model.GroupId;
-  groupStatus: Model.GroupStatus | null;
+  statusId: Model.StatusId;
+  data: Model.StatusData | null;
 }
 
 export interface SubscribeNotification {
@@ -49,15 +49,15 @@ export interface SubscribeNotification {
 export interface GroupUpdateNotification {
   type: "GROUP_UPDATE_NOTIFY";
   groupId: Model.GroupId;
-  memberId: Model.MemberId;
+  sessionId: Model.SessionId;
   json: Model.GroupJson;
 }
 
 export interface StatusNotification {
   type: "STS_NOTIFY";
-  groupId: Model.GroupId;
-  memberId: Model.MemberId;
-  data: Buffer;
+  statusId: Model.StatusId;
+  sessionId: Model.SessionId;
+  datum: Buffer;
 }
 
 export interface GroupSearchNotification {
@@ -65,7 +65,7 @@ export interface GroupSearchNotification {
   status: Status;
   groupId: Model.GroupId;
   json: {
-    [key: string]: Model.GroupJson;
+    [key: number]: Model.GroupJson;
   };
 }
 
@@ -112,7 +112,7 @@ export class Encoder extends Transform {
       case "GROUP_CREATE":
         return callback(
           null,
-          `${n.type} ${n.status} ${n.groupId} ${n.memberId} ${JSON.stringify(
+          `${n.type} ${n.status} ${n.groupId} ${n.sessionId} ${JSON.stringify(
             n.json,
           )}`,
         );
@@ -120,8 +120,8 @@ export class Encoder extends Transform {
       case "STS_OPEN":
         return callback(
           null,
-          `${n.type} ${n.status} ${n.groupId} ${Encoder._encodeStatuses(
-            n.groupStatus,
+          `${n.type} ${n.status} ${n.statusId} ${Encoder._encodeStatuses(
+            n.data,
           )}`,
         );
 
@@ -134,13 +134,15 @@ export class Encoder extends Transform {
       case "GROUP_UPDATE_NOTIFY":
         return callback(
           null,
-          `${n.type} ${n.groupId} ${n.memberId} ${JSON.stringify(n.json)}`,
+          `${n.type} ${n.groupId} ${n.sessionId} ${JSON.stringify(n.json)}`,
         );
 
       case "STS_NOTIFY":
         return callback(
           null,
-          `${n.type} ${n.groupId} ${n.memberId} ${n.data.toString("base64")}`,
+          `${n.type} ${n.statusId} ${n.sessionId} ${n.datum.toString(
+            "base64",
+          )}`,
         );
 
       case "GROUP_SEARCH":
@@ -154,7 +156,7 @@ export class Encoder extends Transform {
     }
   }
 
-  static _encodeStatuses(statuses: Model.GroupStatus | null): string {
+  static _encodeStatuses(statuses: Model.StatusData | null): string {
     if (statuses == null) {
       return "null";
     }

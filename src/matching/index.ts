@@ -1,16 +1,19 @@
 import { Socket } from "net";
 
-import { setup } from "./pipeline";
+import * as Model from "./model";
+import { setup } from "./proto/pipeline";
 import { Session } from "./session";
-import { World } from "./world";
+import { World } from "./world/world";
 
 const world = new World();
+let nextSessionId = 200;
 
 export default async function matching(socket: Socket) {
   const { logger, input, output } = setup(socket);
-  const session = new Session({ world, output, logger });
+  const sessionId = nextSessionId++ as Model.SessionId;
+  const session = new Session({ sessionId, world, output, logger });
 
-  logger.log("Session opened");
+  logger.log(`Session ${sessionId} opened`);
 
   try {
     for await (const cmd of input) {
@@ -22,5 +25,5 @@ export default async function matching(socket: Socket) {
 
   session.destroy();
 
-  logger.log("Session closed");
+  logger.log(`Session ${sessionId} closed`);
 }

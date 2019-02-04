@@ -1,6 +1,6 @@
 import { Transform, TransformOptions } from "stream";
 
-import { Logger } from "./logger";
+import { Logger } from "../logger";
 
 interface Options extends TransformOptions {
   logger: Logger;

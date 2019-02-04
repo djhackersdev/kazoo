@@ -4,7 +4,7 @@ import { pipeline } from "stream";
 import { Command, Decoder } from "./decoder";
 import { Encoder, Notification } from "./encoder";
 import { Deframer, Framer } from "./frame";
-import { Logger } from "./logger";
+import { Logger } from "../logger";
 
 // Stock node.js stream stdlib typings are almost completely fucking useless
 // why yes i would like to read/write a stream of `any`
