@@ -30,14 +30,17 @@ export interface GroupCreateNotification {
   status: Status;
   groupId: Model.GroupId;
   memberId: Model.MemberId;
-  json: Model.GroupAttrs | null;
+  json: null | {
+    max: number[];
+    attr: Model.GroupAttrs;
+  };
 }
 
 export interface StsOpenNotification {
   type: "STS_OPEN";
   status: Status;
   groupId: Model.GroupId;
-  json: Model.GroupStatus | null;
+  groupStatus: Model.GroupStatus | null;
 }
 
 export type Notification =
@@ -84,8 +87,30 @@ export class Encoder extends Transform {
           )}`,
         );
 
+      case "STS_OPEN":
+        return callback(
+          null,
+          `${n.type} ${n.status} ${n.groupId} ${Encoder._encodeStatuses(
+            n.groupStatus,
+          )}`,
+        );
+
       default:
         return callback(new TypeError("Unknown notification type"));
     }
+  }
+
+  static _encodeStatuses(statuses: Model.GroupStatus | null): string {
+    if (statuses == null) {
+      return "null";
+    }
+
+    const result = {};
+
+    for (let k in statuses) {
+      result[k] = statuses[k].toString("base64");
+    }
+
+    return JSON.stringify(result);
   }
 }

@@ -85,7 +85,10 @@ export class Session implements GroupMember {
       status: "OK",
       groupId,
       memberId,
-      json: group.attrs(), // Get attrs enhanced with member list
+      json: {
+        max: group.max(),
+        attr: group.attrs(), // Get attrs enhanced with member list
+      },
     });
   }
 
@@ -104,7 +107,7 @@ export class Session implements GroupMember {
         type: "STS_OPEN",
         status: "OK",
         groupId: groupId,
-        json: group.status(),
+        groupStatus: group.status(),
       });
     } catch (e) {
       this._logger.log(e);
@@ -113,7 +116,7 @@ export class Session implements GroupMember {
         type: "STS_OPEN",
         status: "NG",
         groupId: groupId,
-        json: null,
+        groupStatus: null,
       });
     }
   }

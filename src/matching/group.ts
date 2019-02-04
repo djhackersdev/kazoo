@@ -20,6 +20,7 @@ export class Group {
     this._attrs = { member: [[], []] };
     this._status = {};
     this._members = new Map();
+    this._statusListeners = new Set();
     this._nextMemberId = 100 as Model.MemberId;
   }
 

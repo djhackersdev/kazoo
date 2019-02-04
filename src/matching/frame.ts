@@ -25,21 +25,25 @@ export class Deframer extends Transform {
   _transform(chunk, encoding, callback) {
     this._state += chunk;
 
-    const lfPos = this._state.indexOf("\n");
+    while (true) {
+      const lf = this._state.indexOf("\n");
 
-    if (lfPos < 0) {
-      return;
+      if (lf < 0) {
+        break;
+      }
+
+      // Deal with both LF (for hand-debugging) and CRLF (for real client)
+
+      const end = lf > 0 && this._state[lf - 1] == "\r" ? lf - 1 : lf;
+      const line = this._state.substring(0, end);
+
+      this._state = this._state.substring(lf + 1, this._state.length);
+      this._logger.log(`Deframe: ${line}`);
+
+      this.push(line);
     }
 
-    // Deal with both LF (for hand-debugging) and CRLF (for real client)
-
-    const endPos = lfPos > 0 && chunk[lfPos - 1] == "\r" ? lfPos - 1 : lfPos;
-    const line = this._state.substring(0, endPos);
-
-    this._state = this._state.substring(lfPos + 2, this._state.length);
-    this._logger.log(`Deframe: ${line}`);
-
-    return callback(null, line);
+    callback(null);
   }
 }
 
@@ -58,7 +62,8 @@ export class Framer extends Transform {
 
   _transform(chunk, encoding, callback) {
     this.logger.log(`Frame: ${chunk}`);
+    this.push(chunk + "\r\n");
 
-    return callback(null, chunk + "\r\n");
+    callback(null);
   }
 }
