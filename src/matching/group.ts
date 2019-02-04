@@ -7,29 +7,32 @@ export interface GroupMember {
 
 export class Group {
   readonly id: string;
-  private _max: number[];
-  private _attrs: Model.GroupAttrs;
+
+  private _json: Model.GroupJson;
   private _status: Model.GroupStatus;
+
   private readonly _members: Map<GroupMember, Model.MemberId>;
   private readonly _statusListeners: Set<GroupMember>;
+
   private _nextMemberId: Model.MemberId;
 
-  constructor(id: string, max: number[]) {
+  constructor(id: string, create: Model.GroupCreateJson) {
+    const { max, attr } = create;
+
     this.id = id;
-    this._max = max;
-    this._attrs = { member: [[], []] };
+    this._json = { max, attr, member: [[], []] };
     this._status = {};
     this._members = new Map();
     this._statusListeners = new Set();
     this._nextMemberId = 100 as Model.MemberId;
   }
 
-  max(): Readonly<number[]> {
-    return this._max;
+  isEmpty() {
+    return this._members.size == 0 && this._statusListeners.size == 0;
   }
 
-  attrs(): Readonly<Model.GroupAttrs> {
-    return this._attrs;
+  json(): Readonly<Model.GroupJson> {
+    return this._json;
   }
 
   status(): Readonly<Model.GroupStatus> {
@@ -42,13 +45,11 @@ export class Group {
     }
 
     const memberId = this._nextMemberId++ as Model.MemberId;
-    const memberIdLists = this._attrs.member;
+    const memberIdLists = this._json.member;
 
     // Sloppy, we mutate the attribute object in-place here.
 
-    if (memberIdLists !== undefined) {
-      memberIdLists[factionCode].push(memberId);
-    }
+    memberIdLists[factionCode].push(memberId);
 
     // I think we need to join after the join notification has been sent to the
     // existing members, otherwise the notification stream will be a little
@@ -60,11 +61,6 @@ export class Group {
     return memberId;
   }
 
-  update(attrs: Model.GroupAttrs) {
-    this._attrs = { ...this._attrs, ...attrs };
-    this._members.forEach((v, k) => k.attrsChanged(this, v));
-  }
-
   leave(member: GroupMember) {
     const memberId = this._members.get(member);
 
@@ -72,7 +68,7 @@ export class Group {
       return; // nothing to do
     }
 
-    const memberIdLists = this._attrs.member;
+    const memberIdLists = this._json.member;
 
     if (memberIdLists !== undefined) {
       for (let i = 0; i < memberIdLists.length; i++) {

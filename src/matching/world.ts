@@ -4,12 +4,12 @@ import * as Model from "./model";
 export class World {
   private _groups = new Map<Model.GroupId, Group>();
 
-  createGroup(id: Model.GroupId, max: number[]): Group {
+  createGroup(id: Model.GroupId, create: Model.GroupCreateJson): Group {
     if (this._groups.has(id)) {
       throw new Error("Group already exists");
     }
 
-    const group = new Group(id, max);
+    const group = new Group(id, create);
 
     this._groups.set(id, group);
 
@@ -21,6 +21,16 @@ export class World {
   }
 
   leaveGroups(member: GroupMember) {
-    this._groups.forEach(group => group.leave(member));
+    const condemned: Model.GroupId[] = [];
+
+    this._groups.forEach((group, groupId) => {
+      group.leave(member);
+
+      if (group.isEmpty()) {
+        condemned.push(groupId);
+      }
+    });
+
+    condemned.forEach(groupId => this._groups.delete(groupId));
   }
 }

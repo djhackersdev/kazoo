@@ -30,10 +30,7 @@ export interface GroupCreateNotification {
   status: Status;
   groupId: Model.GroupId;
   memberId: Model.MemberId;
-  json: null | {
-    max: number[];
-    attr: Model.GroupAttrs;
-  };
+  json: Model.GroupJson | null;
 }
 
 export interface StsOpenNotification {

@@ -68,16 +68,9 @@ export class Session implements GroupMember {
     }
 
     const { groupId, json } = cmd;
-    const { max, attr } = json;
 
     const existing = this._world.locateGroup(groupId);
-    const group = existing || this._world.createGroup(groupId, max);
-
-    if (!existing) {
-      // Initialize attrs in new group
-      group.update(attr);
-    }
-
+    const group = existing || this._world.createGroup(groupId, json);
     const memberId = group.join(this, cmd.faction);
 
     return this._output.write({
@@ -85,10 +78,7 @@ export class Session implements GroupMember {
       status: "OK",
       groupId,
       memberId,
-      json: {
-        max: group.max(),
-        attr: group.attrs(), // Get attrs enhanced with member list
-      },
+      json: group.json(),
     });
   }
 

@@ -28,10 +28,7 @@ export interface GroupCreateCommand {
   groupId: Model.GroupId;
   faction: Model.FactionCode;
   joinType: Model.JoinType;
-  json: {
-    max: number[];
-    attr: Model.GroupAttrs;
-  };
+  json: Model.GroupCreateJson;
 }
 
 export interface StsOpenCommand {
