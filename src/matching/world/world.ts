@@ -1,10 +1,12 @@
 import { Group, GroupMember } from "./group";
+import { Topic, Subscriber } from "./pubsub";
 import { StatusGroup, StatusGroupMember } from "./status";
 import * as Model from "../model";
 
 export class World {
   private readonly _groups = new Map<Model.GroupId, Group>();
   private readonly _sgroups = new Map<Model.StatusId, StatusGroup>();
+  private readonly _topics = new Map<Model.TopicId, Topic>();
 
   createGroup(id: Model.GroupId, create: Model.GroupCreateJson): Group {
     const existing = this._groups.get(id);
@@ -59,6 +61,36 @@ export class World {
     condemned.forEach(statusId => this._sgroups.delete(statusId));
     condemned.forEach(statusId =>
       console.log(`Matching: Status group ${statusId} GCed`),
+    );
+  }
+
+  existingTopic(id: Model.TopicId): Topic | undefined {
+    return this._topics.get(id);
+  }
+
+  topic(id: Model.TopicId): Topic {
+    const existing = this._topics.get(id);
+    const topic = existing || new Topic(id);
+
+    this._topics.set(id, topic);
+
+    return topic;
+  }
+
+  leaveTopics(sub: Subscriber) {
+    const condemned: Model.TopicId[] = [];
+
+    this._topics.forEach((topic, topicId) => {
+      topic.unsubscribe(sub);
+
+      if (topic.isEmpty()) {
+        condemned.push(topicId);
+      }
+    });
+
+    condemned.forEach(topicId => this._topics.delete(topicId));
+    condemned.forEach(topicId =>
+      console.log(`Matching: Topic ${topicId} GCed`),
     );
   }
 }

@@ -1,22 +1,29 @@
+import { Context } from "./context";
 import * as Decoder from "../proto/decoder";
 import { Output } from "../proto/pipeline";
-import { Context } from "./context";
+import { Subscriber, Topic } from "../world/pubsub";
+import { World } from "../world/world";
 
-type PubSubCommand = Decoder.SubscribeCommand;
+type PubSubCommand = Decoder.PublishCommand | Decoder.SubscribeCommand;
 
-export class PubSubSession {
-  private _output: Output;
+export class PubSubSession implements Subscriber {
+  private readonly _world: World;
+  private readonly _output: Output;
 
   constructor(ctx: Context) {
+    this._world = ctx.world;
     this._output = ctx.output;
   }
 
   destroy() {
-    // No-op for now
+    this._world.leaveTopics(this);
   }
 
   dispatch(cmd: PubSubCommand) {
     switch (cmd.type) {
+      case "PUBLISH":
+        return this._publish(cmd);
+
       case "SUBSCRIBE":
         return this._subscribe(cmd);
 
@@ -25,15 +32,35 @@ export class PubSubSession {
     }
   }
 
-  private _subscribe(cmd: Decoder.SubscribeCommand) {
-    const { topicId, unknown } = cmd;
+  private _publish(cmd: Decoder.PublishCommand) {
+    const { topicId, datum } = cmd;
+    const topic = this._world.existingTopic(topicId);
 
-    // ???????
+    if (topic === undefined) {
+      throw new Error("Not subscribed to this topic!");
+    }
+
+    topic.publish(datum);
+  }
+
+  private _subscribe(cmd: Decoder.SubscribeCommand) {
+    const { topicId } = cmd;
+
+    this._world.topic(topicId).subscribe(this);
+
     return this._output.write({
       type: "SUBSCRIBE",
       status: "OK",
       topicId,
-      json: [],
+      json: null, // ???????
+    });
+  }
+
+  topicMessage(topic: Topic, datum: Buffer) {
+    this._output.write({
+      type: "MSG_NOTIFY",
+      topicId: topic.id,
+      datum,
     });
   }
 }

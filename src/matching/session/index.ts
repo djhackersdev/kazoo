@@ -20,6 +20,7 @@ export class Session {
 
   destroy() {
     this._group.destroy();
+    this._pubsub.destroy();
     this._status.destroy();
   }
 
@@ -37,6 +38,7 @@ export class Session {
       case "STS_OPEN":
         return this._status.dispatch(cmd);
 
+      case "PUBLISH":
       case "SUBSCRIBE":
         return this._pubsub.dispatch(cmd);
 
