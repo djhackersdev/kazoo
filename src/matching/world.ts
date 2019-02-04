@@ -32,5 +32,8 @@ export class World {
     });
 
     condemned.forEach(groupId => this._groups.delete(groupId));
+    condemned.forEach(groupId =>
+      console.log(`Matching: Group ${groupId} GCed`),
+    );
   }
 }
