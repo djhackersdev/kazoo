@@ -129,7 +129,7 @@ export class Session implements GroupMember {
     // ???????
     return this._output.write({
       type: "SUBSCRIBE",
-      status: "OK",
+      status: "NG",
       topicId,
     });
   }
