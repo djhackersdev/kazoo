@@ -66,13 +66,22 @@ export class Session implements GroupMember {
   }
 
   private _groupCreate(cmd: Decoder.GroupCreateCommand) {
-    if (cmd.joinType !== "auto_join") {
-      throw new Error("Join type not implemented");
+    const { joinType, groupId, json } = cmd;
+    const existing = this._world.locateGroup(groupId);
+
+    if (
+      (existing !== undefined && joinType === "create_always") ||
+      (existing === undefined && joinType === "create_nothing")
+    ) {
+      return this._output.write({
+        type: "GROUP_CREATE",
+        status: "NG",
+        groupId,
+        memberId: 0 as Model.MemberId,
+        json: null,
+      });
     }
 
-    const { groupId, json } = cmd;
-
-    const existing = this._world.locateGroup(groupId);
     const group = existing || this._world.createGroup(groupId, json);
     const memberId = group.join(this, cmd.faction);
 
