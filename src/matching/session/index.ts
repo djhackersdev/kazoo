@@ -36,6 +36,7 @@ export class Session {
         return this._group.dispatch(cmd);
 
       case "STS_OPEN":
+      case "STS_SET":
         return this._status.dispatch(cmd);
 
       case "PUBLISH":

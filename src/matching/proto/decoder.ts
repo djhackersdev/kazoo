@@ -56,6 +56,12 @@ export interface PublishCommand {
   datum: Buffer;
 }
 
+export interface StsSetCommand {
+  type: "STS_SET";
+  statusId: Model.StatusId;
+  datum: Buffer;
+}
+
 export type Command =
   | HelloCommand
   | PingCommand
@@ -64,7 +70,8 @@ export type Command =
   | StsOpenCommand
   | SubscribeCommand
   | GroupSearchCommand
-  | PublishCommand;
+  | PublishCommand
+  | StsSetCommand;
 
 type DecoderCallback = ((e: Error) => void) & ((e: null, c: Command) => void);
 
@@ -148,6 +155,15 @@ export class Decoder extends Transform {
         return callback(null, {
           type,
           topicId: tokens[1] as Model.TopicId,
+          datum: Buffer.from(tokens[2], "base64"),
+        });
+
+      case "STS_SET":
+        tokens = split(line, 3);
+
+        return callback(null, {
+          type,
+          statusId: tokens[1] as Model.StatusId,
           datum: Buffer.from(tokens[2], "base64"),
         });
 

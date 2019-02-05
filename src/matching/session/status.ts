@@ -5,7 +5,7 @@ import { Output } from "../proto/pipeline";
 import { StatusGroup, StatusGroupMember } from "../world/status";
 import { World } from "../world/world";
 
-type StatusCommand = Decoder.StsOpenCommand;
+type StatusCommand = Decoder.StsOpenCommand | Decoder.StsSetCommand;
 
 export class StatusSession implements StatusGroupMember {
   private readonly _world: World;
@@ -27,6 +27,9 @@ export class StatusSession implements StatusGroupMember {
       case "STS_OPEN":
         return this._stsOpen(cmd);
 
+      case "STS_SET":
+        return this._stsSet(cmd);
+
       default:
         throw new Error("Unimplemented status group command");
     }
@@ -44,6 +47,15 @@ export class StatusSession implements StatusGroupMember {
       statusId,
       data: sgroup.data(),
     });
+  }
+
+  private _stsSet(cmd: Decoder.StsSetCommand) {
+    const { statusId, datum } = cmd;
+    const sgroup = this._world.createStatusGroup(statusId);
+
+    sgroup.participate(this, this._sessionId, datum);
+
+    // Not explicitly acked, this will generate a STS_NOTIFY though.
   }
 
   statusChanged(sgroup: StatusGroup, memberId: Model.SessionId) {
