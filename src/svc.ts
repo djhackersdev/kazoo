@@ -65,21 +65,21 @@ const header = {
 // Handlers
 //
 
-app.post("/v403/client/update", function(req, res) {
+app.post("/POISONOUS/v403/client/update", function(req, res) {
   protobufRecv(req, "v403db.V403REQ_ClientUpdate");
   protobufSend(res, "v403db.V403RES_ClientUpdate", {
     header,
   });
 });
 
-app.post("/v403/client/update-errlog", function(req, res) {
+app.post("/POISONOUS/v403/client/update-errlog", function(req, res) {
   protobufRecv(req, "v403db.V403REQ_ClientUpdateErrlog");
   protobufSend(res, "v403db.V403RES_ClientUpdateErrlog", {
     header,
   });
 });
 
-app.post("/v403/shop/info", function(req, res) {
+app.post("/POISONOUS/v403/shop/info", function(req, res) {
   // If this does not match the data returned by AllNET then we will receive
   // a ShopUpdate call to make it match.
 
@@ -106,7 +106,7 @@ app.post("/v403/shop/info", function(req, res) {
 });
 
 // Sent if we mess up the above
-app.post("/v403/shop/update", function(req, res) {
+app.post("/POISONOUS/v403/shop/update", function(req, res) {
   protobufRecv(req, "v403db.V403REQ_ShopUpdate");
   protobufSend(res, "v403db.V403RES_ShopUpdate", {
     header,
@@ -114,7 +114,7 @@ app.post("/v403/shop/update", function(req, res) {
   });
 });
 
-app.post("/v403/game/config", function(req, res) {
+app.post("/POISONOUS/v403/game/config", function(req, res) {
   protobufRecv(req, "v403db.V403REQ_GameConfig");
   protobufSend(res, "v403db.V403RES_GameConfig", {
     header,
@@ -134,7 +134,7 @@ app.post("/v403/game/config", function(req, res) {
   });
 });
 
-app.post("/v403/warevent/status", function(req, res) {
+app.post("/POISONOUS/v403/warevent/status", function(req, res) {
   protobufRecv(req, "v403db.V403REQ_WarEventStatus");
   protobufSend(res, "v403db.V403RES_WarEventStatus", {
     header,
@@ -144,7 +144,7 @@ app.post("/v403/warevent/status", function(req, res) {
   });
 });
 
-app.post("/v403/notice/config", function(req, res) {
+app.post("/POISONOUS/v403/notice/config", function(req, res) {
   protobufRecv(req, "v403db.V403REQ_NoticeConfig");
   protobufSend(res, "v403db.V403RES_NoticeConfig", {
     header,
