@@ -44,7 +44,7 @@ export interface SubscribeNotification {
   type: "SUBSCRIBE";
   topicId: Model.TopicId;
   status: Status;
-  json: string[] | null;
+  data: Buffer[] | null;
 }
 
 export interface GroupUpdateNotification {
@@ -136,7 +136,9 @@ export class Encoder extends Transform {
       case "SUBSCRIBE":
         return callback(
           null,
-          `${n.type} ${n.status} ${n.topicId} ${JSON.stringify(n.json)}`,
+          `${n.type} ${n.status} ${n.topicId} ${JSON.stringify(
+            n.data && n.data.map(datum => datum.toString("base64")),
+          )}`,
         );
 
       case "GROUP_UPDATE_NOTIFY":

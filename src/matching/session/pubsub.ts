@@ -40,19 +40,20 @@ export class PubSubSession implements Subscriber {
       throw new Error("Not subscribed to this topic!");
     }
 
-    topic.publish(datum);
+    topic.publish(this, datum);
   }
 
   private _subscribe(cmd: Decoder.SubscribeCommand) {
     const { topicId } = cmd;
+    const topic = this._world.topic(topicId);
 
-    this._world.topic(topicId).subscribe(this);
+    topic.subscribe(this);
 
     return this._output.write({
       type: "SUBSCRIBE",
       status: "OK",
       topicId,
-      json: null, // ???????
+      data: topic.data(),
     });
   }
 
