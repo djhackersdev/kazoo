@@ -28,6 +28,16 @@ app.use(function loggingStep(req, res, next) {
 // Protobuf boilerplate
 //
 
+app.use(async function readStep(req, res, next) {
+  if (req.method !== "POST") {
+    return res.status(405).end();
+  }
+
+  req.body = await read(req);
+
+  return next();
+});
+
 function protobufRecv(req: express.Request, typename: string) {
   if (fs.existsSync("./dump")) {
     fs.writeFileSync(`./dump/${typename}`, req.body);
