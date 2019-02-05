@@ -1,7 +1,7 @@
-const express = require("express");
-const fs = require("fs");
-const protobuf = require("protobufjs");
-const read = require("raw-body");
+import express = require("express");
+import fs = require("fs");
+import protobuf = require("protobufjs");
+import read = require("raw-body");
 
 //
 // Infrastructure
@@ -14,61 +14,47 @@ const api = protobuf.loadSync([
 
 const app = express();
 
+//
 // Logging
+//
+
 app.use(function loggingStep(req, res, next) {
   console.log("\n--- %s %s ---\n", req.method, req.url);
 
   return next();
 });
 
+//
 // Protobuf boilerplate
-app.use(async function protobufStep(req, res, next) {
-  if (req.method !== "POST") {
-    return next();
-  }
+//
 
-  req.body = await read(req);
-
-  req.recv = function protobufRecv(typename) {
-    const decoded = api.lookupType(typename).decode(req.body);
-
-    console.log("Received request\n", decoded);
-
-    return decoded;
-  };
-
-  const send_ = res.send;
-
-  res.send = function protobufSend(typename, obj) {
-    console.log("\nSending response\n", obj);
-
-    const encoded = api
-      .lookupType(typename)
-      .encode(obj)
-      .finish();
-
-    send_.apply(this, [encoded]);
-  };
-
-  return next();
-});
-
-// Dumping
-app.use(function dumpStep(req, res, next) {
+function protobufRecv(req: express.Request, typename: string) {
   if (fs.existsSync("./dump")) {
-    const recv_ = req.recv;
-
-    req.recv = function dumpRecv(typename) {
-      fs.writeFileSync(`./dump/${typename}`, req.body);
-
-      return recv_.apply(this, [typename]);
-    };
+    fs.writeFileSync(`./dump/${typename}`, req.body);
   }
 
-  return next();
-});
+  const decoded = api.lookupType(typename).decode(req.body);
 
+  console.log("Received request\n", decoded);
+
+  return decoded;
+}
+
+function protobufSend(res: express.Response, typename: string, obj: any) {
+  console.log("\nSending response\n", obj);
+
+  const encoded = api
+    .lookupType(typename)
+    .encode(obj)
+    .finish();
+
+  res.send(encoded);
+}
+
+//
 // Generic success header
+//
+
 const header = {
   success: true,
   errcode: 0,
@@ -80,28 +66,25 @@ const header = {
 //
 
 app.post("/v403/client/update", function(req, res) {
-  req.recv("v403db.V403REQ_ClientUpdate");
-
-  res.send("v403db.V403RES_ClientUpdate", {
+  protobufRecv(req, "v403db.V403REQ_ClientUpdate");
+  protobufSend(res, "v403db.V403RES_ClientUpdate", {
     header,
   });
 });
 
 app.post("/v403/client/update-errlog", function(req, res) {
-  req.recv("v403db.V403REQ_ClientUpdateErrlog");
-
-  res.send("v403db.V403RES_ClientUpdateErrlog", {
+  protobufRecv(req, "v403db.V403REQ_ClientUpdateErrlog");
+  protobufSend(res, "v403db.V403RES_ClientUpdateErrlog", {
     header,
   });
 });
 
 app.post("/v403/shop/info", function(req, res) {
-  req.recv("v403db.V403REQ_ShopInfo");
-
   // If this does not match the data returned by AllNET then we will receive
   // a ShopUpdate call to make it match.
 
-  res.send("v403db.V403RES_ShopInfo", {
+  protobufRecv(req, "v403db.V403REQ_ShopInfo");
+  protobufSend(res, "v403db.V403RES_ShopInfo", {
     header,
     battalionName: "batname",
     countryCode: "JPN",
@@ -124,18 +107,16 @@ app.post("/v403/shop/info", function(req, res) {
 
 // Sent if we mess up the above
 app.post("/v403/shop/update", function(req, res) {
-  req.recv("v403db.V403REQ_ShopUpdate");
-
-  res.send("v403db.V403RES_ShopUpdate", {
+  protobufRecv(req, "v403db.V403REQ_ShopUpdate");
+  protobufSend(res, "v403db.V403RES_ShopUpdate", {
     header,
     countryCode: "JPN",
   });
 });
 
 app.post("/v403/game/config", function(req, res) {
-  req.recv("v403db.V403REQ_GameConfig");
-
-  res.send("v403db.V403RES_GameConfig", {
+  protobufRecv(req, "v403db.V403REQ_GameConfig");
+  protobufSend(res, "v403db.V403RES_GameConfig", {
     header,
     normalMission1: 0,
     normalMission2: 0,
@@ -154,9 +135,8 @@ app.post("/v403/game/config", function(req, res) {
 });
 
 app.post("/v403/warevent/status", function(req, res) {
-  req.recv("v403db.V403REQ_WarEventStatus");
-
-  res.send("v403db.V403RES_WarEventStatus", {
+  protobufRecv(req, "v403db.V403REQ_WarEventStatus");
+  protobufSend(res, "v403db.V403RES_WarEventStatus", {
     header,
     eventId: 0,
     // A whole shitload of optional fields. Let's try to disable this
@@ -165,12 +145,11 @@ app.post("/v403/warevent/status", function(req, res) {
 });
 
 app.post("/v403/notice/config", function(req, res) {
-  req.recv("v403db.V403REQ_NoticeConfig");
-
-  res.send("v403db.V403RES_NoticeConfig", {
+  protobufRecv(req, "v403db.V403REQ_NoticeConfig");
+  protobufSend(res, "v403db.V403RES_NoticeConfig", {
     header,
     // A repeated field listing update packages? follows
   });
 });
 
-module.exports = app;
+export default app;
