@@ -4,37 +4,37 @@ import { StatusGroup, StatusGroupMember } from "./status";
 import * as Model from "../model";
 
 export class World {
-  private readonly _groups = new Map<Model.GroupId, Group>();
+  private _nextGroupId = 100;
+  private _groups: Group[] = [];
   private readonly _sgroups = new Map<Model.StatusId, StatusGroup>();
   private readonly _topics = new Map<Model.TopicId, Topic>();
 
-  createGroup(id: Model.GroupId, create: Model.GroupCreateJson): Group {
-    const existing = this._groups.get(id);
-    const group = existing || new Group(id, create);
+  createGroup(
+    key: Model.GroupKey,
+    id: Model.GroupId,
+    create: Model.GroupCreateJson,
+  ): Group {
+    //const id = this._nextGroupId++ as Model.GroupId;
+    const group = new Group(key, id, create);
 
-    this._groups.set(id, group);
+    this._groups.push(group);
 
     return group;
   }
 
-  locateGroup(id: Model.GroupId): Group | undefined {
-    return this._groups.get(id);
+  searchGroups(key: Model.GroupKey): Group[] {
+    return this._groups.filter(group => group.key === key);
   }
 
   leaveGroups(member: GroupMember) {
-    const condemned: Model.GroupId[] = [];
+    this._groups.forEach(group => group.leave(member));
 
-    this._groups.forEach((group, groupId) => {
-      group.leave(member);
+    const condemned = this._groups.filter(group => group.isEmpty());
 
-      if (group.isEmpty()) {
-        condemned.push(groupId);
-      }
-    });
+    this._groups = this._groups.filter(group => !group.isEmpty());
 
-    condemned.forEach(groupId => this._groups.delete(groupId));
-    condemned.forEach(groupId =>
-      console.log(`Matching: Group ${groupId} GCed`),
+    condemned.forEach(group =>
+      console.log(`Matching: Group ${group.key} ${group.id} GCed`),
     );
   }
 

@@ -5,14 +5,21 @@ export interface GroupMember {
 }
 
 export class Group {
+  readonly key: Model.GroupKey;
   readonly id: Model.GroupId;
+
   private _json: Model.GroupJson;
   private readonly _members: Map<GroupMember, Model.SessionId>;
 
-  constructor(id: Model.GroupId, create: Model.GroupCreateJson) {
+  constructor(
+    key: Model.GroupKey,
+    id: Model.GroupId,
+    create: Model.GroupCreateJson,
+  ) {
     const { max, attr } = create;
 
     this.id = id;
+    this.key = key;
     this._json = { max, attr, member: [[], []] };
     this._members = new Map();
   }

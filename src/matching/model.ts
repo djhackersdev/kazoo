@@ -6,9 +6,10 @@ type Brand<T, B> = T & { __brand: B };
 
 export type FactionCode = Brand<0 | 1, "FactionCode">;
 export type JoinType = "auto_join" | "create_always" | "create_nothing";
-export type SessionId = Brand<number, "SessionId">;
 
-export type GroupId = Brand<string, "GroupId">;
+export type SessionId = Brand<number, "SessionId">;
+export type GroupId = Brand<number, "GroupId">;
+export type GroupKey = Brand<string, "GroupKey">;
 export type StatusId = Brand<string, "StatusId">;
 export type TopicId = Brand<string, "TopicId">;
 

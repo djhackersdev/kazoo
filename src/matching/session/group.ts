@@ -36,53 +36,81 @@ export class GroupSession implements GroupMember {
   }
 
   private _groupCreate(cmd: Decoder.GroupCreateCommand) {
-    const { joinType, groupId, json } = cmd;
-    const existing = this._world.locateGroup(groupId);
+    const { joinType, groupKey, json } = cmd;
+    let groups: Group[];
+    let group: Group;
 
-    if (
-      (existing !== undefined && joinType === "create_always") ||
-      (existing === undefined && joinType === "create_nothing")
-    ) {
-      return this._output.write({
-        type: "GROUP_CREATE",
-        status: "NG",
-        groupId,
-        sessionId: this._sessionId,
-        json: null,
-      });
+    switch (joinType) {
+      case "create_nothing":
+        // ??? guy meme
+        return this._output.write({
+          type: "GROUP_CREATE",
+          status: "NG",
+          groupKey,
+          groupId: 0 as Model.GroupId,
+          json: null,
+        });
+
+      case "auto_join":
+        groups = this._world.searchGroups(groupKey);
+
+        if (groups.length > 0) {
+          group = groups[0];
+        } else {
+          group = this._world.createGroup(
+            groupKey,
+            (this._sessionId as number) as Model.GroupId,
+            json,
+          );
+        }
+
+        break;
+
+      case "create_always":
+        group = this._world.createGroup(
+          groupKey,
+          (this._sessionId as number) as Model.GroupId,
+          json,
+        );
+
+        break;
+
+      default:
+        throw new Error("Invalid joinType");
     }
 
-    const group = existing || this._world.createGroup(groupId, json);
-
-    if (joinType === "auto_join") {
-      group.join(this, cmd.faction, this._sessionId);
-    }
+    group.join(this, cmd.faction, this._sessionId);
 
     return this._output.write({
       type: "GROUP_CREATE",
       status: "OK",
-      groupId,
-      sessionId: this._sessionId,
+      groupKey,
+      groupId: group.id,
       json: group.json(),
     });
   }
 
   private _groupSearch(cmd: Decoder.GroupSearchCommand) {
-    const { groupId } = cmd;
-    const existing = this._world.locateGroup(cmd.groupId);
+    const { groupKey } = cmd;
+    const groups = this._world.searchGroups(cmd.groupKey);
+    const json = {};
+
+    for (const group of groups) {
+      json[group.id] = group.json();
+    }
 
     return this._output.write({
       type: "GROUP_SEARCH",
       status: "OK",
-      groupId,
-      json: existing ? { 1: existing.json() } : {},
+      groupKey: groupKey,
+      json: json,
     });
   }
 
   groupChanged(group: Group) {
     this._output.write({
       type: "GROUP_UPDATE_NOTIFY",
-      groupId: group.id,
+      groupId: group.key,
       sessionId: this._sessionId,
       json: group.json(),
     });

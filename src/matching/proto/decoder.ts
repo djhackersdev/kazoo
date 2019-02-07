@@ -25,7 +25,7 @@ export interface ClientLogCommand {
 
 export interface GroupCreateCommand {
   type: "GROUP_CREATE";
-  groupId: Model.GroupId;
+  groupKey: Model.GroupKey;
   faction: Model.FactionCode;
   joinType: Model.JoinType;
   json: Model.GroupCreateJson;
@@ -45,7 +45,7 @@ export interface SubscribeCommand {
 
 export interface GroupSearchCommand {
   type: "GROUP_SEARCH";
-  groupId: Model.GroupId;
+  groupKey: Model.GroupKey;
   unknown: number;
   filter: any;
 }
@@ -115,7 +115,7 @@ export class Decoder extends Transform {
 
         return callback(null, {
           type,
-          groupId: tokens[1] as Model.GroupId,
+          groupKey: tokens[1] as Model.GroupKey,
           faction: parseInt(tokens[2], 10) as Model.FactionCode,
           joinType: tokens[3] as Model.JoinType,
           json: JSON.parse(tokens[4]),
@@ -144,7 +144,7 @@ export class Decoder extends Transform {
 
         return callback(null, {
           type,
-          groupId: tokens[1] as Model.GroupId,
+          groupKey: tokens[1] as Model.GroupKey,
           unknown: parseInt(tokens[2], 10),
           filter: JSON.parse(tokens[3]),
         });

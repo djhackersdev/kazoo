@@ -28,8 +28,8 @@ export interface ClientlogNotification {
 export interface GroupCreateNotification {
   type: "GROUP_CREATE";
   status: Status;
+  groupKey: Model.GroupKey;
   groupId: Model.GroupId;
-  sessionId: Model.SessionId;
   json: Model.GroupJson | null;
 }
 
@@ -49,7 +49,7 @@ export interface SubscribeNotification {
 
 export interface GroupUpdateNotification {
   type: "GROUP_UPDATE_NOTIFY";
-  groupId: Model.GroupId;
+  groupId: Model.GroupKey;
   sessionId: Model.SessionId;
   json: Model.GroupJson;
 }
@@ -64,7 +64,7 @@ export interface StatusNotification {
 export interface GroupSearchNotification {
   type: "GROUP_SEARCH";
   status: Status;
-  groupId: Model.GroupId;
+  groupKey: Model.GroupKey;
   json: {
     [key: number]: Model.GroupJson;
   };
@@ -120,7 +120,7 @@ export class Encoder extends Transform {
       case "GROUP_CREATE":
         return callback(
           null,
-          `${n.type} ${n.status} ${n.groupId} ${n.sessionId} ${JSON.stringify(
+          `${n.type} ${n.status} ${n.groupKey} ${n.groupId} ${JSON.stringify(
             n.json,
           )}`,
         );
@@ -158,7 +158,7 @@ export class Encoder extends Transform {
       case "GROUP_SEARCH":
         return callback(
           null,
-          `${n.type} ${n.status} ${n.groupId} ${JSON.stringify(n.json)}`,
+          `${n.type} ${n.status} ${n.groupKey} ${JSON.stringify(n.json)}`,
         );
 
       case "MSG_NOTIFY":
