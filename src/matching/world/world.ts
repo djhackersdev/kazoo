@@ -6,8 +6,8 @@ import * as Model from "../model";
 export class World {
   private _nextGroupId = 100;
   private _groups: Group[] = [];
-  private readonly _sgroups = new Map<Model.StatusId, StatusGroup>();
-  private readonly _topics = new Map<Model.TopicId, Topic>();
+  private readonly _sgroups = new Map<Model.StatusKey, StatusGroup>();
+  private readonly _topics = new Map<Model.TopicKey, Topic>();
 
   createGroup(
     key: Model.GroupKey,
@@ -38,59 +38,59 @@ export class World {
     );
   }
 
-  createStatusGroup(id: Model.StatusId): StatusGroup {
-    const existing = this._sgroups.get(id);
-    const sgroup = existing || new StatusGroup(id);
+  createStatusGroup(key: Model.StatusKey): StatusGroup {
+    const existing = this._sgroups.get(key);
+    const sgroup = existing || new StatusGroup(key);
 
-    this._sgroups.set(id, sgroup);
+    this._sgroups.set(key, sgroup);
 
     return sgroup;
   }
 
   leaveStatusGroups(member: StatusGroupMember) {
-    const condemned: Model.StatusId[] = [];
+    const condemned: Model.StatusKey[] = [];
 
-    this._sgroups.forEach((sgroup, statusId) => {
+    this._sgroups.forEach((sgroup, statusKey) => {
       sgroup.leave(member);
 
       if (sgroup.isEmpty()) {
-        condemned.push(statusId);
+        condemned.push(statusKey);
       }
     });
 
-    condemned.forEach(statusId => this._sgroups.delete(statusId));
-    condemned.forEach(statusId =>
-      console.log(`Matching: Status group ${statusId} GCed`),
+    condemned.forEach(statusKey => this._sgroups.delete(statusKey));
+    condemned.forEach(statusKey =>
+      console.log(`Matching: Status group ${statusKey} GCed`),
     );
   }
 
-  existingTopic(id: Model.TopicId): Topic | undefined {
+  existingTopic(id: Model.TopicKey): Topic | undefined {
     return this._topics.get(id);
   }
 
-  topic(id: Model.TopicId): Topic {
-    const existing = this._topics.get(id);
-    const topic = existing || new Topic(id);
+  topic(key: Model.TopicKey): Topic {
+    const existing = this._topics.get(key);
+    const topic = existing || new Topic(key);
 
-    this._topics.set(id, topic);
+    this._topics.set(key, topic);
 
     return topic;
   }
 
   leaveTopics(sub: Subscriber) {
-    const condemned: Model.TopicId[] = [];
+    const condemned: Model.TopicKey[] = [];
 
-    this._topics.forEach((topic, topicId) => {
+    this._topics.forEach((topic, topicKey) => {
       topic.unsubscribe(sub);
 
       if (topic.isEmpty()) {
-        condemned.push(topicId);
+        condemned.push(topicKey);
       }
     });
 
-    condemned.forEach(topicId => this._topics.delete(topicId));
-    condemned.forEach(topicId =>
-      console.log(`Matching: Topic ${topicId} GCed`),
+    condemned.forEach(topicKey => this._topics.delete(topicKey));
+    condemned.forEach(topicKey =>
+      console.log(`Matching: Topic ${topicKey} GCed`),
     );
   }
 }

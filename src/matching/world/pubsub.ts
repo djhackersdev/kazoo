@@ -5,11 +5,11 @@ export interface Subscriber {
 }
 
 export class Topic {
-  public readonly id: Model.TopicId;
+  public readonly key: Model.TopicKey;
   private readonly _subs: Map<Subscriber, Buffer | null>;
 
-  constructor(id: Model.TopicId) {
-    this.id = id;
+  constructor(key: Model.TopicKey) {
+    this.key = key;
     this._subs = new Map();
   }
 

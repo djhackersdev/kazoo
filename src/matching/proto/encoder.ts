@@ -36,13 +36,13 @@ export interface GroupCreateNotification {
 export interface StsOpenNotification {
   type: "STS_OPEN";
   status: Status;
-  statusId: Model.StatusId;
+  statusKey: Model.StatusKey;
   data: Model.StatusData | null;
 }
 
 export interface SubscribeNotification {
   type: "SUBSCRIBE";
-  topicId: Model.TopicId;
+  topicKey: Model.TopicKey;
   status: Status;
   data: Buffer[] | null;
 }
@@ -56,7 +56,7 @@ export interface GroupUpdateNotification {
 
 export interface StatusNotification {
   type: "STS_NOTIFY";
-  statusId: Model.StatusId;
+  statusKey: Model.StatusKey;
   sessionId: Model.SessionId;
   datum: Buffer;
 }
@@ -72,7 +72,7 @@ export interface GroupSearchNotification {
 
 export interface MsgNotifyNotification {
   type: "MSG_NOTIFY";
-  topicId: Model.TopicId;
+  topicKey: Model.TopicKey;
   datum: Buffer;
 }
 
@@ -128,7 +128,7 @@ export class Encoder extends Transform {
       case "STS_OPEN":
         return callback(
           null,
-          `${n.type} ${n.status} ${n.statusId} ${Encoder._encodeStatuses(
+          `${n.type} ${n.status} ${n.statusKey} ${Encoder._encodeStatuses(
             n.data,
           )}`,
         );
@@ -136,7 +136,7 @@ export class Encoder extends Transform {
       case "SUBSCRIBE":
         return callback(
           null,
-          `${n.type} ${n.status} ${n.topicId} ${JSON.stringify(
+          `${n.type} ${n.status} ${n.topicKey} ${JSON.stringify(
             n.data && n.data.map(datum => datum.toString("base64")),
           )}`,
         );
@@ -150,7 +150,7 @@ export class Encoder extends Transform {
       case "STS_NOTIFY":
         return callback(
           null,
-          `${n.type} ${n.statusId} ${n.sessionId} ${n.datum.toString(
+          `${n.type} ${n.statusKey} ${n.sessionId} ${n.datum.toString(
             "base64",
           )}`,
         );
@@ -164,7 +164,7 @@ export class Encoder extends Transform {
       case "MSG_NOTIFY":
         return callback(
           null,
-          `${n.type} ${n.topicId} ${n.datum.toString("base64")}`,
+          `${n.type} ${n.topicKey} ${n.datum.toString("base64")}`,
         );
 
       default:

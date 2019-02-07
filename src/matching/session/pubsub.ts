@@ -33,8 +33,8 @@ export class PubSubSession implements Subscriber {
   }
 
   private _publish(cmd: Decoder.PublishCommand) {
-    const { topicId, datum } = cmd;
-    const topic = this._world.existingTopic(topicId);
+    const { topicKey, datum } = cmd;
+    const topic = this._world.existingTopic(topicKey);
 
     if (topic === undefined) {
       throw new Error("Not subscribed to this topic!");
@@ -44,15 +44,15 @@ export class PubSubSession implements Subscriber {
   }
 
   private _subscribe(cmd: Decoder.SubscribeCommand) {
-    const { topicId } = cmd;
-    const topic = this._world.topic(topicId);
+    const { topicKey } = cmd;
+    const topic = this._world.topic(topicKey);
 
     topic.subscribe(this);
 
     return this._output.write({
       type: "SUBSCRIBE",
       status: "OK",
-      topicId,
+      topicKey,
       data: topic.data(),
     });
   }
@@ -60,7 +60,7 @@ export class PubSubSession implements Subscriber {
   topicMessage(topic: Topic, datum: Buffer) {
     this._output.write({
       type: "MSG_NOTIFY",
-      topicId: topic.id,
+      topicKey: topic.key,
       datum,
     });
   }

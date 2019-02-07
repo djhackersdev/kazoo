@@ -36,22 +36,22 @@ export class StatusSession implements StatusGroupMember {
   }
 
   private _stsOpen(cmd: Decoder.StsOpenCommand) {
-    const { statusId, datum } = cmd;
-    const sgroup = this._world.createStatusGroup(statusId);
+    const { statusKey, datum } = cmd;
+    const sgroup = this._world.createStatusGroup(statusKey);
 
     sgroup.participate(this, this._sessionId, datum);
 
     return this._output.write({
       type: "STS_OPEN",
       status: "OK",
-      statusId,
+      statusKey,
       data: sgroup.data(),
     });
   }
 
   private _stsSet(cmd: Decoder.StsSetCommand) {
-    const { statusId, datum } = cmd;
-    const sgroup = this._world.createStatusGroup(statusId);
+    const { statusKey, datum } = cmd;
+    const sgroup = this._world.createStatusGroup(statusKey);
 
     sgroup.participate(this, this._sessionId, datum);
 
@@ -67,7 +67,7 @@ export class StatusSession implements StatusGroupMember {
 
     this._output.write({
       type: "STS_NOTIFY",
-      statusId: sgroup.id,
+      statusKey: sgroup.key,
       sessionId: this._sessionId,
       datum,
     });

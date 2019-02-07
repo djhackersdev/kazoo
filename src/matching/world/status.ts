@@ -5,12 +5,12 @@ export interface StatusGroupMember {
 }
 
 export class StatusGroup {
-  readonly id: Model.StatusId;
+  readonly key: Model.StatusKey;
   private _data: Model.StatusData;
   private readonly _members: Map<StatusGroupMember, Model.SessionId>;
 
-  constructor(id: Model.StatusId) {
-    this.id = id;
+  constructor(key: Model.StatusKey) {
+    this.key = key;
     this._data = {};
     this._members = new Map();
   }

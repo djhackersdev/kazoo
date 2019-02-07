@@ -10,8 +10,8 @@ export type JoinType = "auto_join" | "create_always" | "create_nothing";
 export type SessionId = Brand<number, "SessionId">;
 export type GroupId = Brand<number, "GroupId">;
 export type GroupKey = Brand<string, "GroupKey">;
-export type StatusId = Brand<string, "StatusId">;
-export type TopicId = Brand<string, "TopicId">;
+export type StatusKey = Brand<string, "StatusKey">;
+export type TopicKey = Brand<string, "TopicKey">;
 
 export interface GroupCreateJson {
   max: number[];

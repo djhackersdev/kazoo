@@ -33,13 +33,13 @@ export interface GroupCreateCommand {
 
 export interface StsOpenCommand {
   type: "STS_OPEN";
-  statusId: Model.StatusId;
+  statusKey: Model.StatusKey;
   datum: Buffer;
 }
 
 export interface SubscribeCommand {
   type: "SUBSCRIBE";
-  topicId: Model.TopicId;
+  topicKey: Model.TopicKey;
   unknown: number;
 }
 
@@ -52,13 +52,13 @@ export interface GroupSearchCommand {
 
 export interface PublishCommand {
   type: "PUBLISH";
-  topicId: Model.TopicId;
+  topicKey: Model.TopicKey;
   datum: Buffer;
 }
 
 export interface StsSetCommand {
   type: "STS_SET";
-  statusId: Model.StatusId;
+  statusKey: Model.StatusKey;
   datum: Buffer;
 }
 
@@ -126,7 +126,7 @@ export class Decoder extends Transform {
 
         return callback(null, {
           type,
-          statusId: tokens[1] as Model.StatusId,
+          statusKey: tokens[1] as Model.StatusKey,
           datum: Buffer.from(tokens[2], "base64"),
         });
 
@@ -135,7 +135,7 @@ export class Decoder extends Transform {
 
         return callback(null, {
           type,
-          topicId: tokens[1] as Model.TopicId,
+          topicKey: tokens[1] as Model.TopicKey,
           unknown: parseInt(tokens[2], 10),
         });
 
@@ -154,7 +154,7 @@ export class Decoder extends Transform {
 
         return callback(null, {
           type,
-          topicId: tokens[1] as Model.TopicId,
+          topicKey: tokens[1] as Model.TopicKey,
           datum: Buffer.from(tokens[2], "base64"),
         });
 
@@ -163,7 +163,7 @@ export class Decoder extends Transform {
 
         return callback(null, {
           type,
-          statusId: tokens[1] as Model.StatusId,
+          statusKey: tokens[1] as Model.StatusKey,
           datum: Buffer.from(tokens[2], "base64"),
         });
 
