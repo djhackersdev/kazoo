@@ -1,5 +1,6 @@
 bin/
 dump/
+generated/
 node_modules/
 pki/
 .*.swp

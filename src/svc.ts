@@ -1,16 +1,11 @@
 import express = require("express");
-import fs = require("fs");
-import protobuf = require("protobufjs");
 import read = require("raw-body");
+
+import { v403db } from "../generated/v403db";
 
 //
 // Infrastructure
 //
-
-const api = protobuf.loadSync([
-  "./protobuf/v403db.proto",
-  "./protobuf/v403db_rev306.proto",
-]);
 
 const app = express();
 
@@ -25,7 +20,7 @@ app.use(function loggingStep(req, res, next) {
 });
 
 //
-// Protobuf boilerplate
+// Common request handling bits
 //
 
 app.use(async function readStep(req, res, next) {
@@ -38,34 +33,11 @@ app.use(async function readStep(req, res, next) {
   return next();
 });
 
-function protobufRecv(req: express.Request, typename: string) {
-  if (fs.existsSync("./dump")) {
-    fs.writeFileSync(`./dump/${typename}`, req.body);
-  }
-
-  const decoded = api.lookupType(typename).decode(req.body);
-
-  console.log("Received request\n", decoded);
-
-  return decoded;
-}
-
-function protobufSend(res: express.Response, typename: string, obj: any) {
-  console.log("\nSending response\n", obj);
-
-  const encoded = api
-    .lookupType(typename)
-    .encode(obj)
-    .finish();
-
-  res.send(encoded);
-}
-
 //
 // Generic success header
 //
 
-const header = {
+const header: v403db.IResponseHeader = {
   success: true,
   errcode: 0,
   protover: 20110702,
@@ -75,91 +47,111 @@ const header = {
 // Handlers
 //
 
-app.post("/POISONOUS/v403/client/update", function(req, res) {
-  protobufRecv(req, "v403db.V403REQ_ClientUpdate");
-  protobufSend(res, "v403db.V403RES_ClientUpdate", {
-    header,
-  });
+app.post("/v403/client/update", function(req, res) {
+  v403db.V403REQ_ClientUpdate.decode(req.body);
+
+  res.send(
+    v403db.V403RES_ClientUpdate.encode({
+      header,
+    }).finish()
+  );
 });
 
-app.post("/POISONOUS/v403/client/update-errlog", function(req, res) {
-  protobufRecv(req, "v403db.V403REQ_ClientUpdateErrlog");
-  protobufSend(res, "v403db.V403RES_ClientUpdateErrlog", {
-    header,
-  });
+app.post("/v403/client/update-errlog", function(req, res) {
+  v403db.V403REQ_ClientUpdateErrlog.decode(req.body);
+
+  res.send(
+    v403db.V403RES_ClientUpdateErrlog.encode({
+      header,
+    }).finish()
+  );
 });
 
-app.post("/POISONOUS/v403/shop/info", function(req, res) {
+app.post("/v403/shop/info", function(req, res) {
   // If this does not match the data returned by AllNET then we will receive
   // a ShopUpdate call to make it match.
 
-  protobufRecv(req, "v403db.V403REQ_ShopInfo");
-  protobufSend(res, "v403db.V403RES_ShopInfo", {
-    header,
-    battalionName: "batname",
-    countryCode: "JPN",
-    areaId: 0,
-    regionId1: 0,
-    regionId2: 0,
-    shopName: "asdf",
-    shopAddress: "",
-    /*score: 4,
-    countryRank: 5,
-    regionRank: 6,
-    areaRank: 7,
-    active_Pilot: 8,
-    controlFlag: 0,
-    availableBanacoin: false,
-    semLastUseDay: 9,
-    semUseCount: 10,*/
-  });
+  v403db.V403REQ_ShopInfo.decode(req.body);
+
+  res.send(
+    v403db.V403RES_ShopInfo.encode({
+      header,
+      battalionName: "batname",
+      countryCode: "JPN",
+      areaId: 0,
+      regionId1: 0,
+      regionId2: 0,
+      shopName: "asdf",
+      shopAddress: "",
+      score: 4,
+      countryRank: 5,
+      regionRank: 6,
+      areaRank: 7,
+      activePilot: 8,
+      controlFlag: 0,
+      availableBanacoin: false,
+      semLastUseDay: 9,
+      semUseCount: 10,
+    }).finish()
+  );
 });
 
 // Sent if we mess up the above
-app.post("/POISONOUS/v403/shop/update", function(req, res) {
-  protobufRecv(req, "v403db.V403REQ_ShopUpdate");
-  protobufSend(res, "v403db.V403RES_ShopUpdate", {
-    header,
-    countryCode: "JPN",
-  });
+app.post("/v403/shop/update", function(req, res) {
+  v403db.V403REQ_ShopUpdate.decode(req.body);
+
+  res.send(
+    v403db.V403RES_ShopUpdate.encode({
+      header,
+    }).finish()
+  );
 });
 
-app.post("/POISONOUS/v403/game/config", function(req, res) {
-  protobufRecv(req, "v403db.V403REQ_GameConfig");
-  protobufSend(res, "v403db.V403RES_GameConfig", {
-    header,
-    normalMission1: 0,
-    normalMission2: 0,
-    eventMission1: 0,
-    eventMission2: 0,
-    eventOption: 0,
-    optionInfo1: 0,
-    optionInfo2: 0,
-    eventText: "evtext",
-    telop: "telop",
-    serverFlag1: 0,
-    serverFlag2: 0,
-    /*eventRegulation1: 0,
-    eventRegulation2: 0,*/
-  });
+app.post("/v403/game/config", function(req, res) {
+  v403db.V403REQ_GameConfig.decode(req.body);
+
+  res.send(
+    v403db.V403RES_GameConfig.encode({
+      header,
+      normalMission1: 0,
+      normalMission2: 0,
+      eventMission1: 0,
+      eventMission2: 0,
+      eventOption: 0,
+      optionInfo1: 0,
+      optionInfo2: 0,
+      eventText: "evtext",
+      telop: "telop",
+      serverFlag1: 0,
+      serverFlag2: 0,
+      eventRegulation1: 0,
+      eventRegulation2: 0,
+    }).finish()
+  );
 });
 
-app.post("/POISONOUS/v403/warevent/status", function(req, res) {
-  protobufRecv(req, "v403db.V403REQ_WarEventStatus");
-  protobufSend(res, "v403db.V403RES_WarEventStatus", {
-    header,
-    eventId: 0,
-    // A whole shitload of optional fields. Let's try to disable this
-    // "war event".
-  });
+app.post("/v403/warevent/status", function(req, res) {
+  v403db.V403REQ_WarEventStatus.decode(req.body);
+
+  res.send(
+    v403db.V403RES_WarEventStatus.encode({
+      header,
+      eventId: 0,
+      // A whole shitload of optional fields. Let's try to disable this
+      // "war event".
+    }).finish()
+  );
 });
 
-app.post("/POISONOUS/v403/notice/config", function(req, res) {
-  protobufRecv(req, "v403db.V403REQ_NoticeConfig");
-  protobufSend(res, "v403db.V403RES_NoticeConfig", {
-    header,
-    // A repeated field listing update packages? follows
-  });
+app.post("/v403/notice/config", function(req, res) {
+  v403db.V403REQ_NoticeConfig.decode(req.body);
+
+  res.send(
+    v403db.V403RES_NoticeConfig.encode({
+      header,
+      // A repeated field listing update packages? follows
+    }).finish()
+  );
 });
 
 export default app;

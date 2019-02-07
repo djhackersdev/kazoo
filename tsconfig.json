@@ -7,5 +7,5 @@
     "strictNullChecks": true,
     "target": "es2017"
   },
-  "include": ["./src/"]
+  "include": ["./generated","./src/"]
 }
