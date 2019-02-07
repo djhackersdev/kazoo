@@ -1,5 +1,6 @@
 import express = require("express");
 import read = require("raw-body");
+import { inflateSync } from "zlib";
 
 import { v403db } from "../generated/v403db";
 
@@ -150,6 +151,25 @@ app.post("/v403/notice/config", function(req, res) {
     v403db.V403RES_NoticeConfig.encode({
       header,
       // A repeated field listing update packages? follows
+    }).finish()
+  );
+});
+
+app.post("/v403/clientlog/update", function(req, res) {
+  const reqp = v403db.V403REQ_ClientlogUpdate.decode(req.body);
+
+  for (const record of reqp.records) {
+    const chunks = record.logData.split(",");
+    const zbytes = Buffer.from(chunks[3], "base64");
+    const bytes = inflateSync(zbytes);
+    const ascii = bytes.toString("ascii");
+
+    console.log(ascii);
+  }
+
+  res.send(
+    v403db.V403RES_ClientlogUpdate.encode({
+      header,
     }).finish()
   );
 });
