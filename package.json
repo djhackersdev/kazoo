@@ -22,7 +22,9 @@
   },
   "scripts": {
     "build": "tsc",
-    "generate": "pbjs -t static-module -o test.js protobuf/v403db.proto protobuf/v403db_rev306.proto && pbts -o test.d.ts test.js",
+    "generate": "yarn run generate:js && yarn run generate:ts",
+    "generate:js": "pbjs -t static-module -o generated/v403db.js protobuf/v403db.proto protobuf/v403db_*.proto",
+    "generate:ts": "pbts -o generated/v403db.d.ts generated/v403db.js",
     "start": "ts-node src/index.ts",
     "test": "jest",
     "precommit": "lint-staged && tsc --noEmit"
