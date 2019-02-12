@@ -1,0 +1,12 @@
+HTTP/1.1 200 OK
+Date: Tue, 12 Feb 2019 18:47:47 GMT
+X-Powered-By: Servlet/3.0
+Pragma: DFI
+Content-Length: 193
+Connection: close
+Content-Type: text/html; charset=Shift_JIS
+Content-Language: ja-JP
+
+eJxVjkEKwjAQAO8+ZC8ipIkgFfYNSg9eS2iXNmB2JbtB6uut6MHeZk4zatHwEKCWhDCLGkKhKQk7
+dD/qOWZy+G/NxvzGAsJCsaB3TQtZ2Gb0MMYFm7AGasEAOXE1wuMJlAbh8Utmiae1ainTS5hw79qz
++1xoP9yjKl7lSeXCHelDWOlGxe/eRcRCpg==

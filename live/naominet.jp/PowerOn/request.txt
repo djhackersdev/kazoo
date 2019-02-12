@@ -1,0 +1,9 @@
+POST /sys/servlet/PowerOn HTTP/1.0
+Connection: Close
+Pragma: DFI
+User-Agent: Linux2.6NBGI/ver1.0
+Host: naominet.jp
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 164
+
+eJxLT8xNjc9MsQ128nVRK0stsjXRMzBQK04tykzMsXV0cvUzNDI1MjA1UMsssDW0NNIzNLPQMzS21DMyNVFLyyzKjQfpMTA0NlBLys8vgfCAQC01Lzk/JdU2OCMzrSTeyzNYLS2/KDcRosAIZEVGfkGxrSEvFwDJdScC
