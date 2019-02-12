@@ -15,8 +15,8 @@ app.use(async function(req, resp, next) {
   }
 
   const base64 = await read(req, { encoding: "ascii" });
-  const buf = Buffer.from(base64, "base64");
-  const bytes = zlib.unzipSync(buf);
+  const zbytes = Buffer.from(base64, "base64");
+  const bytes = zlib.unzipSync(zbytes);
   const str = bytes.toString().trim();
 
   const kvps = str.split("&");
@@ -40,7 +40,7 @@ app.use(async function(req, resp, next) {
     const str =
       Object.entries(respParams)
         .map(([key, val]) => key + "=" + val)
-        .join("&") + "\r\n";
+        .join("&") + "\n";
 
     resp.set("content-type", "text/plain");
 
@@ -58,27 +58,27 @@ app.post("/sys/servlet/PowerOn", function(req, resp) {
   const now = new Date();
 
   const respParams = {
-    stat: 1,
-    uri: "",
+    stat: 2,
     host: "local",
-    place_id: 1234,
     name: "asdf",
+    place_id: 1234,
     nickname: "fdsa",
-    region0: "addr",
-    region_name0: "",
-    region_name1: "",
-    region_name2: "",
-    region_name3: "",
+    region0: 1,
+    setting: 1,
     country: "JPN",
+    timezone: "+00:00",
+    res_class: "PowerOnResponseVer2",
+    uri: "example.com",
+    region_name0: "W",
+    region_name1: "X",
+    region_name2: "Y",
+    region_name3: "Z",
     year: now.getUTCFullYear(),
     month: now.getUTCMonth() + 1,
     day: now.getUTCDate(),
     hour: now.getUTCHours(),
     minute: now.getUTCMinutes(),
     second: now.getUTCSeconds(),
-    setting: 1,
-    timezone: "+0000",
-    res_class: "PowerOnResponseVer2",
   };
 
   console.log("\n--- Startup Response ---\n\n", respParams);
