@@ -12,8 +12,13 @@
   },
   "devDependencies": {
     "@types/express": "^4.16.1",
+    "@types/gulp": "^4.0.5",
     "@types/jest": "^23.3.13",
     "git-pre-commit": "^2.1.4",
+    "gulp": "^4.0.0",
+    "gulp-cli": "^2.0.1",
+    "gulp-protobuf": "^1.0.1",
+    "gulp-typescript": "^5.0.0",
     "jest": "23",
     "lint-staged": "^8.1.0",
     "prettier": "^1.15.3",
