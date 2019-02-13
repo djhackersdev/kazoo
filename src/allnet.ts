@@ -1,8 +1,11 @@
+import { findTimeZone, getZonedTime } from "timezone-support";
+
 import express = require("express");
 import read = require("raw-body");
 import zlib = require("zlib");
 
 const app = express();
+const jst = findTimeZone("Asia/Tokyo");
 
 // Startup request is url-encoded-ish... except it's also zlibed and base64ed.
 // Also the values are not actually escaped. So in the absence of any exotic
@@ -55,7 +58,8 @@ app.post("/sys/servlet/PowerOn", function(req, resp) {
 
   console.log("\n--- Startup Request ---\n\n", reqParams);
 
-  const now = new Date();
+  const utc = new Date();
+  const local = getZonedTime(utc, jst);
 
   const respParams = {
     stat: 2,
@@ -66,19 +70,19 @@ app.post("/sys/servlet/PowerOn", function(req, resp) {
     region0: 1,
     setting: 1,
     country: "JPN",
-    timezone: "+00:00",
+    timezone: "+09:00",
     res_class: "PowerOnResponseVer2",
     uri: "example.com",
     region_name0: "W",
     region_name1: "X",
     region_name2: "Y",
     region_name3: "Z",
-    year: now.getUTCFullYear(),
-    month: now.getUTCMonth() + 1,
-    day: now.getUTCDate(),
-    hour: now.getUTCHours(),
-    minute: now.getUTCMinutes(),
-    second: now.getUTCSeconds(),
+    year: local.year,
+    month: local.month,
+    day: local.day,
+    hour: local.hours,
+    minute: local.minutes,
+    second: local.seconds,
   };
 
   console.log("\n--- Startup Response ---\n\n", respParams);
