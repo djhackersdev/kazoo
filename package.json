@@ -7,7 +7,8 @@
   "dependencies": {
     "express": "^4.16.4",
     "protobufjs": "^6.8.8",
-    "raw-body": "^2.3.3"
+    "raw-body": "^2.3.3",
+    "timezone-support": "^1.8.1"
   },
   "devDependencies": {
     "@types/express": "^4.16.1",
