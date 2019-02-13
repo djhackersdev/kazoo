@@ -72,7 +72,7 @@ openssl req \
         -batch \
         -out /tmp/accepter.csr \
         -utf8 \
-        -subj "/CN=damrey-accepter.local" \
+        -subj "/CN=bolaven.local" \
 
 openssl x509 \
         -req \
