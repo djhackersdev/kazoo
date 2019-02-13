@@ -1,15 +1,22 @@
-import * as Model from "../model";
+import { SessionId } from "./session";
+import { Brand } from "./util";
+
+export type StatusKey = Brand<string, "StatusKey">;
+
+export interface StatusData {
+  [key: string]: Buffer;
+}
 
 export interface StatusGroupMember {
-  statusChanged(group: StatusGroup, sessionId: Model.SessionId): void;
+  statusChanged(group: StatusGroup, sessionId: SessionId): void;
 }
 
 export class StatusGroup {
-  readonly key: Model.StatusKey;
-  private _data: Model.StatusData;
-  private readonly _members: Map<StatusGroupMember, Model.SessionId>;
+  readonly key: StatusKey;
+  private _data: StatusData;
+  private readonly _members: Map<StatusGroupMember, SessionId>;
 
-  constructor(key: Model.StatusKey) {
+  constructor(key: StatusKey) {
     this.key = key;
     this._data = {};
     this._members = new Map();
@@ -19,7 +26,7 @@ export class StatusGroup {
     return this._members.size == 0;
   }
 
-  data(): Model.StatusData {
+  data(): StatusData {
     const result = {};
 
     for (let k in this._data) {
@@ -29,11 +36,7 @@ export class StatusGroup {
     return result;
   }
 
-  participate(
-    member: StatusGroupMember,
-    sessionId: Model.SessionId,
-    datum: Buffer,
-  ) {
+  participate(member: StatusGroupMember, sessionId: SessionId, datum: Buffer) {
     this._data[sessionId] = Buffer.from(datum);
     this._members.forEach((_, k) => k.statusChanged(this, sessionId));
     this._members.set(member, sessionId);
@@ -51,7 +54,7 @@ export class StatusGroup {
     this._members.forEach((_, k) => k.statusChanged(this, sessionId));
   }
 
-  datum(sessionId: Model.SessionId): Buffer | undefined {
+  datum(sessionId: SessionId): Buffer | undefined {
     const datum = this._data[sessionId];
 
     return datum && Buffer.from(datum);

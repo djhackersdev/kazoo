@@ -1,16 +1,14 @@
-import { Context } from "./context";
-import * as Model from "../model";
-import * as Decoder from "../proto/decoder";
+import { pegasus } from "../../../generated/pegasus";
 import { Output } from "../proto/pipeline";
-import { StatusGroup, StatusGroupMember } from "../world/status";
+import { SessionId } from "../world/session";
+import { StatusGroup, StatusGroupMember, StatusKey } from "../world/status";
 import { World } from "../world/world";
-
-type StatusCommand = Decoder.StsOpenCommand | Decoder.StsSetCommand;
+import { Context } from "./context";
 
 export class StatusSession implements StatusGroupMember {
   private readonly _world: World;
   private readonly _output: Output;
-  private readonly _sessionId: Model.SessionId;
+  private readonly _sessionId: SessionId;
 
   constructor(ctx: Context) {
     this._world = ctx.world;
@@ -22,54 +20,66 @@ export class StatusSession implements StatusGroupMember {
     this._world.leaveStatusGroups(this);
   }
 
-  dispatch(cmd: StatusCommand) {
+  dispatch(cmd: pegasus.Command_Client) {
     switch (cmd.type) {
-      case "STS_OPEN":
-        return this._stsOpen(cmd);
+      case pegasus.TypeNum.STS_OPEN:
+        return this._stsOpen(cmd.stsOpen!);
 
-      case "STS_SET":
-        return this._stsSet(cmd);
+      case pegasus.TypeNum.STS_SET:
+        return this._stsSet(cmd.stsSet!);
 
       default:
         throw new Error("Unimplemented status group command");
     }
   }
 
-  private _stsOpen(cmd: Decoder.StsOpenCommand) {
-    const { statusKey, datum } = cmd;
-    const sgroup = this._world.createStatusGroup(statusKey);
+  private _stsOpen(cmd: pegasus.ISTSOpen_Client) {
+    const key = cmd.channel! as StatusKey;
+    const datum = Buffer.from(cmd.value!);
+
+    const sgroup = this._world.createStatusGroup(key);
 
     sgroup.participate(this, this._sessionId, datum);
 
-    return this._output.write({
-      type: "STS_OPEN",
-      status: "OK",
-      statusKey,
-      data: sgroup.data(),
-    });
+    return this._output.write(
+      new pegasus.Command_Server({
+        type: pegasus.TypeNum.STS_OPEN,
+        result: pegasus.ResultEnums.OK,
+        stsOpen: new pegasus.STSOpen_Server({
+          channel: key,
+          nodes: sgroup.data(),
+        }),
+      })
+    );
   }
 
-  private _stsSet(cmd: Decoder.StsSetCommand) {
-    const { statusKey, datum } = cmd;
-    const sgroup = this._world.createStatusGroup(statusKey);
+  private _stsSet(cmd: pegasus.ISTSSet) {
+    const key = cmd.channel! as StatusKey;
+    const datum = Buffer.from(cmd.value!);
+
+    const sgroup = this._world.createStatusGroup(key);
 
     sgroup.participate(this, this._sessionId, datum);
 
     // Not explicitly acked, this will generate a STS_NOTIFY though.
   }
 
-  statusChanged(sgroup: StatusGroup, memberId: Model.SessionId) {
+  statusChanged(sgroup: StatusGroup, memberId: SessionId) {
     const datum = sgroup.datum(memberId);
 
     if (datum === undefined) {
       return; // ???
     }
 
-    this._output.write({
-      type: "STS_NOTIFY",
-      statusKey: sgroup.key,
-      sessionId: this._sessionId,
-      datum,
-    });
+    this._output.write(
+      new pegasus.Command_Server({
+        type: pegasus.TypeNum.STS_NOTIFY,
+        stsNotify: new pegasus.STSNotify({
+          channel: sgroup.key,
+          sid: memberId,
+          value: datum,
+        }),
+      })
+    );
   }
 }

@@ -1,28 +1,23 @@
-import { Group, GroupMember } from "./group";
-import { Topic, Subscriber } from "./pubsub";
-import { StatusGroup, StatusGroupMember } from "./status";
-import * as Model from "../model";
+import { Group, GroupId, GroupKey, GroupMember, GroupSpec } from "./group";
+import { Topic, TopicKey, Subscriber } from "./pubsub";
+import { StatusGroup, StatusGroupMember, StatusKey } from "./status";
 
 export class World {
   private _nextGroupId = 100;
   private _groups: Group[] = [];
-  private readonly _sgroups = new Map<Model.StatusKey, StatusGroup>();
-  private readonly _topics = new Map<Model.TopicKey, Topic>();
+  private readonly _sgroups = new Map<StatusKey, StatusGroup>();
+  private readonly _topics = new Map<TopicKey, Topic>();
 
-  createGroup(
-    key: Model.GroupKey,
-    id: Model.GroupId,
-    create: Model.GroupCreateJson,
-  ): Group {
-    //const id = this._nextGroupId++ as Model.GroupId;
-    const group = new Group(key, id, create);
+  createGroup(key: GroupKey, spec: GroupSpec): Group {
+    const id = this._nextGroupId++ as GroupId;
+    const group = new Group(key, id, spec);
 
     this._groups.push(group);
 
     return group;
   }
 
-  searchGroups(key: Model.GroupKey): Group[] {
+  searchGroups(key: GroupKey): Group[] {
     return this._groups.filter(group => group.key === key);
   }
 
@@ -34,11 +29,11 @@ export class World {
     this._groups = this._groups.filter(group => !group.isEmpty());
 
     condemned.forEach(group =>
-      console.log(`Matching: Group ${group.key} ${group.id} GCed`),
+      console.log(`Matching: Group ${group.key} ${group.id} GCed`)
     );
   }
 
-  createStatusGroup(key: Model.StatusKey): StatusGroup {
+  createStatusGroup(key: StatusKey): StatusGroup {
     const existing = this._sgroups.get(key);
     const sgroup = existing || new StatusGroup(key);
 
@@ -48,7 +43,7 @@ export class World {
   }
 
   leaveStatusGroups(member: StatusGroupMember) {
-    const condemned: Model.StatusKey[] = [];
+    const condemned: StatusKey[] = [];
 
     this._sgroups.forEach((sgroup, statusKey) => {
       sgroup.leave(member);
@@ -60,15 +55,15 @@ export class World {
 
     condemned.forEach(statusKey => this._sgroups.delete(statusKey));
     condemned.forEach(statusKey =>
-      console.log(`Matching: Status group ${statusKey} GCed`),
+      console.log(`Matching: Status group ${statusKey} GCed`)
     );
   }
 
-  existingTopic(id: Model.TopicKey): Topic | undefined {
+  existingTopic(id: TopicKey): Topic | undefined {
     return this._topics.get(id);
   }
 
-  topic(key: Model.TopicKey): Topic {
+  topic(key: TopicKey): Topic {
     const existing = this._topics.get(key);
     const topic = existing || new Topic(key);
 
@@ -78,7 +73,7 @@ export class World {
   }
 
   leaveTopics(sub: Subscriber) {
-    const condemned: Model.TopicKey[] = [];
+    const condemned: TopicKey[] = [];
 
     this._topics.forEach((topic, topicKey) => {
       topic.unsubscribe(sub);
@@ -90,7 +85,7 @@ export class World {
 
     condemned.forEach(topicKey => this._topics.delete(topicKey));
     condemned.forEach(topicKey =>
-      console.log(`Matching: Topic ${topicKey} GCed`),
+      console.log(`Matching: Topic ${topicKey} GCed`)
     );
   }
 }

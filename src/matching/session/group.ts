@@ -1,16 +1,34 @@
-import { Context } from "./context";
-import * as Model from "../model";
+import { pegasus } from "../../../generated/pegasus";
 import { Output } from "../proto/pipeline";
-import * as Decoder from "../proto/decoder";
-import { Group, GroupMember } from "../world/group";
+import {
+  Faction,
+  Group,
+  GroupId,
+  GroupKey,
+  GroupMember,
+} from "../world/group";
+import { SessionId } from "../world/session";
 import { World } from "../world/world";
+import { Context } from "./context";
 
-type GroupCommand = Decoder.GroupCreateCommand | Decoder.GroupSearchCommand;
+const factionNames: Faction[] = ["efsf", "zeon"];
+
+function writeGroupInfo(group: Group): pegasus.GroupInfo {
+  return new pegasus.GroupInfo({
+    slotList: factionNames.map(key => ({
+      maxCount: group.spec.max[key],
+      memberList: group.state[key],
+    })),
+    attr: group.spec.attr,
+    filter: [],
+    owner: group.spec.owner,
+  });
+}
 
 export class GroupSession implements GroupMember {
   private readonly _world: World;
   private readonly _output: Output;
-  private readonly _sessionId: Model.SessionId;
+  private readonly _sessionId: SessionId;
 
   constructor(ctx: Context) {
     this._world = ctx.world;
@@ -22,97 +40,119 @@ export class GroupSession implements GroupMember {
     this._world.leaveGroups(this);
   }
 
-  dispatch(cmd: GroupCommand) {
+  dispatch(cmd: pegasus.Command_Client) {
     switch (cmd.type) {
-      case "GROUP_CREATE":
-        return this._groupCreate(cmd);
+      case pegasus.TypeNum.GROUP_CREATE:
+        return this._groupCreate(cmd.groupCreate!);
 
-      case "GROUP_SEARCH":
-        return this._groupSearch(cmd);
+      case pegasus.TypeNum.GROUP_SEARCH:
+        return this._groupSearch(cmd.groupSearch!);
 
       default:
         throw new Error("Unimplemented group command");
     }
   }
 
-  private _groupCreate(cmd: Decoder.GroupCreateCommand) {
-    const { joinType, groupKey, json } = cmd;
-    let groups: Group[];
-    let group: Group;
+  private _groupCreate(cmd: pegasus.IGroupCreate_Client) {
+    const key = cmd.channel! as GroupKey;
+    const faction = factionNames[cmd.slotNo!] as Faction;
+    const attr = cmd.info!.attr!;
+    const slotList = cmd.info!.slotList!;
 
-    switch (joinType) {
-      case "create_nothing":
-        // ??? guy meme
-        return this._output.write({
-          type: "GROUP_CREATE",
-          status: "NG",
-          groupKey,
-          groupId: 0 as Model.GroupId,
-          json: null,
-        });
+    const spec = {
+      owner: this._sessionId,
+      attr,
+      max: {
+        efsf: slotList[0].maxCount!,
+        zeon: slotList[1].maxCount!,
+      },
+    };
 
-      case "auto_join":
-        groups = this._world.searchGroups(groupKey);
+    // Do something smarter than just taking the first possible group for a
+    // multi-location server obviously. We should pay attention to the group
+    // maximums, for one thing.
 
-        if (groups.length > 0) {
-          group = groups[0];
+    const existing: Group | undefined = this._world.searchGroups(key)[0];
+    let group: Group | undefined;
+
+    switch (cmd.createMode) {
+      case pegasus.GroupCreateModeEnums.GC_AUTOJOIN:
+        if (existing !== undefined) {
+          group = existing;
         } else {
-          group = this._world.createGroup(
-            groupKey,
-            (this._sessionId as number) as Model.GroupId,
-            json,
-          );
+          group = this._world.createGroup(key, spec);
         }
 
         break;
 
-      case "create_always":
-        group = this._world.createGroup(
-          groupKey,
-          (this._sessionId as number) as Model.GroupId,
-          json,
-        );
+      case pegasus.GroupCreateModeEnums.GC_CREATEALWAYS:
+        group = this._world.createGroup(key, spec);
 
         break;
 
+      case pegasus.GroupCreateModeEnums.GC_CREATENOTHING:
+        group = existing;
+
       default:
-        throw new Error("Invalid joinType");
+        throw new Error("Invalid createMode");
     }
 
-    group.join(this, cmd.faction, this._sessionId);
+    if (group === undefined) {
+      return this._output.write(
+        new pegasus.Command_Server({
+          type: pegasus.TypeNum.GROUP_CREATE,
+          result: pegasus.ResultEnums.FAIL,
+        })
+      );
+    }
 
-    return this._output.write({
-      type: "GROUP_CREATE",
-      status: "OK",
-      groupKey,
-      groupId: group.id,
-      json: group.json(),
-    });
+    group.join(this, faction, this._sessionId);
+
+    return this._output.write(
+      new pegasus.Command_Server({
+        type: pegasus.TypeNum.GROUP_CREATE,
+        result: pegasus.ResultEnums.OK,
+        groupCreate: new pegasus.GroupCreate_Server({
+          channel: group.key,
+          groupID: group.id,
+          info: writeGroupInfo(group),
+        }),
+      })
+    );
   }
 
-  private _groupSearch(cmd: Decoder.GroupSearchCommand) {
-    const { groupKey } = cmd;
-    const groups = this._world.searchGroups(cmd.groupKey);
-    const json = {};
+  private _groupSearch(cmd: pegasus.IGroupSearch_Client) {
+    const key = cmd.channel as GroupKey;
+    const groups = this._world.searchGroups(key);
+
+    const groupList = {};
 
     for (const group of groups) {
-      json[group.id] = group.json();
+      groupList[group.id] = writeGroupInfo(group);
     }
 
-    return this._output.write({
-      type: "GROUP_SEARCH",
-      status: "OK",
-      groupKey: groupKey,
-      json: json,
-    });
+    return this._output.write(
+      new pegasus.Command_Server({
+        type: pegasus.TypeNum.GROUP_SEARCH,
+        result: pegasus.ResultEnums.OK,
+        groupSearch: new pegasus.GroupSearch_Server({
+          channel: key,
+          groupList,
+        }),
+      })
+    );
   }
 
   groupChanged(group: Group) {
-    this._output.write({
-      type: "GROUP_UPDATE_NOTIFY",
-      groupId: group.key,
-      sessionId: this._sessionId,
-      json: group.json(),
-    });
+    return this._output.write(
+      new pegasus.Command_Server({
+        type: pegasus.TypeNum.GROUP_UPDATE_NOTIFY,
+        groupUpdateNotify: new pegasus.GroupUpdateNotify({
+          channel: group.key,
+          groupID: group.id,
+          info: writeGroupInfo(group),
+        }),
+      })
+    );
   }
 }

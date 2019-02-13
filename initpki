@@ -46,7 +46,7 @@ openssl req \
         -batch \
         -out /tmp/matching.csr \
         -utf8 \
-        -subj "/CN=haikui-matching.local" \
+        -subj "/CN=blue.tembin.local" \
 
 openssl x509 \
         -req \

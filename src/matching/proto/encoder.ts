@@ -1,188 +1,36 @@
 import { Transform, TransformOptions } from "stream";
 
-import * as Model from "../model";
+import { pegasus } from "../../../generated/pegasus";
+import { Logger } from "../logger";
+import { BufferWriter } from "protobufjs";
 
-type Status = "OK" | "NG";
-
-export interface HelloNotification {
-  type: "HELLO";
-  status: Status;
-  json: {
-    time: string;
-    majorVer: number;
-    minorVer: number;
-    localVer: number;
-    sessionId: number;
-  };
+interface Options extends TransformOptions {
+  logger: Logger;
 }
-
-export interface PongNotification {
-  type: "PONG";
-}
-
-export interface ClientlogNotification {
-  type: "CLIENTLOG";
-  status: Status;
-}
-
-export interface GroupCreateNotification {
-  type: "GROUP_CREATE";
-  status: Status;
-  groupKey: Model.GroupKey;
-  groupId: Model.GroupId;
-  json: Model.GroupJson | null;
-}
-
-export interface StsOpenNotification {
-  type: "STS_OPEN";
-  status: Status;
-  statusKey: Model.StatusKey;
-  data: Model.StatusData | null;
-}
-
-export interface SubscribeNotification {
-  type: "SUBSCRIBE";
-  topicKey: Model.TopicKey;
-  status: Status;
-  data: Buffer[] | null;
-}
-
-export interface GroupUpdateNotification {
-  type: "GROUP_UPDATE_NOTIFY";
-  groupId: Model.GroupKey;
-  sessionId: Model.SessionId;
-  json: Model.GroupJson;
-}
-
-export interface StatusNotification {
-  type: "STS_NOTIFY";
-  statusKey: Model.StatusKey;
-  sessionId: Model.SessionId;
-  datum: Buffer;
-}
-
-export interface GroupSearchNotification {
-  type: "GROUP_SEARCH";
-  status: Status;
-  groupKey: Model.GroupKey;
-  json: {
-    [key: number]: Model.GroupJson;
-  };
-}
-
-export interface MsgNotifyNotification {
-  type: "MSG_NOTIFY";
-  topicKey: Model.TopicKey;
-  datum: Buffer;
-}
-
-export type Notification =
-  | HelloNotification
-  | PongNotification
-  | ClientlogNotification
-  | GroupCreateNotification
-  | StsOpenNotification
-  | SubscribeNotification
-  | GroupUpdateNotification
-  | StatusNotification
-  | GroupSearchNotification
-  | MsgNotifyNotification;
-
-type EncoderCallback = ((e: Error) => void) & ((e: null, ln: string) => void);
 
 export class Encoder extends Transform {
-  constructor(options?: TransformOptions) {
+  private readonly _logger: Logger;
+
+  constructor(options: Options) {
     super({
       ...options,
       readableObjectMode: true,
       writableObjectMode: true,
     });
+    this._logger = options.logger;
   }
 
-  _transform(
-    n: Notification,
-    encoding: string,
-    callback: EncoderCallback,
-  ): void {
-    switch (n.type) {
-      case "HELLO":
-        return callback(
-          null,
-          `${n.type} ${n.status} ${JSON.stringify(n.json)}`,
-        );
+  _transform(notification: pegasus.Command_Server, encoding, callback): void {
+    this._logger.log("Encoder:\n", notification.toJSON());
 
-      case "PONG":
-        return callback(null, n.type);
+    let writer: BufferWriter;
 
-      case "CLIENTLOG":
-        return callback(null, `${n.type} ${n.status}`);
-
-      case "GROUP_CREATE":
-        return callback(
-          null,
-          `${n.type} ${n.status} ${n.groupKey} ${n.groupId} ${JSON.stringify(
-            n.json,
-          )}`,
-        );
-
-      case "STS_OPEN":
-        return callback(
-          null,
-          `${n.type} ${n.status} ${n.statusKey} ${Encoder._encodeStatuses(
-            n.data,
-          )}`,
-        );
-
-      case "SUBSCRIBE":
-        return callback(
-          null,
-          `${n.type} ${n.status} ${n.topicKey} ${JSON.stringify(
-            n.data && n.data.map(datum => datum.toString("base64")),
-          )}`,
-        );
-
-      case "GROUP_UPDATE_NOTIFY":
-        return callback(
-          null,
-          `${n.type} ${n.groupId} ${n.sessionId} ${JSON.stringify(n.json)}`,
-        );
-
-      case "STS_NOTIFY":
-        return callback(
-          null,
-          `${n.type} ${n.statusKey} ${n.sessionId} ${n.datum.toString(
-            "base64",
-          )}`,
-        );
-
-      case "GROUP_SEARCH":
-        return callback(
-          null,
-          `${n.type} ${n.status} ${n.groupKey} ${JSON.stringify(n.json)}`,
-        );
-
-      case "MSG_NOTIFY":
-        return callback(
-          null,
-          `${n.type} ${n.topicKey} ${n.datum.toString("base64")}`,
-        );
-
-      default:
-        return callback(new TypeError("Unknown notification type"));
-    }
-  }
-
-  static _encodeStatuses(statuses: Model.StatusData | null): string {
-    if (statuses == null) {
-      return "null";
+    try {
+      writer = pegasus.Command_Server.encode(notification);
+    } catch (e) {
+      return callback(e);
     }
 
-    const result = {};
-
-    for (let k in statuses) {
-      result[k] = statuses[k].toString("base64");
-    }
-
-    return JSON.stringify(result);
+    return callback(null, writer.finish());
   }
 }

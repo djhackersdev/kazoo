@@ -1,42 +1,47 @@
-import { Context } from "./context";
-import * as Model from "../model";
+import { pegasus } from "../../../generated/pegasus";
 import { Output } from "../proto/pipeline";
-import * as Decoder from "../proto/decoder";
-
-type BasicCommand =
-  | Decoder.HelloCommand
-  | Decoder.PingCommand
-  | Decoder.ClientLogCommand;
+import { SessionId } from "../world/session";
+import { Context } from "./context";
 
 export class BasicSession {
   private readonly _output: Output;
-  private readonly _sessionId: Model.SessionId;
+  private readonly _sessionId: SessionId;
 
   constructor(ctx: Context) {
     this._output = ctx.output;
     this._sessionId = ctx.sessionId;
   }
 
-  dispatch(cmd: BasicCommand) {
+  dispatch(cmd: pegasus.Command_Client) {
     switch (cmd.type) {
-      case "HELLO":
-        return this._output.write({
-          type: "HELLO",
-          status: "OK",
-          json: {
-            time: new Date().toISOString(),
-            majorVer: 57,
-            minorVer: 7,
-            localVer: 35707,
-            sessionId: this._sessionId,
-          },
-        });
+      case pegasus.TypeNum.HELLO:
+        return this._output.write(
+          new pegasus.Command_Server({
+            type: pegasus.TypeNum.HELLO,
+            result: pegasus.ResultEnums.OK,
+            hello: new pegasus.Hello_Server({
+              time: new Date().toISOString(),
+              serverVersion: "1234", // ???
+              sessionID: this._sessionId,
+            }),
+          })
+        );
 
-      case "PING":
-        return this._output.write({ type: "PONG" });
+      case pegasus.TypeNum.PING:
+        return this._output.write(
+          new pegasus.Command_Server({
+            type: pegasus.TypeNum.PING,
+            result: pegasus.ResultEnums.OK,
+          })
+        );
 
-      case "CLIENTLOG":
-        return this._output.write({ type: "CLIENTLOG", status: "OK" });
+      case pegasus.TypeNum.CLIENT_LOG:
+        return this._output.write(
+          new pegasus.Command_Server({
+            type: pegasus.TypeNum.CLIENT_LOG,
+            result: pegasus.ResultEnums.OK,
+          })
+        );
 
       default:
         throw new Error("Unimplemented basic command");

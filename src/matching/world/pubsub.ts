@@ -1,14 +1,16 @@
-import * as Model from "../model";
+import { Brand } from "./util";
+
+export type TopicKey = Brand<string, "TopicKey">;
 
 export interface Subscriber {
   topicMessage(topic: Topic, datum: Buffer): void;
 }
 
 export class Topic {
-  public readonly key: Model.TopicKey;
+  public readonly key: TopicKey;
   private readonly _subs: Map<Subscriber, Buffer | null>;
 
-  constructor(key: Model.TopicKey) {
+  constructor(key: TopicKey) {
     this.key = key;
     this._subs = new Map();
   }

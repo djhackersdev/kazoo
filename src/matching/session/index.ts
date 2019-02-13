@@ -1,9 +1,12 @@
+import { pegasus } from "../../../generated/pegasus";
 import { BasicSession } from "./basic";
 import { Context } from "./context";
 import { GroupSession } from "./group";
 import { StatusSession } from "./status";
 import { PubSubSession } from "./pubsub";
-import * as Decoder from "../proto/decoder";
+
+// Tagged unions are not a first-class concept in the Protobuf data model, so
+// v4 isn't as elegant and type-safe as it was in the v3 branch.
 
 export class Session {
   private readonly _basic: BasicSession;
@@ -24,23 +27,23 @@ export class Session {
     this._status.destroy();
   }
 
-  dispatch(cmd: Decoder.Command) {
+  dispatch(cmd: pegasus.Command_Client) {
     switch (cmd.type) {
-      case "HELLO":
-      case "PING":
-      case "CLIENTLOG":
+      case pegasus.TypeNum.HELLO:
+      case pegasus.TypeNum.PING:
+      case pegasus.TypeNum.CLIENT_LOG:
         return this._basic.dispatch(cmd);
 
-      case "GROUP_CREATE":
-      case "GROUP_SEARCH":
+      case pegasus.TypeNum.GROUP_CREATE:
+      case pegasus.TypeNum.GROUP_SEARCH:
         return this._group.dispatch(cmd);
 
-      case "STS_OPEN":
-      case "STS_SET":
+      case pegasus.TypeNum.STS_OPEN:
+      case pegasus.TypeNum.STS_SET:
         return this._status.dispatch(cmd);
 
-      case "PUBLISH":
-      case "SUBSCRIBE":
+      case pegasus.TypeNum.PUBLISH:
+      case pegasus.TypeNum.SUBSCRIBE:
         return this._pubsub.dispatch(cmd);
 
       default:

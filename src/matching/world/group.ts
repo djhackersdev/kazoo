@@ -1,77 +1,95 @@
-import * as Model from "../model";
+import { SessionId } from "./session";
+import { Brand } from "./util";
+
+export type Faction = "efsf" | "zeon";
+export type GroupKey = Brand<string, "GroupKey">;
+export type GroupId = Brand<number, "GroupId">;
+
+export interface GroupFaction {
+  max: number;
+  members: SessionId[];
+}
+
+export interface GroupSpec {
+  owner: SessionId;
+  attr: { [key: string]: string };
+  max: {
+    efsf: number;
+    zeon: number;
+  };
+}
+
+export interface GroupState {
+  efsf: SessionId[];
+  zeon: SessionId[];
+}
 
 export interface GroupMember {
   groupChanged(group: Group): void;
 }
 
 export class Group {
-  readonly key: Model.GroupKey;
-  readonly id: Model.GroupId;
+  readonly key: GroupKey;
+  readonly id: GroupId;
+  readonly spec: GroupSpec;
 
-  private _json: Model.GroupJson;
-  private readonly _members: Map<GroupMember, Model.SessionId>;
+  private _state: Readonly<GroupState>;
+  private readonly _memberObjs: Map<GroupMember, SessionId>;
 
-  constructor(
-    key: Model.GroupKey,
-    id: Model.GroupId,
-    create: Model.GroupCreateJson,
-  ) {
-    const { max, attr } = create;
-
+  constructor(key: GroupKey, id: GroupId, spec: Readonly<GroupSpec>) {
     this.id = id;
     this.key = key;
-    this._json = { max, attr, member: [[], []] };
-    this._members = new Map();
+    this.spec = spec;
+    this._state = { efsf: [], zeon: [] };
+    this._memberObjs = new Map();
   }
 
   isEmpty() {
-    return this._members.size == 0;
+    return this._memberObjs.size == 0;
   }
 
-  json(): Readonly<Model.GroupJson> {
-    return this._json;
+  get state(): Readonly<GroupState> {
+    return this._state;
   }
 
-  join(
-    member: GroupMember,
-    factionCode: Model.FactionCode,
-    sessionId: Model.SessionId,
-  ) {
-    const sessionIds = this._json.member[factionCode];
+  join(member: GroupMember, faction: Faction, sessionId: SessionId) {
+    const members = this._state[faction];
 
-    if (sessionIds.includes(sessionId)) {
+    if (members.includes(sessionId)) {
       return; // nothing to do
     }
 
-    // Sloppy, we mutate the attribute object in-place here.
-
-    sessionIds.push(sessionId);
+    this._state = {
+      ...this._state,
+      [faction]: [...members, sessionId],
+    };
 
     // I think we need to join after the join notification has been sent to the
     // existing members, otherwise the notification stream will be a little
     // weird.
 
-    this._members.forEach((_, k) => k.groupChanged(this));
-    this._members.set(member, sessionId);
+    this._memberObjs.forEach((_, k) => k.groupChanged(this));
+    this._memberObjs.set(member, sessionId);
   }
 
   leave(member: GroupMember) {
-    const sessionId = this._members.get(member);
+    const sessionId = this._memberObjs.get(member);
 
     if (sessionId === undefined) {
       return; // nothing to do
     }
 
-    const sessionIdLists = this._json.member;
+    const tmp = {} as GroupState;
 
-    for (let i = 0; i < sessionIdLists.length; i++) {
-      sessionIdLists[i] = sessionIdLists[i].filter(id => id !== sessionId);
+    for (const k in this._state) {
+      tmp[k] = this._state[k].filter(item => item !== sessionId);
     }
 
-    this._members.delete(member);
+    this._state = tmp;
+    this._memberObjs.delete(member);
 
     // Send leave notification after member has left I think
 
-    this._members.forEach((_, k) => k.groupChanged(this));
+    this._memberObjs.forEach((_, k) => k.groupChanged(this));
   }
 }

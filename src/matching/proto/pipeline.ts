@@ -1,31 +1,34 @@
 import { Socket } from "net";
 import { pipeline } from "stream";
 
-import { Command, Decoder } from "./decoder";
-import { Encoder, Notification } from "./encoder";
-import { Deframer, Framer } from "./frame";
+import { pegasus } from "../../../generated/pegasus";
+import { Decoder } from "./decoder";
+import { Deframer } from "./deframer";
+import { Encoder } from "./encoder";
+import { Framer } from "./framer";
 import { Logger } from "../logger";
 
 // Stock node.js stream stdlib typings are almost completely fucking useless
 // why yes i would like to read/write a stream of `any`
 
 export interface Input {
-  [Symbol.asyncIterator]: () => AsyncIterableIterator<Command>;
+  [Symbol.asyncIterator]: () => AsyncIterableIterator<pegasus.Command_Client>;
 }
 
 export interface Output {
-  write(n: Notification): void;
+  write(n: pegasus.Command_Server): void;
 }
 
 export function setup(socket: Socket) {
-  if (!socket.remoteAddress) {
-    throw new ReferenceError();
-  }
+  const logger = new Logger(socket.remoteAddress!);
 
-  const logger = new Logger(socket.remoteAddress);
+  const input = pipeline(
+    socket,
+    new Deframer({ logger }),
+    new Decoder({ logger })
+  );
 
-  const input = pipeline(socket, new Deframer({ logger }), new Decoder());
-  const output = new Encoder();
+  const output = new Encoder({ logger });
 
   pipeline(output, new Framer({ logger }), socket);
 
