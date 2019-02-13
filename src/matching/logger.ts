@@ -1,12 +1,12 @@
 export class Logger {
   constructor(private _tag: string) {}
 
-  log(message: string | Error) {
-    if (message instanceof Error) {
+  log(arg: any, ...argv: any) {
+    if (arg instanceof Error) {
       console.log(`Matching: ${this._tag}: Error:`);
-      console.log(message);
+      console.log(arg);
     } else {
-      console.log(`Matching: ${this._tag}: ${message}`);
+      console.log(`Matching: ${this._tag}:`, ...arguments);
     }
   }
 }
