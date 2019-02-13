@@ -2,6 +2,9 @@ syntax = "proto2";
 
 package google.protobuf;
 
+option csharp_namespace = "Google.Protobuf.Reflection";
+option objc_class_prefix = "GPB";
+option go_package = "github.com/golang/protobuf/protoc-gen-go/descriptor;descriptor";
 option optimize_for = SPEED;
 option java_outer_classname = "DescriptorProtos";
 option java_package = "com.google.protobuf";
@@ -14,11 +17,15 @@ message FileDescriptorProto {
     optional string name = 1;
     optional string package = 2;
     repeated string dependency = 3;
+    repeated int32 public_dependency = 10;
+    repeated int32 weak_dependency = 11;
     repeated DescriptorProto message_type = 4;
     repeated EnumDescriptorProto enum_type = 5;
     repeated ServiceDescriptorProto service = 6;
     repeated FieldDescriptorProto extension = 7;
     optional FileOptions options = 8;
+    optional SourceCodeInfo source_code_info = 9;
+    optional string syntax = 12;
 }
 
 message DescriptorProto {
@@ -34,7 +41,16 @@ message DescriptorProto {
         optional int32 end = 2;
     }
     
+    repeated OneofDescriptorProto oneof_decl = 8;
     optional MessageOptions options = 7;
+    
+    repeated ReservedRange reserved_range = 9;
+    message ReservedRange {
+        optional int32 start = 1;
+        optional int32 end = 2;
+    }
+    
+    repeated string reserved_name = 10;
 }
 
 message FieldDescriptorProto {
@@ -73,7 +89,14 @@ message FieldDescriptorProto {
     optional string type_name = 6;
     optional string extendee = 2;
     optional string default_value = 7;
+    optional int32 oneof_index = 9;
+    optional string json_name = 10;
     optional FieldOptions options = 8;
+}
+
+message OneofDescriptorProto {
+    optional string name = 1;
+    optional OneofOptions options = 2;
 }
 
 message EnumDescriptorProto {
@@ -99,12 +122,16 @@ message MethodDescriptorProto {
     optional string input_type = 2;
     optional string output_type = 3;
     optional MethodOptions options = 4;
+    optional bool client_streaming = 5 [default = false];
+    optional bool server_streaming = 6 [default = false];
 }
 
 message FileOptions {
     optional string java_package = 1;
     optional string java_outer_classname = 8;
     optional bool java_multiple_files = 10 [default = false];
+    optional bool java_generate_equals_and_hash = 20 [deprecated = true];
+    optional bool java_string_check_utf8 = 27 [default = false];
     
     optional OptimizeMode optimize_for = 9 [default = SPEED];
     enum OptimizeMode {
@@ -113,20 +140,33 @@ message FileOptions {
         LITE_RUNTIME = 3;
     }
     
-    optional bool cc_generic_services = 16 [default = true];
-    optional bool java_generic_services = 17 [default = true];
-    optional bool py_generic_services = 18 [default = true];
+    optional string go_package = 11;
+    optional bool cc_generic_services = 16 [default = false];
+    optional bool java_generic_services = 17 [default = false];
+    optional bool py_generic_services = 18 [default = false];
+    optional bool deprecated = 23 [default = false];
+    optional bool cc_enable_arenas = 31 [default = false];
+    optional string objc_class_prefix = 36;
+    optional string csharp_namespace = 37;
+    optional string swift_prefix = 39;
+    optional string php_class_prefix = 40;
     repeated UninterpretedOption uninterpreted_option = 999;
     
     extensions 1000 to max;
+    
+    reserved 38;
 }
 
 message MessageOptions {
     optional bool message_set_wire_format = 1 [default = false];
     optional bool no_standard_descriptor_accessor = 2 [default = false];
+    optional bool deprecated = 3 [default = false];
+    optional bool map_entry = 7;
     repeated UninterpretedOption uninterpreted_option = 999;
     
     extensions 1000 to max;
+    
+    reserved 8, 9;
 }
 
 message FieldOptions {
@@ -138,32 +178,64 @@ message FieldOptions {
     }
     
     optional bool packed = 2;
+    
+    optional JSType jstype = 6 [default = JS_NORMAL];
+    enum JSType {
+        JS_NORMAL = 0;
+        JS_STRING = 1;
+        JS_NUMBER = 2;
+    }
+    
+    optional bool lazy = 5 [default = false];
     optional bool deprecated = 3 [default = false];
-    optional string experimental_map_key = 9;
+    optional bool weak = 10 [default = false];
+    repeated UninterpretedOption uninterpreted_option = 999;
+    
+    extensions 1000 to max;
+    
+    reserved 4;
+}
+
+message OneofOptions {
     repeated UninterpretedOption uninterpreted_option = 999;
     
     extensions 1000 to max;
 }
 
 message EnumOptions {
+    optional bool allow_alias = 2;
+    optional bool deprecated = 3 [default = false];
     repeated UninterpretedOption uninterpreted_option = 999;
     
     extensions 1000 to max;
+    
+    reserved 5;
 }
 
 message EnumValueOptions {
+    optional bool deprecated = 1 [default = false];
     repeated UninterpretedOption uninterpreted_option = 999;
     
     extensions 1000 to max;
 }
 
 message ServiceOptions {
+    optional bool deprecated = 33 [default = false];
     repeated UninterpretedOption uninterpreted_option = 999;
     
     extensions 1000 to max;
 }
 
 message MethodOptions {
+    optional bool deprecated = 33 [default = false];
+    
+    optional IdempotencyLevel idempotency_level = 34 [default = IDEMPOTENCY_UNKNOWN];
+    enum IdempotencyLevel {
+        IDEMPOTENCY_UNKNOWN = 0;
+        NO_SIDE_EFFECTS = 1;
+        IDEMPOTENT = 2;
+    }
+    
     repeated UninterpretedOption uninterpreted_option = 999;
     
     extensions 1000 to max;
@@ -181,4 +253,26 @@ message UninterpretedOption {
     optional int64 negative_int_value = 5;
     optional double double_value = 6;
     optional bytes string_value = 7;
+    optional string aggregate_value = 8;
+}
+
+message SourceCodeInfo {
+    repeated Location location = 1;
+    message Location {
+        repeated int32 path = 1 [packed = true];
+        repeated int32 span = 2 [packed = true];
+        optional string leading_comments = 3;
+        optional string trailing_comments = 4;
+        repeated string leading_detached_comments = 6;
+    }
+}
+
+message GeneratedCodeInfo {
+    repeated Annotation annotation = 1;
+    message Annotation {
+        repeated int32 path = 1 [packed = true];
+        optional string source_file = 2;
+        optional int32 begin = 3;
+        optional int32 end = 4;
+    }
 }

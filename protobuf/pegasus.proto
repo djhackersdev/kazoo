@@ -1,0 +1,432 @@
+syntax = "proto3";
+
+package pegasus;
+
+option optimize_for = SPEED;
+
+message Hello_Client {
+    string protoVer = 1;
+    string clientVer = 2;
+    string shopID = 3;
+    string serialID = 4;
+    string prodID = 5;
+}
+
+message Hello_Server {
+    string time = 1;
+    string serverVersion = 2;
+    uint32 sessionID = 3;
+}
+
+message ServerStatus_Client {
+    ServerStatusEnums paramType = 1;
+}
+
+message ServerStatus_Server {
+    ServerStatusEnums paramType = 1;
+    
+    oneof param {
+        string version = 2;
+        string levelmatch = 3;
+        uint32 sessionnum = 4;
+        uint32 numGroups = 5;
+    }
+}
+
+message ClientLog {
+    string msg = 1;
+}
+
+message Sync_Client {
+    string channel = 1;
+    int32 clientNum = 2;
+    uint32 timeout = 3;
+    uint32 barrier = 4;
+}
+
+message Sync_Server {
+    string channel = 1;
+    repeated uint32 memberList = 2;
+}
+
+message Subscribe_Client {
+    string channel = 1;
+    uint32 maxLength = 2;
+}
+
+message Subscribe_Server {
+    string channel = 1;
+    repeated bytes history = 2;
+}
+
+message Unsubscribe_Client {
+    string channel = 1;
+}
+
+message Unsubscribe_Server {
+    string channel = 1;
+}
+
+message Publish {
+    string channel = 1;
+    bytes msg = 2;
+}
+
+message MsgNotify {
+    string channel = 1;
+    bytes msg = 2;
+}
+
+message KVSOpen_Client {
+    string channel = 1;
+}
+
+message KVSOpen_Server {
+    string channel = 1;
+    map<string, bytes> nodes = 2;
+}
+
+message KVSClose_Client {
+    string channel = 1;
+}
+
+message KVSClose_Server {
+    string channel = 1;
+}
+
+message KVSSet {
+    string channel = 1;
+    string key = 2;
+    bytes msg = 3;
+}
+
+message KVSNotify {
+    string channel = 1;
+    string key = 2;
+    bytes msg = 3;
+}
+
+message STSOpen_Client {
+    string channel = 1;
+    bytes value = 2;
+}
+
+message STSOpen_Server {
+    string channel = 1;
+    map<uint32, bytes> nodes = 2;
+}
+
+message STSClose_Client {
+    string channel = 1;
+}
+
+message STSClose_Server {
+    string channel = 1;
+}
+
+message STSSet {
+    string channel = 1;
+    bytes value = 2;
+}
+
+message STSNotify {
+    string channel = 1;
+    uint32 sid = 2;
+    bytes value = 3;
+}
+
+message STSDelete {
+    string channel = 1;
+    uint32 key = 2;
+}
+
+message SlotMemberList {
+    uint32 maxCount = 1;
+    repeated uint32 memberList = 2;
+}
+
+message GroupFilterInfo {
+    repeated string cond = 1;
+}
+
+message GroupInfo {
+    repeated SlotMemberList slotList = 1;
+    map<string, string> attr = 2;
+    repeated GroupFilterInfo filter = 3;
+    uint32 owner = 4;
+}
+
+message GroupCreate_Client {
+    string channel = 1;
+    uint32 slotNo = 2;
+    GroupCreateModeEnums createMode = 3;
+    GroupInfo info = 4;
+    uint32 numGroups = 5;
+}
+
+message GroupCreate_Server {
+    string channel = 1;
+    uint64 groupID = 2;
+    GroupInfo info = 3;
+}
+
+message GroupSearch_Client {
+    string channel = 1;
+    uint32 limit = 2;
+    repeated GroupFilterInfo filter = 3;
+}
+
+message GroupSearch_Server {
+    string channel = 1;
+    map<uint64, GroupInfo> groupList = 2;
+}
+
+message GroupJoin_Client {
+    string channel = 1;
+    uint64 groupID = 2;
+    uint32 slotNo = 3;
+}
+
+message GroupJoin_Server {
+    string channel = 1;
+    uint64 groupID = 2;
+    GroupInfo info = 3;
+}
+
+message GroupLeave_Client {
+    string channel = 1;
+    uint64 groupID = 2;
+}
+
+message GroupLeave_Server {
+    string channel = 1;
+}
+
+message GroupSetAttr {
+    string channel = 1;
+    uint64 groupID = 2;
+    map<string, string> attr = 3;
+}
+
+message GroupClose {
+    string channel = 1;
+    uint64 groupID = 2;
+}
+
+message GroupUpdateNotify {
+    string channel = 1;
+    uint64 groupID = 2;
+    GroupInfo info = 3;
+}
+
+message GroupCloseNotify {
+    string channel = 1;
+    uint64 groupID = 2;
+    GroupInfo info = 3;
+}
+
+message MatchingModifier {
+    map<string, MatchingModifier> objects = 1;
+    
+    oneof data {
+        string text = 2;
+        int64 value = 3;
+        uint64 uintValue = 4;
+    }
+}
+
+message MatchingGroupInfo {
+    uint64 groupID = 1;
+    repeated SlotMemberList memberList = 2;
+    map<string, MatchingModifier> data = 3;
+}
+
+message MatchEntry_Client {
+    string channel = 1;
+    uint32 timeoutSec = 2;
+    MatchingGroupInfo info = 3;
+}
+
+message MatchEntry_Server {
+    string channel = 1;
+    uint32 timecount = 2;
+}
+
+message MatchResult {
+    string channel = 1;
+    repeated MatchingGroupInfo info = 2;
+    uint64 battleID = 3;
+}
+
+message LvMatchStopDebug {
+    string channel = 1;
+    uint64 groupID = 2;
+}
+
+message KeyMatch_Client {
+    string channel = 1;
+    uint32 timeoutSec = 2;
+    uint32 memberCount = 3;
+}
+
+message KeyMatch_Server {
+    string channel = 1;
+    repeated uint32 memberList = 2;
+    uint64 battleID = 3;
+}
+
+message GameServer_Client {
+    string channel = 1;
+    uint32 timeoutSec = 2;
+    uint32 memberCount = 3;
+    uint32 barrier = 4;
+    string type = 5;
+}
+
+message GameServer_Server {
+    string channel = 1;
+    repeated uint32 memberList = 2;
+    string serverAddr = 3;
+    uint32 serverPort = 4;
+    string type = 5;
+}
+
+message Mail_Client {
+    string channel = 1;
+    repeated uint32 targetSID = 2;
+    bytes data = 3;
+}
+
+message Mail_Server {
+    string channel = 1;
+    repeated uint32 errorSID = 2;
+}
+
+message MailReceived {
+    string channel = 1;
+    uint32 sourceSID = 2;
+    bytes data = 3;
+}
+
+message Command_Client {
+    TypeNum type = 1;
+    
+    oneof param {
+        Hello_Client hello = 2;
+        ServerStatus_Client serverStatus = 3;
+        ClientLog clientLog = 4;
+        Sync_Client sync = 5;
+        Subscribe_Client subscribe = 6;
+        Unsubscribe_Client unsubscribe = 7;
+        Publish publish = 8;
+        KVSOpen_Client kvsOpen = 9;
+        KVSClose_Client kvsClose = 10;
+        KVSSet kvsSet = 11;
+        STSOpen_Client stsOpen = 12;
+        STSClose_Client stsClose = 13;
+        STSSet stsSet = 14;
+        GroupCreate_Client groupCreate = 15;
+        GroupSearch_Client groupSearch = 16;
+        GroupJoin_Client groupJoin = 17;
+        GroupLeave_Client groupLeave = 18;
+        GroupSetAttr groupSetAttr = 19;
+        GroupClose groupClose = 20;
+        MatchEntry_Client lvMatch = 21;
+        LvMatchStopDebug lvMatchStopDebug = 22;
+        KeyMatch_Client keyMatch = 23;
+        GameServer_Client gameServer = 24;
+        Mail_Client mail = 25;
+    }
+}
+
+message Command_Server {
+    TypeNum type = 1;
+    ResultEnums result = 2;
+    
+    oneof param {
+        Hello_Server hello = 3;
+        ServerStatus_Server serverStatus = 4;
+        Sync_Server sync = 5;
+        Subscribe_Server subscribe = 6;
+        Unsubscribe_Server unsubscribe = 7;
+        MsgNotify msgNotify = 8;
+        KVSOpen_Server kvsOpen = 9;
+        KVSClose_Server kvsClose = 10;
+        KVSNotify kvsNotify = 11;
+        STSOpen_Server stsOpen = 12;
+        STSClose_Server stsClose = 13;
+        STSNotify stsNotify = 14;
+        STSDelete stsDelete = 15;
+        GroupCreate_Server groupCreate = 16;
+        GroupSearch_Server groupSearch = 17;
+        GroupJoin_Server groupJoin = 18;
+        GroupLeave_Server groupLeave = 19;
+        GroupUpdateNotify groupUpdateNotify = 20;
+        GroupCloseNotify groupCloseNotify = 21;
+        MatchEntry_Server lvMatch = 22;
+        MatchResult lvMatchResult = 23;
+        KeyMatch_Server keyMatch = 24;
+        GameServer_Server gameServer = 25;
+        Mail_Server mail = 26;
+        MailReceived mailReceived = 27;
+    }
+}
+
+enum TypeNum {
+    PING = 0;
+    PONG = 1;
+    HELLO = 2;
+    SERVERSTATUS = 3;
+    CLIENT_LOG = 4;
+    CONFIGRELOAD = 5;
+    SYNC = 128;
+    SUBSCRIBE = 129;
+    UNSUBSCRIBE = 130;
+    PUBLISH = 131;
+    MSG_NOTIFY = 132;
+    KVS_OPEN = 133;
+    KVS_CLOSE = 134;
+    KVS_SET = 145;
+    KVS_NOTIFY = 146;
+    STS_OPEN = 147;
+    STS_CLOSE = 148;
+    STS_SET = 149;
+    STS_NOTIFY = 150;
+    STS_DELETE = 151;
+    GROUP_CREATE = 152;
+    GROUP_SEARCH = 153;
+    GROUP_JOIN = 154;
+    GROUP_LEAVE = 155;
+    GROUP_SET_ATTR = 156;
+    GROUP_CLOSE = 157;
+    GROUP_UPDATE_NOTIFY = 158;
+    GROUP_CLOSE_NOTIFY = 159;
+    LV_MATCH_ENTRY = 160;
+    LV_MATCH_RESULT = 161;
+    LV_MATCH_STOP_DEBUG = 162;
+    KEY_MATCH = 163;
+    GAMESERVER = 164;
+    MAIL = 165;
+    MAIL_RECEIVED = 166;
+}
+
+enum ResultEnums {
+    OK = 0;
+    FAIL = 1;
+    TIMEOUT = 2;
+    INVALID = 3;
+    OFFLINE = 4;
+    WAITING = -1;
+}
+
+enum ServerStatusEnums {
+    SERVER_VERSION = 0;
+    SERVER_LEVELMATCH = 1;
+    SERVER_SESSIONNUM = 2;
+}
+
+enum GroupCreateModeEnums {
+    GC_AUTOJOIN = 0;
+    GC_CREATEALWAYS = 1;
+    GC_CREATENOTHING = 2;
+}

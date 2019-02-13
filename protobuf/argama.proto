@@ -1,0 +1,160 @@
+syntax = "proto2";
+
+package argama;
+
+option optimize_for = SPEED;
+
+message Hello_Client {
+    required uint32 protoVer = 1;
+    required uint32 shopID = 2;
+    required string serialID = 3;
+    required string prodID = 4;
+    required uint32 pilotID = 5;
+    optional string message = 6;
+}
+
+message Hello_Server {
+    required uint32 majorVer = 1;
+    required uint32 minorVer = 2;
+}
+
+message ClientLog {
+    required string msg = 1;
+}
+
+message ServerStatus_Client {
+    required int32 paramType = 1;
+    optional string param = 2;
+}
+
+message ServerStatus_Server {
+    required int32 paramType = 1;
+    optional int32 numGroups = 2;
+    optional int32 numConnections = 3;
+    optional uint64 numPacketLoss = 4;
+}
+
+message GroupEnter_Client {
+    required string groupName = 1;
+    required int32 numChannels = 2;
+    required int32 sampleRate = 3;
+    required int32 bitRate = 4;
+    required int32 latency = 5;
+}
+
+message GroupEnter_Server {
+    required string groupName = 1;
+    required int32 numChannels = 2;
+    required int32 sampleRate = 3;
+    required int32 bitRate = 4;
+    required int32 latency = 5;
+    repeated uint32 pilotID = 6;
+    required uint32 bufSize = 7;
+    required uint32 lineNo = 8;
+    required uint32 chatID = 9;
+}
+
+message GroupLeave_Client {
+    required string groupName = 1;
+}
+
+message GroupLeave_Server {
+    required string groupName = 1;
+}
+
+message GroupUpdate {
+    required string groupName = 1;
+    repeated uint32 pilotID = 2;
+}
+
+message GroupKick_Server {
+    required string groupName = 1;
+    required int32 reason = 2;
+}
+
+message GroupStatus_Client {
+    required string groupName = 1;
+    required int32 paramType = 2;
+}
+
+message GroupStatus_Server {
+    required string groupName = 1;
+    required int32 paramType = 2;
+}
+
+message GroupSetParam_Client {
+    required string groupName = 1;
+    required int32 paramType = 2;
+}
+
+message GroupSetParam_Server {
+    required string groupName = 1;
+    required int32 paramType = 2;
+}
+
+message Command_Client {
+    required int32 type = 1;
+    optional Hello_Client hello = 2;
+    optional ClientLog clientLog = 3;
+    optional ServerStatus_Client serverStatus = 4;
+    optional GroupEnter_Client groupEnter = 5;
+    optional GroupLeave_Client groupLeave = 6;
+    optional GroupSetParam_Client groupSetParam = 8;
+}
+
+message Command_Server {
+    required int32 type = 1;
+    optional int32 result = 2;
+    optional Hello_Server hello = 3;
+    optional ServerStatus_Server serverStatus = 4;
+    optional GroupEnter_Server GroupEnter = 5;
+    optional GroupLeave_Server groupLeave = 6;
+    optional GroupUpdate groupUpdate = 7;
+    optional GroupSetParam_Server groupSetParam = 8;
+    optional GroupKick_Server groupKick = 9;
+}
+
+enum TypeNum {
+    PING = 0;
+    PONG = 1;
+    HELLO = 2;
+    CLIENT_LOG = 3;
+    SERVER_STATUS = 4;
+    ALIVE = 5;
+    GROUP_ENTER = 128;
+    GROUP_LEAVE = 129;
+    GROUP_UPDATE = 130;
+    GROUP_STATUS = 131;
+    GROUP_SET_PARAM = 132;
+    GROUP_KICK = 133;
+}
+
+enum ResultEnums {
+    RESULT_OK = 0;
+    RESULT_FAIL = 1;
+    RESULT_TIMEOUT = 2;
+    RESULT_INVALID = 3;
+    RESULT_OFFLINE = 4;
+    RESULT_WAIT = -1;
+}
+
+enum KickReasonEnums {
+    KICKED_UNKNOWN = -1;
+    KICKED_NETWORK = 0;
+    KICKED_TIMEUP = 1;
+    KICKED_FORUPDATE = 2;
+}
+
+enum ServerStatusEnums {
+    SERVER_NUM_GROUPS = 0;
+    SERVER_NUM_CONNECTIONS = 1;
+    SERVER_LOSS_COUNT = 2;
+}
+
+enum GroupStatusEnums {
+    GROUP_NUM_PARTICIPANTS = 0;
+}
+
+enum GroupSetParamEnums {
+    GROUP_SET_POSITION = 0;
+}

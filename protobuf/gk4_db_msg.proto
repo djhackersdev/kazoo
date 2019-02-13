@@ -1,0 +1,871 @@
+syntax = "proto3";
+
+package gk4db;
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+
+message ArmiesValueType {
+    int32 efsf = 1;
+    int32 zeon = 2;
+}
+
+message LevelType {
+    int32 level = 1;
+    int32 pilot_level = 2;
+}
+
+message AMIDLookup {
+    int32 device_type = 1;
+    string access_code = 2;
+    string chip_id = 3;
+    string identity_type = 4;
+}
+
+message TeamData {
+    ArmyType army = 1;
+    string shop_id = 2;
+    fixed32 team_id = 3;
+    string country = 4;
+    string battalion_name = 5;
+    int32 area = 6;
+    string team_name = 7;
+    int32 layer0 = 8;
+    int32 layer1 = 9;
+    int32 layer2 = 10;
+    fixed32 leader = 11;
+    fixed32 sub_leader = 12;
+    
+    repeated TeamMember members = 13;
+    message TeamMember {
+        fixed32 pilot_id = 1;
+        string name = 2;
+        string title = 3;
+        LevelType level = 4;
+        int32 kill_cnt = 5;
+        int32 last_use_ms = 6;
+        int32 total_play = 7;
+        int32 total_pp = 8;
+        google.protobuf.Timestamp joined_at = 9;
+    }
+}
+
+message PilotData {
+    fixed32 pilot_id = 1;
+    TeamData team = 3;
+    string last_play_shop = 4;
+    google.protobuf.Timestamp last_play_at = 5;
+    
+    BasicData basic = 6;
+    message BasicData {
+        int32 client_ver = 1;
+        string name = 2;
+        google.protobuf.Timestamp name_changed_at = 3;
+        bool require_name_change = 4;
+        LevelType level = 5;
+        int32 level_gauge = 6;
+        int32 level_changed_week = 7;
+        LevelType after_level = 8;
+        LevelType max_level = 9;
+        string title = 10;
+        repeated fixed64 title_flags = 11;
+        map<int32, OwnMSType> own_ms = 12;
+        fixed64 exms_flags = 13;
+        int32 develop_ms = 14;
+        int32 develop_ms_pts = 15;
+        int32 last_use_ms = 16;
+        repeated int32 last_use_ms_category = 17;
+        int32 continue_win = 18;
+        int32 continue_lose = 19;
+        int32 continue_lose2 = 43;
+        string burst_id = 20;
+        fixed64 sequence_flags = 21;
+        google.protobuf.Timestamp team_checked_at = 22;
+        bool team_discharge = 23;
+        fixed32 discharge_team_id = 44;
+        int32 pilot_pts_unadd = 24;
+        int32 battle_cnt_unadd = 25;
+        int32 win_cnt_unadd = 26;
+        int32 lose_cnt_unadd = 27;
+        int32 kill_cnt_unadd = 28;
+        int32 cockpit_type = 29;
+        int32 cockpit_radar_pos = 30;
+        int32 volume = 31;
+        bool disable_tank_support = 45;
+        int32 medal_total_pts = 32;
+        
+        repeated AppealMedalType appeal_medal = 33;
+        message AppealMedalType {
+            int32 medal_id = 1;
+            int32 value = 2;
+        }
+        
+        map<int32, MedalType> own_medal = 34;
+        
+        LotteryInfo lottery = 35;
+        message LotteryInfo {
+            int32 saved_id = 1;
+            bool enabled = 2;
+            bool elected = 3;
+            int32 count = 4;
+        }
+        
+        TitleCampaign title_campaign = 36;
+        message TitleCampaign {
+            int32 saved_id = 1;
+            int32 stamp_now = 2;
+            int32 stamp_add = 3;
+            int32 acquire_title_id = 4;
+        }
+        
+        int32 training_ticket = 38;
+        fixed64 training_enable_flags = 39;
+        fixed64 training_notice_flags = 40;
+        
+        BeginnerInfo beginner = 41;
+        message BeginnerInfo {
+            int32 beginner_cnt = 1;
+            int32 beginner_stage_cnt = 2;
+            bool beginner_complete = 3;
+            int32 elite_flag_state = 4;
+            bool elite_flag = 5;
+        }
+        
+        MSSupplyBonusInfo ms_supply_bonus = 42;
+        message MSSupplyBonusInfo {
+            int32 saved_id = 1;
+            bool enabled = 2;
+            int32 elected = 3;
+            int32 count = 4;
+        }
+        
+        message OwnMSType {
+            int32 level = 1;
+            int32 inner_level = 2;
+            int32 develop_pts = 3;
+            int32 use_cnt = 4;
+            int32 setting = 5;
+            int32 last_arms_main = 6;
+            int32 last_arms_sub = 7;
+            int32 last_arms_kaku = 8;
+        }
+        
+        message MedalType {
+            int32 value = 1;
+            bool changed = 2;
+        }
+    }
+    
+    RecordData record = 7;
+    message RecordData {
+        int32 rev1_win = 1;
+        repeated int32 rev2_cate_s = 2;
+        repeated int32 rev2_cate_win = 3;
+        repeated int32 rev2_win = 4;
+        repeated int32 rev3_cate_s = 5;
+        repeated int32 rev3_cate_win = 6;
+        repeated int32 rev3_win = 7;
+        repeated int32 rev4_cate_s = 8;
+        repeated int32 rev4_cate_win = 9;
+        repeated int32 rev4_win = 10;
+        int32 event_pts_top = 11;
+        int32 event_pts_top100 = 12;
+        int32 event_pts_contrib = 13;
+        int32 event_rate_top = 14;
+        int32 event_rate_top100 = 15;
+        int32 shop_contrib = 16;
+        int32 shop_event_victory = 17;
+        int32 shop_event_entry = 18;
+        repeated int32 rankin_cnt = 19;
+        int32 total_play = 20;
+        int32 total_kill = 21;
+        int32 total_pp = 22;
+        repeated int32 day_of_week = 23;
+        int32 total_win = 24;
+        repeated int32 stage_win = 25;
+        repeated int32 rule_win = 26;
+        int32 total_burst_cnt = 27;
+        int32 recovery_cnt = 28;
+        int32 save_act_cnt = 29;
+        int32 triple_atk_cnt = 30;
+        int32 quick_draw_cnt = 31;
+        int32 anti_fire_cnt = 32;
+        int32 anti_tackle_cnt = 33;
+        int32 anti_grapple_cnt = 34;
+        int32 tank_escort_cnt = 35;
+        int32 total_base_kill = 36;
+        int32 multiplayer_burst_cnt = 37;
+        int32 predict_bazooka_cnt = 38;
+        int32 low_cost_master_cnt = 39;
+        int32 decoy_cnt = 40;
+        int32 defense_cnt = 41;
+        int32 catch_cnt = 42;
+        int32 predict_shot_cnt = 43;
+        int32 no_lock_cnt = 44;
+        int32 quick_draw_cancel_cnt = 45;
+        int32 sclass_win = 46;
+        int32 four_burst_win = 47;
+        int32 team_burst_cnt = 48;
+        int32 full_burst_crash_cnt = 49;
+    }
+    
+    AvatorType avator = 8;
+    message AvatorType {
+        int32 gender = 1;
+        int32 voice = 2;
+        int32 greeting = 3;
+        int32 cockpit = 4;
+        int32 outline = 5;
+        int32 eye = 6;
+        int32 nosemouth = 7;
+        int32 head = 8;
+        int32 face_accessory = 9;
+        int32 inner = 10;
+        int32 outer = 11;
+        int32 wall = 12;
+        int32 ornament = 13;
+        int32 room_accessory = 14;
+        int32 landscape = 15;
+        int32 frame = 16;
+    }
+    
+    repeated int32 symbol_chat = 9;
+    
+    repeated ReplayHistory replay_history = 10;
+    message ReplayHistory {
+        fixed64 battle_id = 1;
+        string replay_id = 2;
+        google.protobuf.Timestamp battle_at = 3;
+        int32 stage = 4;
+        int32 scene = 5;
+        ArmiesValueType visit_num = 6;
+        int32 matching_class = 7;
+        int32 game_mode = 8;
+        int32 replay_status = 9;
+    }
+    
+    EventEntry event_entry = 11;
+    message EventEntry {
+        int32 event_id = 1;
+        fixed64 play_flags = 2;
+        int32 play_cnt = 3;
+        int32 battle_cnt = 4;
+        int32 win_cnt = 5;
+        int32 lose_cnt = 6;
+        int32 pts = 7;
+        int32 pts_rank = 8;
+        int32 rate = 9;
+        int32 rate_rank = 10;
+        fixed64 flags = 11;
+        int32 ticket_num = 12;
+        int32 base_point_add = 13;
+        int32 win_point_add = 14;
+        int32 bonus_point_add = 15;
+        bool has_first_bonus = 16;
+    }
+    
+    map<int32, RankingInfo> ranking_info = 12;
+    int32 ranking_continue_win = 13;
+    bool ranking_first_today = 14;
+    int32 ranking_week = 16;
+    
+    repeated CampaignEntry campaign_entry = 15;
+    message CampaignEntry {
+        int32 campaign_id = 1;
+        int32 campaign_type = 2;
+        fixed64 play_flags = 3;
+        int32 play_cnt = 4;
+        int32 battle_cnt = 5;
+        int32 win_cnt = 6;
+        int32 lose_cnt = 7;
+        fixed64 flags = 8;
+        int32 point_now = 9;
+        int32 point_add = 10;
+        
+        ExmsData exms_data = 11;
+        message ExmsData {
+            bool selected = 1;
+            int32 msid = 2;
+            int32 index = 3;
+        }
+    }
+    
+    map<int32, int32> bgm_setting = 17;
+    
+    message RankingInfo {
+        int32 week_id = 1;
+        int32 pts = 2;
+        int32 rank = 3;
+        repeated int32 carry_over = 4;
+        repeated int32 acq_pts = 5;
+        map<int32, UseMs> use_ms = 6;
+        
+        repeated UseCategory use_category = 7;
+        message UseCategory {
+            int32 use_cnt = 1;
+            int32 win_cnt = 2;
+            int32 lose_cnt = 3;
+        }
+        
+        message UseMs {
+            int32 use_cnt = 1;
+            int32 win_cnt = 2;
+            int32 lose_cnt = 3;
+        }
+    }
+}
+
+message CardData {
+    int32 amid = 1;
+    int32 mbid = 2;
+    string person_id = 3;
+    int32 mobile_id = 4;
+    MobileUserState mobile_status = 5;
+    
+    UserMsg user_msg = 6;
+    message UserMsg {
+        int32 msg_id = 1;
+        int32 msg_type = 2;
+        string msg_text = 3;
+        google.protobuf.Timestamp checked_at = 4;
+    }
+    
+    PenaltyState penalty_state = 7;
+    UserMsg penalty_msg = 8;
+    ArmyType last_play_army = 9;
+    repeated PilotData pilots = 10;
+}
+
+message BattleData {
+    fixed64 battle_id = 1;
+    int32 stage = 2;
+    int32 scene = 3;
+    ArmiesValueType visit_num = 4;
+    int32 minovsky = 5;
+    int32 rule = 6;
+    int32 regulation = 38;
+    int32 game_mode = 8;
+    int32 event_id = 9;
+    int32 victory_result = 10;
+    ArmiesValueType base_kill = 11;
+    ArmiesValueType ms_kill = 12;
+    ArmiesValueType gauge = 13;
+    google.protobuf.Duration remaining = 14;
+    int32 matching_class = 15;
+    int32 matching_type = 16;
+    int32 event_efsf_pts = 34;
+    int32 event_zeon_pts = 35;
+    ArmiesValueType strategy = 39;
+    
+    repeated BattleMember members = 17;
+    message BattleMember {
+        int32 idx = 1;
+        ArmyType army = 2;
+        fixed32 pilot_id = 3;
+        string shop_id = 4;
+        fixed32 team_id = 5;
+        LevelType level = 6;
+        int32 total_win = 7;
+        bool is_player = 8;
+        bool is_guest = 9;
+        int32 offline_timing = 10;
+        google.protobuf.Duration offline_duration = 11;
+        int32 ms_id = 12;
+        int32 ms_category = 13;
+        int32 ms_setting = 14;
+        int32 ms_arms_main = 15;
+        int32 ms_arms_sub = 16;
+        int32 ms_arms_kaku = 17;
+        int32 ms_cost = 18;
+        int32 ms_score = 19;
+        int32 base_score = 20;
+        int32 escort_score = 21;
+        int32 defense_score = 22;
+        int32 contrib_score = 23;
+        int32 battle_score = 24;
+        int32 total_score = 25 [deprecated = true];
+        int32 base_kill = 26;
+        int32 kill = 27;
+        int32 death = 28;
+        int32 rank = 29;
+    }
+    
+    fixed64 matching_group_id = 18;
+    int32 burst_num = 19;
+    bool id_burst = 20;
+    int32 pilot_pts = 21;
+    int32 event_pts = 22;
+    int32 lottery_state = 23;
+    bool cease_fire = 24;
+    bool level_decision = 25;
+    int32 level_pts = 26;
+    LevelType after_level = 27;
+    int32 battle_num = 28;
+    int32 no_exec_cnt = 29;
+    int32 max_no_exec = 30;
+    int32 matching_idx = 31;
+    int32 event_team_pts = 32;
+    int32 event_shop_pts = 33;
+    int32 total_score = 36;
+    int32 ms_supply_bonus = 37;
+    int32 pilot_strategy = 40;
+    int32 pilot_role = 41;
+}
+
+message SessionData {
+    string session_token = 1;
+    ArmyType army = 2;
+    int32 battle_num = 3;
+    int32 credit_num = 4;
+    int32 service_num = 5;
+    bool is_free_play = 6;
+    bool is_trial = 7;
+    bool is_shop_event = 8;
+    bool is_charges = 9;
+    int32 last_sequence = 10;
+    
+    repeated BattleData battles = 11;
+    message BattleData {
+        int32 battle_num = 1;
+        fixed64 battle_id = 2;
+        OfflineReason offline_reason = 3;
+        google.protobuf.Timestamp offline_time = 4;
+        int32 offline_sequence = 5;
+        int32 offline_elapsed = 6;
+        int32 offline_sub_sequence = 7;
+    }
+    
+    int32 exit_code = 12;
+    int32 last_sub_sequence = 13;
+}
+
+message RequestHeader {
+    google.protobuf.Timestamp client_time = 1;
+    string game_id = 2;
+    int64 board_serial = 3;
+    int32 client_ver = 4;
+    string allnet_ver = 5;
+    string shop_id = 6;
+    string shop_name = 7;
+    string country = 8;
+    int32 area = 9;
+    bool is_terminal = 10;
+}
+
+message ResponseHeader {
+    google.protobuf.Timestamp server_time = 1;
+}
+
+message RegistClientRequest {
+    RequestHeader header = 1;
+    bool is_after_boot = 2;
+    bool is_after_auth = 3;
+    string tenporouter_ip = 4;
+    int32 hop_cnt = 5;
+    repeated string traceroute = 6;
+    string shop_address = 7;
+    int64 main_terminal_serial = 8;
+    int32 station_no = 9;
+    string host_name = 10;
+    int32 projector = 11;
+}
+
+message RegistClientResponse {
+    ResponseHeader header = 1;
+    string auth_token = 2;
+}
+
+message AbortLogRequest {
+    RequestHeader header = 1;
+    google.protobuf.Timestamp abort_time = 2;
+    int32 exit_code = 3;
+    string trace = 4;
+    int32 sequence = 5;
+    fixed64 battle_id = 6;
+    bool has_replay_log = 7;
+    int32 screen_num = 8;
+    int32 sub_sequence = 9;
+    string session_token = 10;
+}
+
+message AbortLogResponse {
+    ResponseHeader header = 1;
+    string replay_log_url = 2;
+    repeated string screen_url = 3;
+}
+
+message ErrorLogRequest {
+    RequestHeader header = 1;
+    
+    repeated ErrorRecord errors = 2;
+    message ErrorRecord {
+        google.protobuf.Timestamp error_at = 1;
+        int32 unit = 2;
+        int32 code = 3;
+        int32 sequence = 4;
+        string data = 5;
+    }
+}
+
+message ErrorLogResponse {
+    ResponseHeader header = 1;
+}
+
+message ClientLogRequest {
+    RequestHeader header = 1;
+    google.protobuf.Timestamp event_time = 2;
+    int32 event_type = 3;
+    string event_data = 4;
+}
+
+message ClientLogResponse {
+    ResponseHeader header = 1;
+}
+
+message GameConfigRequest {
+    RequestHeader header = 1;
+}
+
+message GameConfigResponse {
+    ResponseHeader header = 1;
+    int32 required_client_version = 2;
+    string matching_host = 3;
+    int32 matching_port = 4;
+    string telop = 5;
+    
+    FeatureFlags feature_flags = 6;
+    message FeatureFlags {
+        bool replay_upload = 1;
+        fixed64 time_release = 2;
+    }
+    
+    ShopInfo shop = 7;
+    message ShopInfo {
+        string battalion_name = 1;
+        int32 score = 2;
+        int32 country_rank = 3;
+        int32 region_rank = 4;
+        int32 area_rank = 5;
+        int32 sem_last_use_day = 6;
+        int32 sem_use_count = 7;
+    }
+    
+    repeated StageConfig normal_stage = 8;
+    message StageConfig {
+        int32 stage = 1;
+        int32 scene = 2;
+        int32 minovsky = 3;
+        int32 bgm = 4;
+    }
+    
+    int32 normal_visit = 9;
+    bool has_event = 10;
+    repeated StageConfig event_stage = 11;
+    int32 event_visit = 12;
+    int32 event_start = 13;
+    int32 event_range = 14;
+    int32 event_regulation = 24;
+    bool disable_lv_decision = 15;
+    
+    TitleCampaign title_campaign = 16;
+    message TitleCampaign {
+        int32 campaign_id = 1;
+        int32 title_id = 2;
+        int32 stamp_max = 3;
+    }
+    
+    WarEvent war_event = 18;
+    message WarEvent {
+        int32 event_id = 1;
+        google.protobuf.Timestamp start_time = 2;
+        int32 period = 3;
+        google.protobuf.Timestamp result_time = 4;
+        string title = 5;
+        
+        EventGauge gauge = 6;
+        message EventGauge {
+            ArmiesValueType s = 1;
+            ArmiesValueType a = 2;
+            repeated ArmiesValueType s_daily = 3;
+            repeated ArmiesValueType a_daily = 4;
+        }
+        
+        ArmiesValueType score = 7;
+        ArmiesValueType rank = 8;
+    }
+    
+    NoticeDelivery notice_live = 19;
+    message NoticeDelivery {
+        string file_name = 1;
+        int32 file_size = 2;
+        string check_sum = 3;
+        string download_url = 4;
+    }
+    
+    NoticeDelivery notice_vendor = 20;
+    
+    repeated Campaign campaign = 21;
+    message Campaign {
+        int32 campaign_id = 1;
+        int32 campaign_type = 2;
+        google.protobuf.Timestamp start_date = 3;
+        google.protobuf.Timestamp end_date = 4;
+        int32 period = 5;
+    }
+    
+    bool arms_supply_support = 22;
+    bool ms_supply_bonus = 23;
+}
+
+message CardAuthRequest {
+    RequestHeader header = 1;
+    AMIDLookup device = 2;
+}
+
+message CardAuthResponse {
+    ResponseHeader header = 1;
+    CardStatus card_status = 6;
+    CardData card = 7;
+    string access_code = 5;
+    google.protobuf.Duration lock_expire = 8;
+}
+
+message NewPilotRequest {
+    RequestHeader header = 1;
+    int32 amid = 2;
+    AMIDLookup device = 3;
+    ArmyType army = 4;
+    PilotData pilot = 5;
+}
+
+message NewPilotResponse {
+    ResponseHeader header = 1;
+    CardStatus card_status = 2;
+    int32 amid = 3;
+    google.protobuf.Duration lock_expire = 4;
+}
+
+message CardSaveRequest {
+    RequestHeader header = 1;
+    repeated PilotData pilots = 2;
+}
+
+message CardSaveResponse {
+    ResponseHeader header = 1;
+}
+
+message CardUnlockRequest {
+    RequestHeader header = 1;
+    int32 amid = 2;
+    int32 mbid = 3;
+    string person_id = 4;
+    
+    FaceCameraData facedata = 5;
+    message FaceCameraData {
+        int32 gender = 1;
+        int32 gender_accuracy = 2;
+        int32 age = 3;
+        int32 age_accuracy = 4;
+    }
+}
+
+message CardUnlockResponse {
+    ResponseHeader header = 1;
+}
+
+message TeamListRequest {
+    RequestHeader header = 1;
+    ArmyType army = 2;
+    string shop_id = 3;
+}
+
+message TeamListResponse {
+    ResponseHeader header = 1;
+    ArmyType army = 2;
+    string shop_id = 3;
+    
+    repeated TeamSummary team_info = 4;
+    message TeamSummary {
+        fixed32 team_id = 1;
+        int32 member = 2;
+        int32 kill_cnt = 3;
+    }
+}
+
+message TeamInfoRequest {
+    RequestHeader header = 1;
+    ArmyType army = 2;
+    string shop_id = 3;
+    fixed32 team_id = 4;
+}
+
+message TeamInfoResponse {
+    ResponseHeader header = 1;
+    TeamData team_info = 2;
+}
+
+message TeamChangeRequest {
+    RequestHeader header = 1;
+    fixed32 pilot_id = 2;
+    ArmyType army = 3;
+    string current_shop_id = 4;
+    fixed32 current_team_id = 5;
+    string next_shop_id = 6;
+    fixed32 next_team_id = 7;
+}
+
+message TeamChangeResponse {
+    ResponseHeader header = 1;
+    TeamData team_info = 2;
+}
+
+message ReplayUploadConfirmRequest {
+    RequestHeader header = 1;
+    fixed64 battle_id = 2;
+}
+
+message ReplayUploadConfirmResponse {
+    ResponseHeader header = 1;
+    string upload_url = 2;
+}
+
+message PlayEntryRequest {
+    RequestHeader header = 1;
+    AMIDLookup device = 2;
+}
+
+message PlayEntryResponse {
+    ResponseHeader header = 1;
+    CardStatus card_status = 5;
+    CardData card = 6;
+    string session_token = 8;
+}
+
+message GuestPlayEntryRequest {
+    RequestHeader header = 1;
+}
+
+message GuestPlayEntryResponse {
+    ResponseHeader header = 1;
+    string session_token = 2;
+}
+
+message CreditConfirmRequest {
+    RequestHeader header = 1;
+    SessionData session_data = 2;
+}
+
+message CreditConfirmResponse {
+    ResponseHeader header = 1;
+}
+
+message PlayCancelRequest {
+    RequestHeader header = 1;
+    string session_token = 2;
+}
+
+message PlayCancelResponse {
+    ResponseHeader header = 1;
+}
+
+message PlayAbortRequest {
+    RequestHeader header = 1;
+    SessionData session_data = 2;
+}
+
+message PlayAbortResponse {
+    ResponseHeader header = 1;
+}
+
+message PlayCompleteRequest {
+    RequestHeader header = 1;
+    SessionData session_data = 2;
+}
+
+message PlayCompleteResponse {
+    ResponseHeader header = 1;
+}
+
+message BattleResultRequest {
+    RequestHeader header = 1;
+    SessionData session_data = 2;
+    PilotData pilot = 3;
+    BattleData battle_data = 4;
+    bool weekly_pilot_rank_update = 5;
+}
+
+message BattleResultResponse {
+    ResponseHeader header = 1;
+    int32 weekly_pilot_rank = 2;
+    int32 event_rate_rank = 3;
+}
+
+message ReplayRenderRequest {
+    RequestHeader header = 1;
+    fixed32 pilot_id = 2;
+    fixed64 battle_id = 3;
+}
+
+message ReplayRenderResponse {
+    ResponseHeader header = 1;
+}
+
+message FeedLogRequest {
+    RequestHeader header = 1;
+    
+    repeated FeedItem items = 2;
+    message FeedItem {
+        uint32 feed_type = 1;
+        uint32 feed_sub_type = 2;
+        fixed32 pilot_id = 3;
+        ArmyType pilot_army = 4;
+        string pilot_name = 5;
+        string convenience_id = 6;
+        uint32 convenience_number = 7;
+        int32 amid = 8;
+        string shop_id = 9;
+        fixed32 team_id = 10;
+        repeated fixed32 team_member = 11;
+    }
+}
+
+message FeedLogResponse {
+    ResponseHeader header = 1;
+}
+
+enum CardStatus {
+    OK = 0;
+    NEW_CARD = 1;
+    LOCKED_CARD = 2;
+    DISABLED_CARD = 3;
+    LEGACY_VERSION_CARD = 4;
+    FUTURE_VERSION_CARD = 5;
+}
+
+enum ArmyType {
+    EFSF = 0;
+    ZEON = 1;
+}
+
+enum MobileUserState {
+    FP_MEMBER = 0;
+    SP_FREE_MEMBER = 1;
+    SP_PAID_MEMBER = 2;
+}
+
+enum PenaltyState {
+    NO_PENALTY = 0;
+    FIRST_WARNING = 1;
+    FINAL_WARNING = 2;
+    ACCOUNT_BAN = 3;
+}
+
+enum OfflineReason {
+    NO_PROBLEM = 0;
+    TEST_SW = 1;
+    POWER_OFF = 2;
+    ABORT = 3;
+    LAN_ERROR = 4;
+    WAN_ERROR = 5;
+}

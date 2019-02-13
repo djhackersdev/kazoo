@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package gk4db;
+
+import "gk4_db_msg.proto";
+import "google/api/annotations.proto";
+
+service Arcade {
+    rpc RegistClient(RegistClientRequest) returns (RegistClientResponse);
+    rpc AbortLog(AbortLogRequest) returns (AbortLogResponse);
+    rpc ErrorLog(ErrorLogRequest) returns (ErrorLogResponse);
+    rpc ClientLog(ClientLogRequest) returns (ClientLogResponse);
+    rpc GameConfig(GameConfigRequest) returns (GameConfigResponse);
+    rpc CardAuth(CardAuthRequest) returns (CardAuthResponse);
+    rpc NewPilot(NewPilotRequest) returns (NewPilotResponse);
+    rpc CardSave(CardSaveRequest) returns (CardSaveResponse);
+    rpc CardUnlock(CardUnlockRequest) returns (CardUnlockResponse);
+    rpc TeamList(TeamListRequest) returns (TeamListResponse);
+    rpc TeamInfo(TeamInfoRequest) returns (TeamInfoResponse);
+    rpc TeamChange(TeamChangeRequest) returns (TeamChangeResponse);
+    rpc ReplayUploadConfirm(ReplayUploadConfirmRequest) returns (ReplayUploadConfirmResponse);
+    rpc PlayEntry(PlayEntryRequest) returns (PlayEntryResponse);
+    rpc GuestPlayEntry(GuestPlayEntryRequest) returns (GuestPlayEntryResponse);
+    rpc CreditConfirm(CreditConfirmRequest) returns (CreditConfirmResponse);
+    rpc PlayCancel(PlayCancelRequest) returns (PlayCancelResponse);
+    rpc PlayAbort(PlayAbortRequest) returns (PlayAbortResponse);
+    rpc PlayComplete(PlayCompleteRequest) returns (PlayCompleteResponse);
+    rpc BattleResult(BattleResultRequest) returns (BattleResultResponse);
+    rpc ReplayRender(ReplayRenderRequest) returns (ReplayRenderResponse);
+    rpc FeedLog(FeedLogRequest) returns (FeedLogResponse);
+}
