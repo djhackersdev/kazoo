@@ -6,6 +6,7 @@
   "private": true,
   "dependencies": {
     "express": "^4.16.4",
+    "morgan": "^1.9.1",
     "protobufjs": "^6.8.8",
     "raw-body": "^2.3.3",
     "timezone-support": "^1.8.1"
