@@ -32,7 +32,7 @@
     "testEnvironment": "node"
   },
   "lint-staged": {
-    "src/**/*.js": [
+    "src/**/*.ts": [
       "prettier --write",
       "git add"
     ]
