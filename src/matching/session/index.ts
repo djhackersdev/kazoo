@@ -5,6 +5,7 @@ import { GroupSession } from "./group";
 import { MatchSession } from "./match";
 import { StatusSession } from "./status";
 import { PubSubSession } from "./pubsub";
+import { SyncSession } from "./sync";
 
 // Tagged unions are not a first-class concept in the Protobuf data model, so
 // v4 isn't as elegant and type-safe as it was in the v3 branch.
@@ -15,6 +16,7 @@ export class Session {
   private readonly _pubsub: PubSubSession;
   private readonly _status: StatusSession;
   private readonly _match: MatchSession;
+  private readonly _sync: SyncSession;
 
   constructor(ctx: Context) {
     this._basic = new BasicSession(ctx);
@@ -22,6 +24,7 @@ export class Session {
     this._pubsub = new PubSubSession(ctx);
     this._status = new StatusSession(ctx);
     this._match = new MatchSession(ctx);
+    this._sync = new SyncSession(ctx);
   }
 
   destroy() {
@@ -29,6 +32,7 @@ export class Session {
     this._pubsub.destroy();
     this._status.destroy();
     this._match.destroy();
+    this._sync.destroy();
   }
 
   dispatch(cmd: pegasus.Command_Client) {
@@ -57,6 +61,9 @@ export class Session {
 
       case pegasus.TypeNum.KEY_MATCH:
         return this._match.dispatch(cmd);
+
+      case pegasus.TypeNum.SYNC:
+        return this._sync.dispatch(cmd);
 
       default:
         throw new Error("Unsupported command");

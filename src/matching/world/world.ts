@@ -1,12 +1,15 @@
 import { Group, GroupId, GroupKey, GroupMember, GroupSpec } from "./group";
 import { Topic, TopicKey, Subscriber } from "./pubsub";
 import { StatusGroup, StatusGroupMember, StatusKey } from "./status";
+import { Sync, SyncKey, TimeoutSec } from "./sync";
+import { SessionId } from "./session";
 
 export class World {
   private _nextGroupId = 100;
   private _groups: Group[] = [];
   private readonly _sgroups = new Map<StatusKey, StatusGroup>();
   private readonly _topics = new Map<TopicKey, Topic>();
+  private readonly _syncs = new Map<SyncKey, Sync>();
 
   createGroup(key: GroupKey, spec: GroupSpec): Group {
     const id = this._nextGroupId++ as GroupId;
@@ -119,5 +122,33 @@ export class World {
     condemned.forEach(topicKey =>
       console.log(`Matching: Topic ${topicKey} GCed`)
     );
+  }
+
+  sync(
+    key: SyncKey,
+    count: number,
+    timeoutSec: TimeoutSec,
+    sessionId: SessionId
+  ): Promise<Sync> {
+    const existing = this._syncs.get(key);
+    let sync: Sync;
+
+    if (existing !== undefined) {
+      sync = existing;
+    } else {
+      sync = new Sync(count, timeoutSec);
+      this._syncs.set(key, sync);
+
+      // Automatically unregister this sync group when it resolves
+      sync.promise.then(() => this._syncs.delete(key));
+    }
+
+    sync.join(sessionId);
+
+    return sync.promise;
+  }
+
+  desync(sessionId: SessionId) {
+    this._syncs.forEach(sync => sync.leave(sessionId));
   }
 }
