@@ -23,7 +23,11 @@ export class Decoder extends Transform {
     try {
       const cmd = pegasus.Command_Client.decode(chunk);
 
-      this._logger.log("Decoder:\n", cmd.toJSON());
+      this._logger.log(
+        "Decoder:\n",
+        JSON.stringify(cmd.toJSON(), undefined, 2),
+        "\n"
+      );
 
       return callback(null, cmd);
     } catch (e) {

@@ -21,7 +21,11 @@ export class Encoder extends Transform {
   }
 
   _transform(notification: pegasus.Command_Server, encoding, callback): void {
-    this._logger.log("Encoder:\n", notification.toJSON());
+    this._logger.log(
+      "Encoder:\n",
+      JSON.stringify(notification.toJSON(), undefined, 4),
+      "\n"
+    );
 
     let writer: BufferWriter;
 
