@@ -33,6 +33,20 @@ export class World {
     );
   }
 
+  destroyGroup(id: GroupId) {
+    const condemned = this._groups.filter(item => item.id === id);
+
+    this._groups = this._groups.filter(item => item.id !== id);
+
+    condemned.forEach(item => {
+      console.log(
+        `Matching: Group ${item.key} ${item.id} explicitly destroyed!`
+      );
+
+      item.destroy();
+    });
+  }
+
   createStatusGroup(key: StatusKey): StatusGroup {
     const existing = this._sgroups.get(key);
     const sgroup = existing || new StatusGroup(key);

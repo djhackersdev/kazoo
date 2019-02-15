@@ -26,6 +26,7 @@ export interface GroupState {
 
 export interface GroupMember {
   groupChanged(group: Group): void;
+  groupDestroyed(group: Group): void;
 }
 
 export class Group {
@@ -91,5 +92,12 @@ export class Group {
     // Send leave notification after member has left I think
 
     this._memberObjs.forEach((_, k) => k.groupChanged(this));
+  }
+
+  destroy() {
+    this._memberObjs.forEach((_, k) => k.groupDestroyed(this));
+
+    this._state = { efsf: [], zeon: [] };
+    this._memberObjs.clear();
   }
 }

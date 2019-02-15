@@ -1,3 +1,5 @@
+import Long = require("long");
+
 import { pegasus } from "../../../generated/pegasus";
 import { Output } from "../proto/pipeline";
 import {
@@ -47,6 +49,9 @@ export class GroupSession implements GroupMember {
 
       case pegasus.TypeNum.GROUP_SEARCH:
         return this._groupSearch(cmd.groupSearch!);
+
+      case pegasus.TypeNum.GROUP_CLOSE:
+        return this._groupClose(cmd.groupClose!);
 
       default:
         throw new Error("Unimplemented group command");
@@ -143,11 +148,35 @@ export class GroupSession implements GroupMember {
     );
   }
 
+  private _groupClose(cmd: pegasus.IGroupClose) {
+    const id =
+      cmd.groupID instanceof Long
+        ? (cmd.groupID.toNumber() as GroupId)
+        : (cmd.groupID! as GroupId);
+
+    // Causes groupDestroyed notification if we were a member (which we really
+    // ought to have been!)
+    this._world.destroyGroup(id);
+  }
+
   groupChanged(group: Group) {
     return this._output.write(
       new pegasus.Command_Server({
         type: pegasus.TypeNum.GROUP_UPDATE_NOTIFY,
         groupUpdateNotify: new pegasus.GroupUpdateNotify({
+          channel: group.key,
+          groupID: group.id,
+          info: writeGroupInfo(group),
+        }),
+      })
+    );
+  }
+
+  groupDestroyed(group: Group) {
+    return this._output.write(
+      new pegasus.Command_Server({
+        type: pegasus.TypeNum.GROUP_CLOSE_NOTIFY,
+        groupCloseNotify: new pegasus.GroupCloseNotify({
           channel: group.key,
           groupID: group.id,
           info: writeGroupInfo(group),
