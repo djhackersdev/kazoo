@@ -29,6 +29,7 @@ export class Session {
 
   dispatch(cmd: pegasus.Command_Client) {
     switch (cmd.type) {
+      case undefined: // Seems to be a ping?
       case pegasus.TypeNum.HELLO:
       case pegasus.TypeNum.PING:
       case pegasus.TypeNum.CLIENT_LOG:

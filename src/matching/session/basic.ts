@@ -27,11 +27,11 @@ export class BasicSession {
           })
         );
 
+      case undefined:
       case pegasus.TypeNum.PING:
         return this._output.write(
           new pegasus.Command_Server({
-            type: pegasus.TypeNum.PING,
-            result: pegasus.ResultEnums.OK,
+            type: pegasus.TypeNum.PONG,
           })
         );
 
