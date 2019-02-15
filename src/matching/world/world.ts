@@ -21,6 +21,10 @@ export class World {
     return this._groups.filter(group => group.key === key);
   }
 
+  existingGroup(id: GroupId): Group | undefined {
+    return this._groups.find(group => group.id === id);
+  }
+
   leaveGroups(member: GroupMember) {
     this._groups.forEach(group => group.leave(member));
 

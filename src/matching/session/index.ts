@@ -42,6 +42,7 @@ export class Session {
       case pegasus.TypeNum.GROUP_CREATE:
       case pegasus.TypeNum.GROUP_SEARCH:
       case pegasus.TypeNum.GROUP_CLOSE:
+      case pegasus.TypeNum.GROUP_JOIN:
         return this._group.dispatch(cmd);
 
       case pegasus.TypeNum.STS_OPEN:

@@ -15,6 +15,16 @@ import { Context } from "./context";
 
 const factionNames: Faction[] = ["efsf", "zeon"];
 
+function extractId(val: number | Long | null | undefined): GroupId {
+  if (val === null || val === undefined) {
+    throw new ReferenceError("Group ID missing");
+  } else if (val instanceof Long) {
+    return val.toNumber() as GroupId;
+  } else {
+    return val as GroupId;
+  }
+}
+
 function writeGroupInfo(group: Group): pegasus.GroupInfo {
   return new pegasus.GroupInfo({
     slotList: factionNames.map(key => ({
@@ -52,6 +62,9 @@ export class GroupSession implements GroupMember {
 
       case pegasus.TypeNum.GROUP_CLOSE:
         return this._groupClose(cmd.groupClose!);
+
+      case pegasus.TypeNum.GROUP_JOIN:
+        return this._groupJoin(cmd.groupJoin!);
 
       default:
         throw new Error("Unimplemented group command");
@@ -151,14 +164,47 @@ export class GroupSession implements GroupMember {
   }
 
   private _groupClose(cmd: pegasus.IGroupClose) {
-    const id =
-      cmd.groupID instanceof Long
-        ? (cmd.groupID.toNumber() as GroupId)
-        : (cmd.groupID! as GroupId);
+    const id = extractId(cmd.groupID);
 
     // Causes groupDestroyed notification if we were a member (which we really
     // ought to have been!)
     this._world.destroyGroup(id);
+  }
+
+  private _groupJoin(cmd: pegasus.IGroupJoin_Client) {
+    const id = extractId(cmd.groupID);
+    let faction = factionNames[cmd.slotNo!];
+
+    if (faction === undefined) {
+      console.log("Missing faction code???", cmd.slotNo);
+      faction = "efsf";
+    }
+
+    const group = this._world.existingGroup(id);
+
+    if (group === undefined) {
+      return this._output.write(
+        new pegasus.Command_Server({
+          type: pegasus.TypeNum.GROUP_JOIN,
+          result: pegasus.ResultEnums.FAIL,
+        })
+      );
+    }
+
+    // Might want to check member limits inside class Group...
+    group.join(this, faction, this._sessionId);
+
+    return this._output.write(
+      new pegasus.Command_Server({
+        type: pegasus.TypeNum.GROUP_JOIN,
+        result: pegasus.ResultEnums.OK,
+        groupJoin: new pegasus.GroupJoin_Server({
+          channel: group.key,
+          groupID: group.id,
+          info: writeGroupInfo(group),
+        }),
+      })
+    );
   }
 
   groupChanged(group: Group) {
