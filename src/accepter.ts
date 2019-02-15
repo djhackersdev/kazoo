@@ -73,4 +73,18 @@ app.post("/gk4db.Arcade/GameConfig", function(req, res) {
   res.send(gk4db.GameConfigResponse.encode(resp).finish());
 });
 
+app.post("/gk4db.Arcade/ErrorLog", function(req, res) {
+  const reqp = gk4db.ErrorLogRequest.decode(req.body);
+
+  console.log(reqp);
+
+  const resp = new gk4db.ErrorLogResponse({
+    header: header(),
+  });
+
+  console.log(resp);
+
+  res.send(gk4db.ErrorLogResponse.encode(resp).finish());
+});
+
 export default app;
