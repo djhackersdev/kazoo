@@ -1,6 +1,7 @@
 import Long = require("long");
 
 import { pegasus } from "../../../generated/pegasus";
+import { Context } from "./context";
 import { Output } from "../proto/pipeline";
 import {
   Faction,
@@ -8,10 +9,9 @@ import {
   GroupId,
   GroupKey,
   GroupMember,
+  GroupWorld,
 } from "../world/group";
 import { SessionId } from "../world/session";
-import { World } from "../world/world";
-import { Context } from "./context";
 
 const factionNames: Faction[] = ["efsf", "zeon"];
 
@@ -38,12 +38,12 @@ function writeGroupInfo(group: Group): pegasus.GroupInfo {
 }
 
 export class GroupSession implements GroupMember {
-  private readonly _world: World;
+  private readonly _world: GroupWorld;
   private readonly _output: Output;
   private readonly _sessionId: SessionId;
 
   constructor(ctx: Context) {
-    this._world = ctx.world;
+    this._world = ctx.world.groups;
     this._output = ctx.output;
     this._sessionId = ctx.sessionId;
   }

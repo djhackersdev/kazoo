@@ -101,3 +101,51 @@ export class Group {
     this._memberObjs.clear();
   }
 }
+
+export class GroupWorld {
+  private _nextGroupId = 100;
+  private _groups: Group[] = [];
+
+  createGroup(key: GroupKey, spec: GroupSpec): Group {
+    const id = this._nextGroupId++ as GroupId;
+    const group = new Group(key, id, spec);
+
+    this._groups.push(group);
+
+    return group;
+  }
+
+  searchGroups(key: GroupKey): Group[] {
+    return this._groups.filter(group => group.key === key);
+  }
+
+  existingGroup(id: GroupId): Group | undefined {
+    return this._groups.find(group => group.id === id);
+  }
+
+  leaveGroups(member: GroupMember) {
+    this._groups.forEach(group => group.leave(member));
+
+    const condemned = this._groups.filter(group => group.isEmpty());
+
+    this._groups = this._groups.filter(group => !group.isEmpty());
+
+    condemned.forEach(group =>
+      console.log(`Matching: Group ${group.key} ${group.id} GCed`)
+    );
+  }
+
+  destroyGroup(id: GroupId) {
+    const condemned = this._groups.filter(item => item.id === id);
+
+    this._groups = this._groups.filter(item => item.id !== id);
+
+    condemned.forEach(item => {
+      console.log(
+        `Matching: Group ${item.key} ${item.id} explicitly destroyed!`
+      );
+
+      item.destroy();
+    });
+  }
+}

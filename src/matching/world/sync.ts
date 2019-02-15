@@ -47,3 +47,35 @@ export class Sync {
     return items;
   }
 }
+
+export class SyncWorld {
+  private readonly _syncs = new Map<SyncKey, Sync>();
+
+  sync(
+    key: SyncKey,
+    count: number,
+    timeoutSec: TimeoutSec,
+    sessionId: SessionId
+  ): Promise<Sync> {
+    const existing = this._syncs.get(key);
+    let sync: Sync;
+
+    if (existing !== undefined) {
+      sync = existing;
+    } else {
+      sync = new Sync(count, timeoutSec);
+      this._syncs.set(key, sync);
+
+      // Automatically unregister this sync group when it resolves
+      sync.promise.then(() => this._syncs.delete(key));
+    }
+
+    sync.join(sessionId);
+
+    return sync.promise;
+  }
+
+  desync(sessionId: SessionId) {
+    this._syncs.forEach(sync => sync.leave(sessionId));
+  }
+}

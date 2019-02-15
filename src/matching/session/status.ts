@@ -1,17 +1,21 @@
 import { pegasus } from "../../../generated/pegasus";
 import { Output } from "../proto/pipeline";
 import { SessionId } from "../world/session";
-import { StatusGroup, StatusGroupMember, StatusKey } from "../world/status";
-import { World } from "../world/world";
+import {
+  StatusGroup,
+  StatusGroupMember,
+  StatusKey,
+  StatusWorld,
+} from "../world/status";
 import { Context } from "./context";
 
 export class StatusSession implements StatusGroupMember {
-  private readonly _world: World;
+  private readonly _world: StatusWorld;
   private readonly _output: Output;
   private readonly _sessionId: SessionId;
 
   constructor(ctx: Context) {
-    this._world = ctx.world;
+    this._world = ctx.world.status;
     this._output = ctx.output;
     this._sessionId = ctx.sessionId;
   }

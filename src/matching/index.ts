@@ -3,7 +3,7 @@ import { Socket } from "net";
 import { setup } from "./proto/pipeline";
 import { Session } from "./session";
 import { SessionId } from "./world/session";
-import { World } from "./world/world";
+import { World } from "./world";
 
 const world = new World();
 let nextSessionId = 200;

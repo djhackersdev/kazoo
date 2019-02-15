@@ -1,18 +1,17 @@
 import { pegasus } from "../../../generated/pegasus";
 import { Output } from "../proto/pipeline";
 import { SessionId } from "../world/session";
-import { SyncKey, TimeoutSec } from "../world/sync";
-import { World } from "../world/world";
+import { SyncKey, SyncWorld, TimeoutSec } from "../world/sync";
 import { Context } from "./context";
 
 export class SyncSession {
-  private readonly _world: World;
+  private readonly _world: SyncWorld;
   private readonly _output: Output;
   private readonly _sessionId: SessionId;
   private _destroyed: boolean;
 
   constructor(ctx: Context) {
-    this._world = ctx.world;
+    this._world = ctx.world.sync;
     this._output = ctx.output;
     this._sessionId = ctx.sessionId;
     this._destroyed = false;

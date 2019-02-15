@@ -1,7 +1,7 @@
 import { pegasus } from "../../../generated/pegasus";
 import { Output } from "../proto/pipeline";
 import { SessionId } from "../world/session";
-import { World } from "../world/world";
+import { World } from "../world";
 import { Context } from "./context";
 
 export class MatchSession {

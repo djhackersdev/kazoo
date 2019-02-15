@@ -1,15 +1,14 @@
 import { pegasus } from "../../../generated/pegasus";
 import { Output } from "../proto/pipeline";
-import { Subscriber, Topic, TopicKey } from "../world/pubsub";
-import { World } from "../world/world";
+import { PubSubWorld, Subscriber, Topic, TopicKey } from "../world/pubsub";
 import { Context } from "./context";
 
 export class PubSubSession implements Subscriber {
-  private readonly _world: World;
+  private readonly _world: PubSubWorld;
   private readonly _output: Output;
 
   constructor(ctx: Context) {
-    this._world = ctx.world;
+    this._world = ctx.world.pubsub;
     this._output = ctx.output;
   }
 

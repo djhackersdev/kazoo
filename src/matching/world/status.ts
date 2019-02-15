@@ -67,3 +67,47 @@ export class StatusGroup {
     return datum && Buffer.from(datum);
   }
 }
+
+export class StatusWorld {
+  private readonly _sgroups = new Map<StatusKey, StatusGroup>();
+
+  createStatusGroup(key: StatusKey): StatusGroup {
+    const existing = this._sgroups.get(key);
+    const sgroup = existing || new StatusGroup(key);
+
+    this._sgroups.set(key, sgroup);
+
+    return sgroup;
+  }
+
+  leaveStatusGroups(member: StatusGroupMember) {
+    const condemned: StatusKey[] = [];
+
+    this._sgroups.forEach((sgroup, statusKey) => {
+      sgroup.leave(member);
+
+      if (sgroup.isEmpty()) {
+        condemned.push(statusKey);
+      }
+    });
+
+    condemned.forEach(statusKey => this._sgroups.delete(statusKey));
+    condemned.forEach(statusKey =>
+      console.log(`Matching: Status group ${statusKey} GCed`)
+    );
+  }
+
+  destroyStatusGroup(id: StatusKey) {
+    const condemned = this._sgroups.get(id);
+
+    this._sgroups.delete(id);
+
+    if (condemned !== undefined) {
+      console.log(
+        `Matching: Status group ${condemned.key} explicitly destroyed!`
+      );
+
+      condemned.destroy();
+    }
+  }
+}

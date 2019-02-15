@@ -48,3 +48,37 @@ export class Topic {
     this._subs.delete(sub);
   }
 }
+
+export class PubSubWorld {
+  private readonly _topics = new Map<TopicKey, Topic>();
+
+  existingTopic(id: TopicKey): Topic | undefined {
+    return this._topics.get(id);
+  }
+
+  topic(key: TopicKey): Topic {
+    const existing = this._topics.get(key);
+    const topic = existing || new Topic(key);
+
+    this._topics.set(key, topic);
+
+    return topic;
+  }
+
+  leaveTopics(sub: Subscriber) {
+    const condemned: TopicKey[] = [];
+
+    this._topics.forEach((topic, topicKey) => {
+      topic.unsubscribe(sub);
+
+      if (topic.isEmpty()) {
+        condemned.push(topicKey);
+      }
+    });
+
+    condemned.forEach(topicKey => this._topics.delete(topicKey));
+    condemned.forEach(topicKey =>
+      console.log(`Matching: Topic ${topicKey} GCed`)
+    );
+  }
+}
