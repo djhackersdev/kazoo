@@ -25,7 +25,6 @@ export class Framer extends Transform {
 
     const frame = Buffer.concat([len, msg]);
 
-    this._logger.log(`Frame: ${msg.length} byte frame`);
     this.push(frame);
 
     return callback(null);

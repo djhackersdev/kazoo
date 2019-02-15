@@ -37,7 +37,6 @@ export class Deframer extends Transform {
 
       const frame = this._state.slice(4, 4 + nbytes);
 
-      this._logger.log(`Deframe: ${nbytes} byte frame`);
       this.push(frame);
 
       this._state = this._state.slice(4 + nbytes);
