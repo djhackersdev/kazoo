@@ -46,6 +46,7 @@ export class Session {
 
       case pegasus.TypeNum.STS_OPEN:
       case pegasus.TypeNum.STS_SET:
+      case pegasus.TypeNum.STS_CLOSE:
         return this._status.dispatch(cmd);
 
       case pegasus.TypeNum.PUBLISH:

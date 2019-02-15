@@ -9,6 +9,8 @@ export interface StatusData {
 
 export interface StatusGroupMember {
   statusChanged(group: StatusGroup, sessionId: SessionId): void;
+
+  statusDestroyed(group: StatusGroup);
 }
 
 export class StatusGroup {
@@ -52,6 +54,11 @@ export class StatusGroup {
     delete this._data[sessionId];
     this._members.delete(member);
     this._members.forEach((_, k) => k.statusChanged(this, sessionId));
+  }
+
+  destroy() {
+    this._members.forEach((_, k) => k.statusDestroyed(this));
+    this._members.clear();
   }
 
   datum(sessionId: SessionId): Buffer | undefined {

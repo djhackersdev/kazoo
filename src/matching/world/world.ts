@@ -73,6 +73,20 @@ export class World {
     );
   }
 
+  destroyStatusGroup(id: StatusKey) {
+    const condemned = this._sgroups.get(id);
+
+    this._sgroups.delete(id);
+
+    if (condemned !== undefined) {
+      console.log(
+        `Matching: Status group ${condemned.key} explicitly destroyed!`
+      );
+
+      condemned.destroy();
+    }
+  }
+
   existingTopic(id: TopicKey): Topic | undefined {
     return this._topics.get(id);
   }

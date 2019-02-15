@@ -28,6 +28,9 @@ export class StatusSession implements StatusGroupMember {
       case pegasus.TypeNum.STS_SET:
         return this._stsSet(cmd.stsSet!);
 
+      case pegasus.TypeNum.STS_CLOSE:
+        return this._stsClose(cmd.stsClose!);
+
       default:
         throw new Error("Unimplemented status group command");
     }
@@ -64,6 +67,13 @@ export class StatusSession implements StatusGroupMember {
     // Not explicitly acked, this will generate a STS_NOTIFY though.
   }
 
+  private _stsClose(cmd: pegasus.ISTSClose_Client) {
+    const key = cmd.channel! as StatusKey;
+
+    // Will cause a destruction notification if we were joined
+    this._world.destroyStatusGroup(key);
+  }
+
   statusChanged(sgroup: StatusGroup, memberId: SessionId) {
     const datum = sgroup.datum(memberId);
 
@@ -78,6 +88,17 @@ export class StatusSession implements StatusGroupMember {
           channel: sgroup.key,
           sid: memberId,
           value: datum,
+        }),
+      })
+    );
+  }
+
+  statusDestroyed(sgroup: StatusGroup) {
+    this._output.write(
+      new pegasus.Command_Server({
+        type: pegasus.TypeNum.STS_CLOSE,
+        stsClose: new pegasus.STSClose_Server({
+          channel: sgroup.key,
         }),
       })
     );
