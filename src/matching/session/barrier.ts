@@ -1,17 +1,22 @@
 import { pegasus } from "../../../generated/pegasus";
 import { Output } from "../proto/pipeline";
 import { SessionId } from "../world/session";
-import { SyncKey, SyncWorld, TimeoutSec } from "../world/sync";
+import {
+  BarrierWorlds,
+  MatchKey,
+  SyncKey,
+  TimeoutSec,
+} from "../world/barrier";
 import { Context } from "./context";
 
-export class SyncSession {
-  private readonly _world: SyncWorld;
+export class BarrierSession {
+  private readonly _world: BarrierWorlds;
   private readonly _output: Output;
   private readonly _sessionId: SessionId;
   private _destroyed: boolean;
 
   constructor(ctx: Context) {
-    this._world = ctx.world.sync;
+    this._world = ctx.world.barriers;
     this._output = ctx.output;
     this._sessionId = ctx.sessionId;
     this._destroyed = false;
@@ -19,15 +24,51 @@ export class SyncSession {
 
   destroy() {
     this._destroyed = true;
-    this._world.desync(this._sessionId);
+    this._world.cancel(this._sessionId);
   }
 
   dispatch(cmd: pegasus.Command_Client) {
-    if (cmd.type !== pegasus.TypeNum.SYNC) {
-      throw new Error("Misrouted command!");
+    switch (cmd.type) {
+      case pegasus.TypeNum.KEY_MATCH:
+        return this._keyMatch(cmd.keyMatch!);
+
+      case pegasus.TypeNum.SYNC:
+        return this._sync(cmd.sync!);
+
+      default:
+        throw new Error("Unimplemented barrier command");
+    }
+  }
+
+  private async _keyMatch(cmd: pegasus.IKeyMatch_Client) {
+    const key = cmd.channel! as MatchKey;
+    const count = cmd.memberCount!;
+    const timeoutSec = cmd.timeoutSec! as TimeoutSec;
+
+    const result = await this._world.match(
+      key,
+      count,
+      timeoutSec,
+      this._sessionId
+    );
+
+    if (this._destroyed) {
+      // Connection died since this method was suspended
+      return;
     }
 
-    this._sync(cmd.sync!);
+    // I think a not-full lobby is OK here?
+    return this._output.write(
+      new pegasus.Command_Server({
+        type: pegasus.TypeNum.KEY_MATCH,
+        result: pegasus.ResultEnums.OK,
+        keyMatch: new pegasus.KeyMatch_Server({
+          channel: key,
+          battleID: result.value,
+          memberList: result.sessionIds,
+        }),
+      })
+    );
   }
 
   private async _sync(cmd: pegasus.ISync_Client) {
