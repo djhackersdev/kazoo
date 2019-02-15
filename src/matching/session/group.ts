@@ -98,6 +98,8 @@ export class GroupSession implements GroupMember {
       case pegasus.GroupCreateModeEnums.GC_CREATENOTHING:
         group = existing;
 
+        break;
+
       default:
         throw new Error("Invalid createMode");
     }
