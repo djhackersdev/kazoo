@@ -15,6 +15,7 @@
     "@types/express": "^4.16.1",
     "@types/gulp": "^4.0.5",
     "@types/jest": "^23.3.13",
+    "@types/morgan": "^1.7.35",
     "git-pre-commit": "^2.1.4",
     "gulp": "^4.0.0",
     "gulp-cli": "^2.0.1",
