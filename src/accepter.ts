@@ -15,9 +15,8 @@ app.use(morgan("dev"));
 app.use(async function(req, res, next) {
   if (req.method === "POST") {
     req.body = await read(req);
+    res.setHeader("X-Drpc-Code", "0");
   }
-
-  res.setHeader("X-Drpc-Code", "0");
 
   next();
 });
@@ -54,6 +53,24 @@ app.post("/gk4db.Arcade/RegistClient", function(req, res) {
   console.log(resp);
 
   res.send(gk4db.RegistClientResponse.encode(resp).finish());
+});
+
+app.post("/gk4db.Arcade/GameConfig", function(req, res) {
+  const reqp = gk4db.GameConfigRequest.decode(req.body);
+
+  console.log(reqp);
+
+  const resp = new gk4db.GameConfigResponse({
+    header: header(),
+    requiredClientVersion: reqp.header!.clientVer,
+    matchingHost: "blue.tembin.local",
+    matchingPort: 443,
+    telop: "telop",
+  });
+
+  console.log(resp);
+
+  res.send(gk4db.GameConfigResponse.encode(resp).finish());
 });
 
 export default app;
