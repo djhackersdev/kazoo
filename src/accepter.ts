@@ -36,6 +36,10 @@ function header(): gk4db.IResponseHeader {
   };
 }
 
+function dump(obj: any) {
+  console.log(JSON.stringify(obj, undefined, 4), "\n");
+}
+
 //
 // Handlers
 //
@@ -43,14 +47,14 @@ function header(): gk4db.IResponseHeader {
 app.post("/gk4db.Arcade/RegistClient", function(req, res) {
   const reqp = gk4db.RegistClientRequest.decode(req.body);
 
-  console.log(reqp);
+  dump(reqp);
 
   const resp = new gk4db.RegistClientResponse({
     header: header(),
     authToken: "asdf",
   });
 
-  console.log(resp);
+  dump(resp);
 
   res.send(gk4db.RegistClientResponse.encode(resp).finish());
 });
@@ -58,7 +62,7 @@ app.post("/gk4db.Arcade/RegistClient", function(req, res) {
 app.post("/gk4db.Arcade/GameConfig", function(req, res) {
   const reqp = gk4db.GameConfigRequest.decode(req.body);
 
-  console.log(reqp);
+  dump(reqp);
 
   const resp = new gk4db.GameConfigResponse({
     header: header(),
@@ -68,7 +72,7 @@ app.post("/gk4db.Arcade/GameConfig", function(req, res) {
     telop: "telop",
   });
 
-  console.log(resp);
+  dump(resp);
 
   res.send(gk4db.GameConfigResponse.encode(resp).finish());
 });
@@ -76,13 +80,13 @@ app.post("/gk4db.Arcade/GameConfig", function(req, res) {
 app.post("/gk4db.Arcade/ErrorLog", function(req, res) {
   const reqp = gk4db.ErrorLogRequest.decode(req.body);
 
-  console.log(reqp);
+  dump(reqp);
 
   const resp = new gk4db.ErrorLogResponse({
     header: header(),
   });
 
-  console.log(resp);
+  dump(resp);
 
   res.send(gk4db.ErrorLogResponse.encode(resp).finish());
 });
