@@ -25,6 +25,9 @@ export class PubSubSession implements Subscriber {
       case pegasus.TypeNum.SUBSCRIBE:
         return this._subscribe(cmd.subscribe!);
 
+      case pegasus.TypeNum.UNSUBSCRIBE:
+        return this._unsubscribe(cmd.unsubscribe!);
+
       default:
         throw new Error("Unimplemented pub-sub command");
     }
@@ -56,6 +59,24 @@ export class PubSubSession implements Subscriber {
         subscribe: new pegasus.Subscribe_Server({
           channel: key,
           history: topic.data(),
+        }),
+      })
+    );
+  }
+
+  private _unsubscribe(cmd: pegasus.IUnsubscribe_Client) {
+    const key = cmd.channel! as TopicKey;
+    const topic = this._world.topic(key);
+
+    if (topic !== undefined) {
+      topic.unsubscribe(this);
+    }
+
+    return this._output.write(
+      new pegasus.Command_Server({
+        type: pegasus.TypeNum.UNSUBSCRIBE,
+        unsubscribe: new pegasus.Unsubscribe_Server({
+          channel: key,
         }),
       })
     );

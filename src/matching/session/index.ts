@@ -50,6 +50,7 @@ export class Session {
 
       case pegasus.TypeNum.PUBLISH:
       case pegasus.TypeNum.SUBSCRIBE:
+      case pegasus.TypeNum.UNSUBSCRIBE:
         return this._pubsub.dispatch(cmd);
 
       case pegasus.TypeNum.KEY_MATCH:
