@@ -5,6 +5,7 @@ import { GroupSession } from "./group";
 import { StatusSession } from "./status";
 import { PubSubSession } from "./pubsub";
 import { BarrierSession } from "./barrier";
+import { KvsSession } from "./keyval";
 
 // Tagged unions are not a first-class concept in the Protobuf data model, so
 // v4 isn't as elegant and type-safe as it was in the v3 branch.
@@ -15,6 +16,7 @@ export class Session {
   private readonly _pubsub: PubSubSession;
   private readonly _status: StatusSession;
   private readonly _barrier: BarrierSession;
+  private readonly _kvs: KvsSession;
 
   constructor(ctx: Context) {
     this._basic = new BasicSession(ctx);
@@ -22,6 +24,7 @@ export class Session {
     this._pubsub = new PubSubSession(ctx);
     this._status = new StatusSession(ctx);
     this._barrier = new BarrierSession(ctx);
+    this._kvs = new KvsSession(ctx);
   }
 
   destroy() {
@@ -29,6 +32,7 @@ export class Session {
     this._pubsub.destroy();
     this._status.destroy();
     this._barrier.destroy();
+    this._kvs.destroy();
   }
 
   dispatch(cmd: pegasus.Command_Client) {
@@ -58,6 +62,11 @@ export class Session {
       case pegasus.TypeNum.KEY_MATCH:
       case pegasus.TypeNum.SYNC:
         return this._barrier.dispatch(cmd);
+
+      case pegasus.TypeNum.KVS_OPEN:
+      case pegasus.TypeNum.KVS_CLOSE:
+      case pegasus.TypeNum.KVS_SET:
+        return this._kvs.dispatch(cmd);
 
       default:
         throw new Error("Unsupported command");
