@@ -173,12 +173,7 @@ export class GroupSession implements GroupMember {
 
   private _groupJoin(cmd: pegasus.IGroupJoin_Client) {
     const id = extractId(cmd.groupID);
-    let faction = factionNames[cmd.slotNo!];
-
-    if (faction === undefined) {
-      console.log("Missing faction code???", cmd.slotNo);
-      faction = "efsf";
-    }
+    const faction = factionNames[cmd.slotNo!];
 
     const group = this._world.existingGroup(id);
 
