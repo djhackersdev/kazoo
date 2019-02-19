@@ -19,18 +19,23 @@ export interface Output {
   write(n: pegasus.Command_Server): void;
 }
 
+function streamEnded(error?: Error) {
+  // Node v11 now demands a callback param to pipeline()
+}
+
 export function setup(socket: Socket) {
   const logger = new Logger(socket.remoteAddress!);
 
   const input = pipeline(
     socket,
     new Deframer({ logger }),
-    new Decoder({ logger })
+    new Decoder({ logger }),
+    streamEnded
   );
 
   const output = new Encoder({ logger });
 
-  pipeline(output, new Framer({ logger }), socket);
+  pipeline(output, new Framer({ logger }), socket, streamEnded);
 
   return {
     logger,
