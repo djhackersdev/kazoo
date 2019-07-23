@@ -1,0 +1,253 @@
+package nue.protocol.mms;
+
+enum SystemConstant
+{
+
+	SYSTEMCONSTANT_DEFAULT_VALUE_PADDED = 0;
+	PROTOBUF_MESSAGE_REVISION = 1;
+	PROCESS_WAIT_POLING_INTERVAL = 3;
+}
+enum ErrorCode
+{
+
+	SUCCESS = 0;
+	MATCH_CANCELED = 1;
+	PROCESS_WAIT = 2;
+	ERR_REQUEST = 100;
+	ERR_SERVER = 101;
+	ERR_MAINTENANCE = 102;
+	ERR_MATCH_NOENTRY = 103;
+	ERR_NODEID = 200;
+	ERR_MATCH_CONDITION = 201;
+	ERR_DUPLICATE_ENTRY = 202;
+	ERR_UNDEFINED = 999;
+}
+enum MethodType
+{
+
+	PING = 0;
+	ISSUE_NODE_ID = 1;
+	ENTRY_MATCHING = 2;
+	CHECK_MATCHING = 3;
+	CANCEL_MATCHING = 4;
+	MATCHING_SETTING = 100;
+}
+enum ParameterType
+{
+
+	TYPE_NUMBER = 0;
+	TYPE_FLAG = 1;
+}
+enum Expression
+{
+
+	EXPR_EQ = 0;
+	EXPR_NE = 1;
+	EXPR_LT = 2;
+	EXPR_LE = 3;
+	EXPR_GT = 4;
+	EXPR_GE = 5;
+	EXPR_BW = 6;
+}
+enum LogicalOperator
+{
+
+	LOGIC_AND = 0;
+	LOGIC_OR = 1;
+}
+enum Relative
+{
+
+	ABSOLUTE = 0;
+	RELATIVE = 1;
+}
+enum NatMappingType
+{
+
+	NM_NONE = 0;
+	NM_ENDPOINT_INDEPENDENT = 1;
+	NM_ADDRESS_DEPENDENT = 2;
+	NM_ADDRESS_AND_PORT_DEPENDENT = 3;
+}
+enum NatFilteringType
+{
+
+	NF_NONE = 0;
+	NF_ENDPOINT_INDEPENDENT = 1;
+	NF_ADDRESS_DEPENDENT = 2;
+	NF_ADDRESS_AND_PORT_DEPENDENT = 3;
+}
+enum NatAllocationPolicy
+{
+
+	NA_NONE = 0;
+	NA_PORT_PRESERVATION = 1;
+	NA_PORT_CONTIGUITY = 2;
+	NA_RANDOM = 3;
+}
+message Request
+{
+	message Ping
+	{
+
+	}
+	message IssueNodeId
+	{
+
+		required string pcb_serial = 1;
+		required string loc_id = 2;
+		required uint32 issue_at = 3;
+		optional uint32 issue_count = 4;
+	}
+	message EntryMatching
+	{
+		message Group
+		{
+
+			required uint32 group_id = 1;
+			required Client client = 2;
+			required Player player = 3;
+		}
+
+		required uint32 apply_id = 1;
+		required Client myclient = 2;
+		required Player myplayer = 3;
+		optional World world = 4;
+		repeated Group groups = 5;
+		optional uint32 mygroup_id = 6;
+		required uint32 matching_timeout = 7;
+		optional uint32 seq_num = 8;
+		optional uint32 create_room_flag = 9;
+		required uint32 entry_at = 10;
+		repeated uint32 bl_banapassport_am_ids = 11;
+		repeated string bl_loc_ids = 12;
+	}
+	message CheckMatching
+	{
+
+		required uint64 node_id = 1;
+		required uint32 check_at = 2;
+	}
+	message CancelMatching
+	{
+
+		required uint64 node_id = 1;
+		required uint32 apply_id = 2;
+		required uint32 cancel_at = 3;
+	}
+	message MatchingSetting
+	{
+		message Condition
+		{
+
+			required uint32 attribute_id = 1;
+			required ParameterType type = 2;
+			required sint32 parameter = 3;
+			required Expression expr_id = 4;
+			required bool relative = 5;
+		}
+
+		required uint32 user_id = 1;
+		required World world = 2;
+		repeated Condition conditions = 3;
+	}
+
+	required MethodType type = 1;
+	required string request_id = 2;
+	optional Ping ping = 100;
+	optional IssueNodeId issue_node_id = 101;
+	optional EntryMatching entry_matching = 102;
+	optional CheckMatching check_matching = 103;
+	optional CancelMatching cancel_matching = 104;
+	optional MatchingSetting matching_setting = 200;
+}
+message Response
+{
+	message Ping
+	{
+
+	}
+	message IssueNodeId
+	{
+
+		repeated uint64 node_id = 1;
+	}
+	message EntryMatching
+	{
+
+		required uint32 poling_interval = 1;
+	}
+	message CheckMatching
+	{
+		message MatchedClient
+		{
+
+			required uint32 group_id = 1;
+			required Client client = 2;
+		}
+
+		optional uint32 room_id = 1;
+		optional uint32 apply_id = 2;
+		repeated MatchedClient clients = 3;
+	}
+	message CancelMatching
+	{
+
+	}
+	message MatchingSetting
+	{
+
+	}
+
+	required MethodType type = 1;
+	required string request_id = 2;
+	required ErrorCode code = 3;
+	optional Ping ping = 100;
+	optional IssueNodeId issue_node_id = 101;
+	optional EntryMatching entry_matching = 102;
+	optional CheckMatching check_matching = 103;
+	optional CancelMatching cancel_matching = 104;
+	optional MatchingSetting matching_setting = 200;
+}
+message Client
+{
+	message Property
+	{
+
+		required uint32 property_id = 1;
+		required string property_value = 2;
+	}
+
+	required uint64 node_id = 1;
+	required string pcb_serial = 2;
+	required string loc_id = 3;
+	optional string subnet_id = 4;
+	required uint32 pref_code = 5;
+	optional uint32 global_ipaddress = 6;
+	optional uint32 global_port = 7;
+	optional uint32 local_ipaddress = 8;
+	optional uint32 local_port = 9;
+	required NatMappingType nat_mapping_type = 100;
+	required NatFilteringType nat_filtering_type = 101;
+	optional NatAllocationPolicy nat_allocation_policy = 102;
+	repeated Property property = 200;
+}
+message Player
+{
+	message Parameter
+	{
+
+		required uint32 attribute_id = 1;
+		required sint32 parameter = 2;
+	}
+
+	required uint32 banapassport_am_id = 1;
+	repeated Parameter parameters = 2;
+}
+message World
+{
+
+	required string mucha_game_id = 1;
+	required uint32 version = 2;
+	required uint32 world_id = 3;
+}

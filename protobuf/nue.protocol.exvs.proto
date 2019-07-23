@@ -1,0 +1,2556 @@
+package nue.protocol.exvs;
+
+enum SystemConstant
+{
+
+	SYSTEMCONSTANT_DEFAULT_VALUE_PADDED = 0;
+	PROTOBUF_MESSAGE_REVISION = 60;
+}
+enum MethodType
+{
+
+	METHODTYPE_DEFAULT_VALUE_PADDED = 0;
+	MTHD_REGISTER_PCB = 1;
+	MTHD_REGISTER_PCB_ACK = 2;
+	MTHD_SAVE_INSIDE_DATA = 3;
+	MTHD_PRE_LOAD_CARD = 4;
+	MTHD_LOAD_CARD = 5;
+	MTHD_REGISTER_CARD = 6;
+	MTHD_SAVE_VSM_RESULT = 7;
+	MTHD_SAVE_VSC_RESULT = 8;
+	MTHD_SAVE_CHARGE = 9;
+	MTHD_SAVE_BATTLE_LOG = 10;
+	MTHD_SAVE_LOG = 11;
+	MTHD_PRE_SAVE_REPLAY = 12;
+	MTHD_SAVE_REPLAY = 13;
+	MTHD_LOAD_SPOT_INFO = 16;
+	MTHD_LOAD_RANKING = 17;
+	MTHD_CHECK_TELOP = 18;
+	MTHD_LOAD_TELOP = 19;
+	MTHD_CHECK_MOVIE_RELEASE = 21;
+	MTHD_LOAD_SPOT_URL = 22;
+	MTHD_LOAD_REPLAY_CARD = 23;
+	MTHD_LOAD_MEETING_CARD = 24;
+	MTHD_SAVE_TOURNAMENT_RESULT = 25;
+	MTHD_LOAD_ACCESS_CODE = 26;
+	MTHD_PING = 27;
+	MTHD_CHECK_TIME = 28;
+	MTHD_SAVE_BOOKKEEPING = 29;
+	MTHD_CHECK_TWO_WEEK_UPDATE = 30;
+	MTHD_LOAD_CQ_RAID_BOSS = 32;
+	MTHD_LOAD_GHOST = 33;
+	MTHD_SAVE_CQ_BATTLE_LOG = 34;
+	MTHD_SAVE_CQ_RESULT = 35;
+	MTHD_LOAD_CQ_MAP = 36;
+	MTHD_CHECK_RESOURCE_DATA = 38;
+	MTHD_SAVE_DOWNLOAD_PROGRESS = 39;
+	MTHD_SAVE_USER_PLAY_RESEARCH_DATA = 40;
+	MTHD_SAVE_CHECK_SUM = 41;
+	MTHD_LOAD_BLACK_LIST = 42;
+	MTHD_SAVE_VSM_ON_RESULT = 43;
+	MTHD_SAVE_BATTLE_LOG_ON = 44;
+	MTHD_CHECK_COMMUNICATION = 45;
+	MTHD_SAVE_VSL_ON_RESULT = 46;
+	MTHD_BNPC_LOCK = 47;
+	MTHD_CHECK_FREE_TICKET_INFO = 48;
+	MTHD_LOAD_BANACOIN_CHARGE = 49;
+	MTHD_BUY_FREE_TICKET = 50;
+	MTHD_LOAD_VS_CONQUEST_GROUP = 51;
+	MTHD_LOAD_FREE_TICKET_OWNER = 52;
+	MTHD_SAVE_VSM_ON_EVENT_RESULT = 53;
+}
+enum Error
+{
+
+	SUCCESS = 0;
+	ERR_REQUEST = 1;
+	ERR_SERVER = 2;
+	ERR_SERVICE_SUSPEND = 3;
+	ERR_USER_LOCKED = 4;
+}
+enum AcidError
+{
+
+	ACID_SUCCESS = 0;
+	ACID_NO_USE = 1;
+	ACID_SERVER_ERROR = 2;
+	ACID_AUTHENTIC_ERROR = 3;
+	ACID_FORBIDDEN = 4;
+}
+enum PcbType
+{
+
+	PCB_CABINET = 0;
+	PCB_LIVE_MONITOR = 1;
+	PCB_SERVER_BOX = 2;
+	PCB_SUB_LIVE_MONITOR = 3;
+}
+enum ServerType
+{
+
+	SRV_STUN = 0;
+	SRV_TURN = 1;
+	SRV_MATCH = 2;
+}
+enum ResourceDataType
+{
+
+	RESOURCEDATATYPE_DEFAULT_VALUE_PADDED = 0;
+	RSRC_PROMOTION_VIDEO_1 = 1;
+	RSRC_PROMOTION_VIDEO_2 = 2;
+	RSRC_REPLAY_VIDEO_1 = 3;
+	RSRC_REPLAY_VIDEO_2 = 4;
+	RSRC_MAKER_INFORMATION = 5;
+	RSRC_MOBILE_INFORMATION = 6;
+	RSRC_REPLAY = 7;
+	RSRC_TWO_WEEK_UPDATER = 8;
+	RSRC_CONQUEST_INFORMATION = 9;
+	RSRC_ONLINE_INFORMATION = 10;
+}
+enum DownloadStatus
+{
+
+	DOWNLOADSTATUS_DEFAULT_VALUE_PADDED = 0;
+	DL_STARTED = 1;
+	DL_DOWNLOADING = 2;
+	DL_COMPLETE = 3;
+	DL_WAITING = 4;
+	DL_HTTP_ERROR = 5;
+	DL_CLIENT_ERROR = 6;
+	DL_DATA_ERROR = 7;
+	DL_UNKNOWN = 8;
+}
+enum ChargeType
+{
+
+	CHARGETYPE_DEFAULT_VALUE_PADDED = 0;
+	CHRG_COIN = 1;
+	CHRG_SERVICE = 2;
+	CHRG_MEET = 3;
+	CHRG_FREE = 4;
+}
+enum RunningMode
+{
+
+	RUNNINGMODE_DEFAULT_VALUE_PADDED = 0;
+	MODE_NORMAL = 1;
+	MODE_EVENT = 2;
+	MODE_ONLINE_BATTLE = 3;
+	MODE_MEET = 4;
+}
+enum GameMode
+{
+
+	GMODE_NONE = 0;
+	GMODE_TRAINING = 1;
+	GMODE_BRANCH = 2;
+	GMODE_CONQUEST = 3;
+}
+enum SubLineType
+{
+
+	LINE_ONE = 0;
+	LINE_CPU = 1;
+	LINE_LIMITED = 2;
+}
+enum TeamMode
+{
+
+	TEAM_NONE = 0;
+	TEAM_SHUFFLE_VS = 1;
+	TEAM_SHUFFLE_SINGLES = 2;
+	TEAM_TEAM_FREE = 3;
+	TEAM_TEAM_FIXED = 4;
+	TEAM_SHUFFLE_DOUBLES = 5;
+	TEAM_SHUFFLE_DOUBLES_PLUS = 6;
+	TEAM_ONLINE_BATTLE = 7;
+}
+enum CpuLineLimit
+{
+
+	LINE_NONE = 0;
+	SCENE_ONE = 1;
+	SCENE_TWO = 2;
+	SCENE_THREE = 3;
+	SCENE_FOUR = 4;
+	SCENE_FIVE = 5;
+	SCENE_INFINITY = 6;
+}
+enum LineRankCondition
+{
+
+	RANK_REQ_NONE = 0;
+	LT_GC = 1;
+	LT_GS = 2;
+	LT_SC = 3;
+	LT_SI = 4;
+	LT_CI = 5;
+	LT_TI = 6;
+	HT_SI = 7;
+	HT_SS = 8;
+	HT_MG = 9;
+}
+enum LineWinningCondition
+{
+
+	WINNING_REQ_NONE = 0;
+	LT_TWENTY = 1;
+	LT_THIRTY = 2;
+	LT_FOURTY = 3;
+	LT_FOURTY_FIVE = 4;
+	LT_FIFTY = 5;
+	LT_FIFTY_FIVE = 6;
+	LT_SIXTY = 7;
+	GT_FIFTY = 8;
+	GT_SIXTY = 9;
+	GT_SEVENTY = 10;
+	GT_EIGHTY = 11;
+}
+enum LineCombinationCondition
+{
+
+	COMBINATION_NONE = 0;
+	COMBINATION_AND = 1;
+	COMBINATION_OR = 2;
+}
+enum PhaseEventRuleType
+{
+
+	EVENT_RULE_NONE = 0;
+	EVENT_RULE_STEP_CP = 1;
+	EVENT_RULE_STEP_SHOOT = 2;
+	EVENT_RULE_STEP_USE = 3;
+	EVENT_RULE_STEP_AREA = 4;
+	EVENT_RULE_STEP_RAID_BOSS = 5;
+	EVENT_RULE_DUEL_CP = 6;
+	EVENT_RULE_DUEL_SHOOT = 7;
+	EVENT_RULE_DUEL_AREA = 8;
+	EVENT_RULE_DUEL_RAID_BOSS = 9;
+	EVENT_RULE_MSSN = 10;
+	EVENT_RULE_MSSN_USE = 11;
+	EVENT_RULE_MSSN_SHOOT = 12;
+	EVENT_RULE_MSSN_AREA = 13;
+}
+enum OnlineLineType
+{
+
+	ONLINET_SOLO = 0;
+	ONLINET_PAIR_LEADER = 1;
+	ONLINET_PAIR_MEMBER = 2;
+	ONLINET_SOLO_WITH_CPU = 3;
+}
+enum UdpHpResultType
+{
+
+	UDPHP_SUCCESS = 0;
+	UDPHP_FAIL_CANCELED_MYSELF = 1;
+	UDPHP_FAIL_CANCELED_SOMEONE = 2;
+	UDPHP_FAIL_TIMEOUT = 3;
+	UDPHP_FAIL_TIMEOUT_NO_PACKETS = 4;
+	UDPHP_FAIL_RTT_OUT_OF_LIMIT = 5;
+	UDPHP_FAIL_OTHERS = 6;
+	UDPHP_NONE = 7;
+}
+enum BanacoinStateType
+{
+
+	BANACOINSTATETYPE_DEFAULT_VALUE_PADDED = 0;
+	BANACOIN_STATE_STOP = 1;
+	BANACOIN_STATE_TEST = 2;
+	BANACOIN_STATE_AVAILABLE = 3;
+	BANACOIN_STATE_FAILED = 4;
+}
+enum RankBaseType
+{
+
+	RANKBASETYPE_DEFAULT_VALUE_PADDED = 0;
+	PLAYER_POINT = 1;
+	TAG_POINT = 2;
+	MS_USED = 3;
+	CONQUEST_PLAYER = 4;
+	CONQUEST_PLATOON = 5;
+	ALLIANCE_PLAYER = 6;
+	ALLIANCE_PLATOON = 7;
+	PLAYER_MS_USED = 8;
+	ONLINE_EVENT_CUP = 9;
+	ONLINE_EVENT_CUP_ALL = 10;
+	TAG_TEAM_RATE = 11;
+	TAG_TEAM_RATE_ALL = 12;
+}
+enum RankAreaType
+{
+
+	RANKAREATYPE_DEFAULT_VALUE_PADDED = 0;
+	COUNTRY = 32;
+	DISTRICT = 64;
+	SPOT = 128;
+}
+enum RankSpanType
+{
+
+	RANKSPANTYPE_DEFAULT_VALUE_PADDED = 0;
+	WEEKLY = 256;
+	MONTHLY = 512;
+	PHASE = 1024;
+}
+enum RankUseType
+{
+
+	RANKUSETYPE_DEFAULT_VALUE_PADDED = 0;
+	LIVE = 2048;
+	MOBILE = 4096;
+}
+enum RankOnlineFlag
+{
+
+	RANKONLINEFLAG_DEFAULT_VALUE_PADDED = 0;
+	ONLINE_ONLY = 8192;
+}
+enum RankMessageType
+{
+
+	RANKMESSAGETYPE_DEFAULT_VALUE_PADDED = 0;
+	LIVE_COUNTRY_CONQUEST_PLAYER = 2084;
+	LIVE_COUNTRY_CONQUEST_PLATOON = 2085;
+	LIVE_COUNTRY_ALLIANCE_PLAYER = 2086;
+	LIVE_WEEKLY_COUNTRY_MS_USED = 2339;
+	LIVE_MONTHLY_COUNTRY_PLAYER_POINT = 2593;
+	LIVE_MONTHLY_COUNTRY_TAG_POINT = 2594;
+	LIVE_MONTHLY_SPOT_PLAYER_POINT = 2689;
+	LIVE_MONTHLY_SPOT_TAG_POINT = 2690;
+	LIVE_COUNTRY_ONLINE_EVENT_CUP = 3113;
+	MOBILE_COUNTRY_CONQUEST_PLAYER = 4132;
+	MOBILE_COUNTRY_CONQUEST_PLATOON = 4133;
+	MOBILE_COUNTRY_ALLIANCE_PLAYER = 4134;
+	MOBILE_COUNTRY_ALLIANCE_PLATOON = 4135;
+	MOBILE_WEEKLY_COUNTRY_MS_USED = 4387;
+	MOBILE_WEEKLY_DISTRICT_MS_USED = 4419;
+	MOBILE_MONTHLY_COUNTRY_PLAYER_POINT = 4641;
+	MOBILE_MONTHLY_COUNTRY_TAG_POINT = 4642;
+	MOBILE_MONTHLY_COUNTRY_MS_USED = 4643;
+	MOBILE_MONTHLY_COUNTRY_PLAYER_MS_USED = 4648;
+	MOBILE_MONTHLY_DISTRICT_PLAYER_POINT = 4673;
+	MOBILE_MONTHLY_DISTRICT_TAG_POINT = 4674;
+	MOBILE_MONTHLY_DISTRICT_MS_USED = 4675;
+	MOBILE_MONTHLY_SPOT_PLAYER_POINT = 4737;
+	MOBILE_MONTHLY_SPOT_TAG_POINT = 4738;
+	MOBILE_COUNTRY_ONLINE_EVENT_CUP = 5161;
+	MOBILE_COUNTRY_ONLINE_EVENT_CUP_ALL = 5162;
+	LIVE_MONTHLY_COUNTRY_ONLINE_PLAYER_POINT = 10785;
+	LIVE_MONTHLY_COUNTRY_ONLINE_TAG_POINT = 10786;
+	MOBILE_MONTHLY_COUNTRY_ONLINE_PLAYER_POINT = 12833;
+	MOBILE_MONTHLY_COUNTRY_ONLINE_TAG_POINT = 12834;
+	MOBILE_COUNTRY_TAG_TEAM_RATE = 13355;
+	MOBILE_COUNTRY_TAG_TEAM_RATE_ALL = 13356;
+}
+message AcidResponse
+{
+	message AcidCardDetail
+	{
+
+		optional uint32 mb_id = 1;
+		required uint32 am_id = 2;
+		optional string access_code = 3;
+		required uint32 publish_flag = 4;
+		required uint32 having_card_num = 5;
+		required string registed_country_name_code = 6;
+		optional uint32 purpose_id = 7;
+		optional uint32 region_id = 8;
+	}
+	message AcidAccdDetail
+	{
+
+		required uint32 am_id = 1;
+		required string access_code = 2;
+		required uint32 is_am_id = 3;
+	}
+
+	required AcidError acid_error = 1;
+	required uint32 acid_result = 2;
+	optional AcidCardDetail acid_card_detail = 3;
+	optional AcidAccdDetail acid_accd_detail = 4;
+}
+message UnfittedLocationGroup
+{
+
+	required string loc_id = 1;
+	required uint32 rtt = 2;
+}
+message MatchingTag
+{
+
+	required uint32 tag_id = 1;
+	required string tag_name = 2;
+	required uint32 tag_type = 3;
+	required uint32 matching_type = 4;
+	optional uint32 tag_matching_num = 5;
+	required uint32 matching_attribute = 6;
+}
+message TagTeamGroup
+{
+
+	required uint32 tag_id = 1;
+	required string tag_name = 2;
+	required uint32 partner_id = 3;
+	required uint32 tag_deco_id = 4;
+	required uint32 tag_plate_id = 5;
+	required uint32 tag_plate_deco_id = 6;
+	required uint32 tag_skill_point = 7;
+	required bool is_instant_tag = 8;
+	optional uint32 tag_rate = 9;
+}
+message Request
+{
+	message RegisterPcb
+	{
+
+		required PcbType pcb_type = 1;
+		required string loc_name = 2;
+		required string loc_nick = 3;
+		required uint32 pref_code = 4;
+		required string addr0 = 5;
+		required string addr1 = 6;
+		required string addr2 = 7;
+		required string addr3 = 8;
+		required string loc_id = 9;
+		required string country_code = 10;
+		required string game_id = 11;
+		required string game_ver = 12;
+		required string disk_ver = 13;
+		required uint32 two_week_ver = 14;
+		required uint32 usj_firmware_ver = 15;
+	}
+	message RegisterPcbAck
+	{
+
+	}
+	message SaveInsideData
+	{
+		enum Resolution
+		{
+
+			RESOLUTION_HD = 0;
+			RESOLUTION_SD = 1;
+		}
+		enum ClosingType
+		{
+
+			CLOSING_NONE = 0;
+			CLOSING_DAY = 1;
+			CLOSING_WEEK = 2;
+		}
+		enum MenuSelection
+		{
+
+			MENU_ON = 0;
+			MENU_OFF = 1;
+		}
+		enum ScheduleDisplay
+		{
+
+			DISPLAY_ON = 0;
+			DISPLAY_OFF = 1;
+		}
+		enum ScheduleSwitch
+		{
+
+			SWITCH_ON = 0;
+			SWITCH_OFF = 1;
+		}
+		enum ScheduleType
+		{
+
+			SCHEDULETYPE_DAY = 0;
+			SCHEDULETYPE_WEEK = 1;
+		}
+		enum SwitchType
+		{
+
+			SWITCHTYPE_AUTO = 0;
+			SWITCHTYPE_MANUAL = 1;
+		}
+		message ConfigPattern
+		{
+
+			optional uint32 pattern_num = 1;
+			optional uint32 first_config_num = 2;
+			optional uint32 second_config_num = 3;
+			optional uint32 third_config_num = 4;
+			optional uint32 first_switch_time = 5;
+			optional uint32 second_switch_time = 6;
+		}
+		message ConfigPatternSettings
+		{
+			enum Day
+			{
+
+				MONDAY = 0;
+				TUESDAY = 1;
+				WEDNESDAY = 2;
+				THURSDAY = 3;
+				FRIDAY = 4;
+				SATURDAY = 5;
+				SUNDAY = 6;
+			}
+
+			optional Day day = 1;
+			optional uint32 pattern_num = 2;
+		}
+		message Config
+		{
+
+			optional uint32 config_num = 1;
+			optional uint32 start_cost = 2;
+			optional uint32 continue_cost = 3;
+			optional uint32 continue_switch_value = 4;
+			optional uint32 conquest_scene_num = 5;
+			repeated ConfigGroup config_groups = 6;
+		}
+		message ConfigGroup
+		{
+
+			optional uint32 config_group_num = 1;
+			optional uint32 number_of_connected_boards = 2;
+			optional RunningMode running_mode = 3;
+			optional SubLineType sub_line_type = 4;
+			optional TeamMode team_mode = 5;
+			optional CpuLineLimit cpu_line_limit = 6;
+			optional LineRankCondition line_rank_condition = 7;
+			optional LineWinningCondition line_winning_condition = 8;
+			optional LineCombinationCondition line_combination_condition = 9;
+		}
+
+		required PcbType pcb_type = 1;
+		required Resolution resolution = 2;
+		required uint32 count_fs_recovery = 3;
+		required uint32 count_db_recovery = 4;
+		optional ClosingType closing_type = 5;
+		optional uint32 closing_time_hour = 6;
+		optional uint32 closing_time_minute = 7;
+		optional MenuSelection menu_selection = 8;
+		optional ScheduleDisplay schedule_display = 9;
+		optional ScheduleSwitch schedule_switch = 10;
+		optional ScheduleType schedule_type = 11;
+		optional SwitchType switch_type = 12;
+		optional uint32 valid_config_num = 13;
+		repeated ConfigPattern config_patterns = 14;
+		repeated ConfigPatternSettings config_pattern_settings = 15;
+		repeated Config configurations = 16;
+		optional uint32 lm_uptime = 17;
+		optional uint32 local_replay_view_count = 18;
+		optional uint32 replay_filter_count = 19;
+		optional uint32 tournament_replay_view_count = 20;
+		optional uint32 all_replay_view_count = 21;
+		optional uint32 vs_video_play_count = 22;
+		optional uint32 local_rank_display_count = 23;
+		optional uint32 national_rank_display_count = 24;
+		optional uint32 previous_rank_display_count = 25;
+		optional uint32 original_display_count = 26;
+		optional uint32 mobile_suits_display_count = 27;
+		optional uint32 info_display_count = 28;
+		optional uint32 schedule_display_count = 29;
+		optional uint32 conquest_situation_display_count = 30;
+	}
+	message PreLoadCard
+	{
+
+		required bool is_card = 1;
+		optional string access_code = 2;
+		required string chip_id = 3;
+		required string mucha_country_code = 4;
+	}
+	message LoadCard
+	{
+
+		required string session_id = 1;
+		required uint32 pilot_id = 2;
+		optional bool bnpc_lock = 3;
+	}
+	message RegisterCard
+	{
+
+		required string session_id = 1;
+		required bool is_card = 2;
+		optional string access_code = 3;
+		required string chip_id = 4;
+		required string mucha_country_code = 5;
+	}
+	message SaveVsmResult
+	{
+		message PlayResultGroup
+		{
+			message AdversaryGroup
+			{
+
+				required uint32 pilot_id = 1;
+				required uint32 cpu_flag = 2;
+				required uint32 ms_id = 3;
+				required uint32 down_num = 4;
+				required uint32 echelon_id = 5;
+				required uint32 skill_point = 6;
+				required string loc_id = 7;
+			}
+
+			required uint64 play_time = 1;
+			required bool win_flag = 2;
+			required uint32 vs_elapsed_time = 3;
+			required uint32 season_id = 4;
+			required uint32 stage_id = 5;
+			required uint32 selected_stage_id = 6;
+			required uint32 ms_id = 7;
+			required uint32 result_score = 8;
+			required uint32 downed_num = 9;
+			required uint32 consecutive_win = 10;
+			required bool no_damage_flag = 11;
+			required bool complete_down_flag = 12;
+			required bool perfect_win_flag = 13;
+			required bool narrow_win_flag = 14;
+			required sint32 echelon_exp = 15;
+			required uint32 gp = 16;
+			required uint32 result_order = 17;
+			required uint32 tag_id = 18;
+			required uint32 guest_nav_id = 19;
+			required uint32 guest_nav_familiarity = 20;
+			required uint32 guest_nav_costume_used = 21;
+			required uint32 battle_nav_id = 22;
+			required uint32 battle_nav_familiarity = 23;
+			required uint32 burst_type = 24;
+			required AdversaryGroup partner = 25;
+			repeated AdversaryGroup foes = 26;
+			required uint32 echelon_id = 27;
+			required uint32 alliance_id = 28;
+			required bytes ghost_data = 29;
+			required uint32 platoon_id = 30;
+			required uint32 tag_skill_point = 31;
+		}
+
+		required uint32 pilot_id = 1;
+		required string session_id = 2;
+		required bool shuffle_flag = 3;
+		required PlayResultGroup result = 4;
+	}
+	message SaveVscResult
+	{
+		message PlayResultGroup
+		{
+			message AdversaryGroup
+			{
+
+				required uint32 ms_id = 1;
+				required uint32 down_num = 2;
+			}
+
+			required uint64 play_time = 1;
+			required bool win_flag = 2;
+			required uint32 season_id = 3;
+			required uint32 ms_id = 4;
+			required uint32 scene_id = 5;
+			required uint32 course_type = 6;
+			required uint32 result_score = 7;
+			required uint32 branch_score = 8;
+			required sint32 echelon_exp = 9;
+			required uint32 gp = 10;
+			required bool course_clear_flag = 11;
+			required uint32 clear_log_flag = 12;
+			required uint32 guest_nav_id = 13;
+			required uint32 guest_nav_familiarity = 14;
+			required uint32 guest_nav_costume_used = 15;
+			required uint32 battle_nav_id = 16;
+			required uint32 battle_nav_familiarity = 17;
+			required uint32 tag_id = 18;
+			required uint32 burst_type = 19;
+			required bool exscene_open_flag = 20;
+			required bool spscene_open_flag = 21;
+			required bool branch_battle_flag = 22;
+			required uint32 vs_elapsed_time = 23;
+			required uint32 scene_id_type = 24;
+			required uint32 scene_type = 25;
+			optional AdversaryGroup partner = 26;
+			repeated AdversaryGroup foes = 27;
+			required uint32 partner_pilot_id = 28;
+		}
+
+		required uint32 pilot_id = 1;
+		required string session_id = 2;
+		required PlayResultGroup result = 3;
+	}
+	message SaveCharge
+	{
+		message ChargeData
+		{
+
+			required uint32 index = 1;
+			required string pcb_serial = 2;
+			required string charge_loc_id = 3;
+			required uint64 played_at = 4;
+			required ChargeType charge_type = 5;
+			required uint32 amount = 6;
+		}
+
+		repeated ChargeData charge_data = 1;
+	}
+	message SaveBattleLog
+	{
+		message BattleLogGroup
+		{
+			message PilotGroup
+			{
+
+				required bool is_human = 1;
+				required uint32 player_type = 2;
+				required uint32 pilot_id = 3;
+				required uint32 echelon_id = 4;
+				required uint32 consecutive_win = 5;
+				required uint32 ms_id = 6;
+				required uint32 burst_type = 7;
+			}
+
+			required uint32 pcb_id = 1;
+			required bool is_vsm = 2;
+			required uint32 stage_id = 3;
+			repeated PilotGroup pilots = 4;
+			required bool is_revenge = 5;
+		}
+
+		required string session_id = 1;
+		required BattleLogGroup battle_log = 2;
+	}
+	message SaveLog
+	{
+		message RequestLogGroup
+		{
+
+			required MethodType type = 1;
+			required uint32 request = 2;
+			required uint32 timed_out = 3;
+			required uint32 retry_max_reached = 4;
+			required uint32 response_average = 5;
+		}
+
+		required uint32 rtt = 1;
+		required uint32 request_count = 2;
+		required uint32 timeout_count = 3;
+		required uint32 play_count = 4;
+		required uint32 load_card_success_count = 5;
+		required uint32 load_card_fail_count = 6;
+		required uint32 icon_off_count = 7;
+		required uint32 est_sock_num = 8;
+		required uint32 not_est_sock_num = 9;
+		required uint64 time = 10;
+		repeated RequestLogGroup logs = 11;
+	}
+	message PreSaveReplay
+	{
+		message PilotGroup
+		{
+
+			required uint32 pilot_id = 1;
+			required uint32 ms_id = 2;
+			required string player_name = 3;
+			required uint32 echelon_id = 4;
+		}
+
+		required uint32 replay_size = 1;
+		required uint64 time = 2;
+		required uint32 stage_id = 3;
+		required uint32 category = 4;
+		repeated PilotGroup pilots = 5;
+	}
+	message SaveReplay
+	{
+
+		required uint64 replay_id = 1;
+		required uint32 block_index = 2;
+		required bytes replay_data = 3;
+	}
+	message LoadSpotInfo
+	{
+
+	}
+	message LoadRanking
+	{
+
+		required RankMessageType rank_type = 1;
+		required bool current_flag = 2;
+		required uint64 timestamp = 3;
+		required uint32 alliance_id = 4;
+	}
+	message CheckTelop
+	{
+
+	}
+	message LoadTelop
+	{
+
+		required uint32 telop_id = 1;
+	}
+	message CheckMovieRelease
+	{
+
+		required uint32 movie_id = 1;
+	}
+	message LoadSpotUrl
+	{
+
+		required bool password_reissue = 1;
+	}
+	message LoadReplayCard
+	{
+
+		required bool is_card = 1;
+		optional string access_code = 2;
+		required string chip_id = 3;
+		required string mucha_country_code = 4;
+	}
+	message LoadMeetingCard
+	{
+
+		required bool is_card = 1;
+		optional string access_code = 2;
+		required string chip_id = 3;
+		required string mucha_country_code = 4;
+	}
+	message SaveTournamentResult
+	{
+		message TournamentResultGroup
+		{
+
+			required uint64 opened_at = 1;
+			required uint64 expired_at = 2;
+			required uint32 tournament_type = 3;
+			required uint32 best_of_two = 4;
+			required uint32 mc = 5;
+			required uint32 entrant_num = 6;
+		}
+
+		required TournamentResultGroup result = 1;
+	}
+	message LoadAccessCode
+	{
+
+		required string chip_id = 1;
+	}
+	message Ping
+	{
+
+		required uint64 request_at = 1;
+	}
+	message CheckTime
+	{
+
+	}
+	message SaveBookkeeping
+	{
+		message PlayNumGroup
+		{
+
+			required uint64 time = 1;
+			required uint32 pcb_id = 2;
+			required uint32 file_id = 3;
+			required uint32 total_play_num = 4;
+			required uint32 vsm_play_num = 5;
+			required uint32 vsc_play_num = 6;
+		}
+
+		repeated PlayNumGroup play_nums = 1;
+	}
+	message CheckTwoWeekUpdate
+	{
+
+		required uint32 mucha_ver = 1;
+		required uint32 updater_ver = 2;
+	}
+	message LoadCqRaidBoss
+	{
+
+		required uint32 pilot_id = 1;
+		required uint32 season_id = 2;
+		required uint32 alliance_id = 3;
+		required uint32 platoon_id = 4;
+		required uint32 raid_boss_encounter_rate = 5;
+		required uint32 raid_boss_corps_encounter_rate = 6;
+		required uint32 scene_num = 7;
+	}
+	message LoadGhost
+	{
+
+		required uint32 pilot_id = 1;
+		required bool partner_ghost_flag = 2;
+		required uint32 partner_ghost_id = 3;
+		required uint32 alliance_id = 4;
+		required uint32 foe_alliance_id = 5;
+		required uint32 platoon_id = 6;
+		required uint32 dominator_id = 7;
+		required uint32 distance = 8;
+		required uint32 cq_scene_num = 9;
+		required uint32 partner_echelon_min = 10;
+		required uint32 partner_echelon_max = 11;
+		required uint32 ghost1_echelon_min = 12;
+		required uint32 ghost1_echelon_max = 13;
+		required uint32 ghost2_echelon_min = 14;
+		required uint32 ghost2_echelon_max = 15;
+	}
+	message SaveCqBattleLog
+	{
+		message ConquestLogGroup
+		{
+			message PilotGroup
+			{
+				message MSEditDataGroup
+				{
+
+					required uint32 armor_level = 1;
+					required uint32 shoot_attack_level = 2;
+					required uint32 infight_attack_level = 3;
+					required uint32 booster_level = 4;
+					required uint32 ex_gauge_level = 5;
+				}
+				message PhaseEventGroup
+				{
+
+					required uint32 phase_event_alliance_id = 1;
+					required uint32 mst_phase_event_id = 2;
+				}
+
+				required uint32 operator_type = 1;
+				required uint32 player_type = 2;
+				required uint32 pilot_id = 3;
+				required uint32 echelon_id = 4;
+				required uint32 consecutive_win = 5;
+				required uint32 alliance_id = 6;
+				required uint32 ms_id = 7;
+				required uint32 burst_type = 8;
+				repeated uint32 skill_id = 9;
+				optional MSEditDataGroup ms_edit_data = 10;
+				optional uint32 raid_boss_armor_point = 11;
+				optional uint32 raid_boss_damage_rate = 12;
+				optional PhaseEventGroup phase_event_groups = 13;
+			}
+
+			required uint32 pcb_id = 1;
+			required uint32 stage_id = 2;
+			required uint32 season_id = 3;
+			required uint32 map_id = 4;
+			required uint32 area_id = 5;
+			repeated PilotGroup pilots = 6;
+		}
+
+		required string session_id = 1;
+		required ConquestLogGroup conquest_log = 2;
+	}
+	message SaveCqResult
+	{
+		message PlayResultGroup
+		{
+			message AdversaryGroup
+			{
+
+				required uint32 pilot_id = 1;
+				required uint32 operator_type = 2;
+				required uint32 ms_id = 3;
+				required uint32 down_num = 4;
+				optional bool is_platoon_ghost = 5;
+				optional uint32 echelon_id = 6;
+				optional uint32 skill_point = 7;
+			}
+			message RaidBossGroup
+			{
+
+				required uint64 boss_id = 1;
+				required uint32 ms_id = 2;
+				required uint32 damage = 3;
+				required bool is_defeated = 4;
+				optional uint32 level = 5;
+			}
+			message RaidBossCorpsGroup
+			{
+
+			}
+			message PhaseEventResult
+			{
+
+				required uint32 phase_event_alliance_id = 1;
+				required uint32 mst_phase_event_id = 2;
+				required uint32 alliance_amount = 3;
+			}
+			message CpuAllianceGroup
+			{
+
+				required uint32 area_id = 1;
+				required uint32 ap = 2;
+			}
+
+			required uint64 play_time = 1;
+			required bool win_flag = 2;
+			required uint32 vs_elapsed_time = 3;
+			required uint32 ms_id = 4;
+			required uint32 season_id = 5;
+			required uint32 area_id = 6;
+			required uint32 area_difficulty = 7;
+			required uint32 scene_num = 8;
+			required uint32 alliance_id = 9;
+			required uint32 platoon_id = 10;
+			required uint32 battle_type = 11;
+			required uint32 result_score = 12;
+			required uint32 echelon_id = 13;
+			required sint32 echelon_exp = 14;
+			required uint32 gp = 15;
+			required sint32 ap = 16;
+			required uint32 cp = 17;
+			required uint32 guest_nav_id = 18;
+			required uint32 guest_nav_familiarity = 19;
+			required uint32 guest_nav_costume_used = 20;
+			required uint32 battle_nav_id = 21;
+			required uint32 battle_nav_familiarity = 22;
+			required uint32 tag_id = 23;
+			required uint32 burst_type = 24;
+			required AdversaryGroup partner = 25;
+			repeated AdversaryGroup supporter = 26;
+			repeated AdversaryGroup foes = 27;
+			optional RaidBossGroup raid_boss = 28;
+			optional RaidBossCorpsGroup raild_boss_corps = 29;
+			optional PhaseEventResult phase_event_result = 30;
+			required bytes ghost_data = 31;
+			optional CpuAllianceGroup cpu_alliance = 32;
+			required bool primary_choice = 33;
+		}
+
+		required uint32 pilot_id = 1;
+		required string session_id = 2;
+		required PlayResultGroup result = 3;
+	}
+	message LoadCqMap
+	{
+
+	}
+	message CheckResourceData
+	{
+
+		required ResourceDataType resource_type = 1;
+		optional uint32 replay_id = 2;
+	}
+	message SaveDownloadProgress
+	{
+
+		required ResourceDataType resource_type = 1;
+		required uint64 resource_id = 2;
+		required uint32 downloaded_bytes = 3;
+		required DownloadStatus status = 4;
+		optional string url = 5;
+		optional uint32 mucha_ver = 6;
+	}
+	message SaveUserPlayResearchData
+	{
+
+		required uint64 play_time = 1;
+		required uint32 pilot_id = 2;
+		required uint32 echelon_id = 3;
+		required uint32 course_type = 4;
+		required uint32 play_times = 5;
+		required ChargeType charge_type = 6;
+		required string session_id = 7;
+		required GameMode game_mode = 8;
+		required RunningMode running_mode = 9;
+		required TeamMode team_mode = 10;
+		required SubLineType subline_type = 11;
+		required CpuLineLimit cpu_line_limit = 12;
+		required LineRankCondition line_rank_condition = 13;
+		required LineWinningCondition line_winning_condition = 14;
+		required LineCombinationCondition line_condition_combination = 15;
+		required uint32 vs_game_time = 16;
+		required uint32 pcb_id = 17;
+		required uint32 mb_id = 18;
+		required bool is_selected_online_event_cup = 19;
+	}
+	message SaveCheckSum
+	{
+
+		required string disk_ver = 1;
+		repeated uint32 crc = 2;
+	}
+	message LoadBlackList
+	{
+
+	}
+	message SaveVsmOnResult
+	{
+		message PlayResultGroup
+		{
+			message AdversaryGroup
+			{
+
+				required uint32 pilot_id = 1;
+				required uint32 cpu_flag = 2;
+				required uint32 ms_id = 3;
+				required uint32 down_num = 4;
+				required uint32 echelon_id = 5;
+				required uint32 skill_point = 6;
+				required string loc_id = 7;
+			}
+
+			required uint64 play_time = 1;
+			required bool win_flag = 2;
+			required bool revenge_flag = 3;
+			required uint32 vs_elapsed_time = 4;
+			required uint32 season_id = 5;
+			required uint32 stage_id = 6;
+			required uint32 selected_stage_id = 7;
+			required uint32 ms_id = 8;
+			required uint32 result_score = 9;
+			required uint32 downed_num = 10;
+			required uint32 consecutive_win = 11;
+			required bool no_damage_flag = 12;
+			required bool complete_down_flag = 13;
+			required bool perfect_win_flag = 14;
+			required bool narrow_win_flag = 15;
+			required sint32 echelon_exp = 16;
+			required uint32 gp = 17;
+			required uint32 result_order = 18;
+			required uint32 tag_id = 19;
+			required uint32 guest_nav_id = 20;
+			required uint32 guest_nav_familiarity = 21;
+			required uint32 guest_nav_costume_used = 22;
+			required uint32 battle_nav_id = 23;
+			required uint32 battle_nav_familiarity = 24;
+			required uint32 burst_type = 25;
+			required AdversaryGroup partner = 26;
+			repeated AdversaryGroup foes = 27;
+			required uint32 echelon_id = 28;
+			required uint32 alliance_id = 29;
+			required bytes ghost_data = 30;
+			required uint32 platoon_id = 31;
+			required uint32 tag_skill_point = 32;
+			optional MatchingTag matching_tag = 33;
+			optional uint32 tag_team_rate_term_id = 34;
+			optional sint32 tag_team_rate_difference = 35;
+		}
+		message NetworkReport
+		{
+			message NetworkReportPcbData
+			{
+
+				required string pcb_serial = 1;
+				required string loc_id = 2;
+				required uint32 rtt = 3;
+				required float packet_lost_rate = 4;
+			}
+
+			repeated NetworkReportPcbData pcb_data = 1;
+			required uint32 battle_pad_input_delay_frame = 2;
+		}
+
+		required uint32 pilot_id = 1;
+		required string session_id = 2;
+		required bool shuffle_flag = 3;
+		required PlayResultGroup result = 4;
+		repeated UnfittedLocationGroup unfitted_locs = 5;
+		optional uint32 ragequit_num = 6;
+		required NetworkReport network_report = 7;
+	}
+	message SaveBattleLogOn
+	{
+		message BattleLogGroup
+		{
+			message PilotGroup
+			{
+
+				required bool is_human = 1;
+				required uint32 player_type = 2;
+				required uint32 pilot_id = 3;
+				required uint32 echelon_id = 4;
+				required uint32 consecutive_win = 5;
+				required uint32 ms_id = 6;
+				required uint32 burst_type = 7;
+			}
+
+			required uint32 pcb_id = 1;
+			required uint32 stage_id = 2;
+			repeated PilotGroup pilots = 3;
+			required bool is_revenge = 4;
+		}
+
+		required string session_id = 1;
+		required BattleLogGroup battle_log = 2;
+	}
+	message CheckCommunication
+	{
+		message StunResult
+		{
+			enum NatMappingType
+			{
+
+				NM_NONE = 0;
+				NM_ENDPOINT_INDEPENDENT = 1;
+				NM_ADDRESS_DEPENDENT = 2;
+				NM_ADDRESS_AND_PORT_DEPENDENT = 3;
+			}
+			enum NatFilteringType
+			{
+
+				NF_NONE = 0;
+				NF_ENDPOINT_INDEPENDENT = 1;
+				NF_ADDRESS_DEPENDENT = 2;
+				NF_ADDRESS_AND_PORT_DEPENDENT = 3;
+			}
+
+			required NatMappingType nat_mapping_type = 1;
+			required NatFilteringType nat_filtering_type = 2;
+		}
+		message OtherPlayerInfo
+		{
+
+			required string loc_id = 1;
+			required string pcb_serial = 2;
+			required uint32 pilot_id = 3;
+			required uint32 echelon_id = 4;
+			required uint32 rtt = 5;
+			required uint32 matching_echelon_rank = 6;
+		}
+
+		required uint64 start_date = 1;
+		required uint64 end_date = 2;
+		required uint32 pilot_id = 3;
+		required uint32 echelon_id = 4;
+		required OnlineLineType line_type = 5;
+		required uint32 match_try_num = 6;
+		required StunResult stun_result = 7;
+		required bool found_player_flag = 8;
+		required UdpHpResultType udp_hp_result = 9;
+		repeated OtherPlayerInfo players = 10;
+		required uint32 apply_id = 11;
+		required uint32 matching_echelon_rank = 12;
+	}
+	message SaveVslOnResult
+	{
+		message PlayResultGroup
+		{
+			message AdversaryGroup
+			{
+
+				required string pcb_serial = 1;
+				required string loc_id = 2;
+				required uint32 cpu_flag = 3;
+				required uint32 ms_id = 4;
+				required uint32 burst_type = 5;
+				required uint32 rtt = 6;
+			}
+
+			required uint64 play_time = 1;
+			required bool win_flag = 2;
+			required uint32 vs_elapsed_time = 3;
+			required uint32 stage_id = 4;
+			required uint32 selected_stage_id = 5;
+			required uint32 ms_id = 6;
+			required uint32 result_score = 7;
+			required uint32 result_order = 8;
+			required uint32 burst_type = 9;
+			required AdversaryGroup partner = 10;
+			repeated AdversaryGroup foes = 11;
+			required OnlineLineType line_type = 12;
+		}
+
+		required bool shuffle_flag = 1;
+		required PlayResultGroup result = 2;
+	}
+	message BnpcLock
+	{
+
+		optional uint32 pilot_id = 1;
+		optional string chip_id = 2;
+		optional uint32 am_id = 3;
+		required uint32 lock_timeout = 4;
+	}
+	message CheckFreeTicketInfo
+	{
+
+	}
+	message LoadBanacoinCharge
+	{
+
+		required bool is_card = 1;
+		optional string access_code = 2;
+		required string chip_id = 3;
+		required string mucha_country_code = 4;
+	}
+	message BuyFreeTicket
+	{
+
+		required string session_id = 1;
+		required string person_id = 2;
+		required uint32 freepass_id = 3;
+	}
+	message LoadVsConquestGroup
+	{
+
+	}
+	message LoadFreeTicketOwner
+	{
+
+		required bool is_card = 1;
+		optional string access_code = 2;
+		required string chip_id = 3;
+		required string mucha_country_code = 4;
+	}
+	message SaveVsmOnEventResult
+	{
+		message PlayResultGroup
+		{
+			message AdversaryGroup
+			{
+
+				required uint32 pilot_id = 1;
+				required uint32 cpu_flag = 2;
+				required uint32 ms_id = 3;
+				required uint32 down_num = 4;
+				required uint32 echelon_id = 5;
+				required uint32 skill_point = 6;
+				required string loc_id = 7;
+			}
+
+			required uint64 play_time = 1;
+			required bool win_flag = 2;
+			required bool revenge_flag = 3;
+			required uint32 vs_elapsed_time = 4;
+			required uint32 season_id = 5;
+			required uint32 stage_id = 6;
+			required uint32 selected_stage_id = 7;
+			required uint32 ms_id = 8;
+			required uint32 result_score = 9;
+			required uint32 downed_num = 10;
+			required uint32 consecutive_win = 11;
+			required bool no_damage_flag = 12;
+			required bool complete_down_flag = 13;
+			required bool perfect_win_flag = 14;
+			required bool narrow_win_flag = 15;
+			required sint32 echelon_exp = 16;
+			required uint32 gp = 17;
+			required uint32 event_point = 18;
+			required uint32 mst_online_event_cup_id = 19;
+			required uint32 result_order = 20;
+			required uint32 tag_id = 21;
+			required uint32 tag_skill_point = 22;
+			required uint32 guest_nav_id = 23;
+			required uint32 guest_nav_familiarity = 24;
+			required uint32 guest_nav_costume_used = 26;
+			required uint32 battle_nav_id = 27;
+			required uint32 battle_nav_familiarity = 28;
+			required uint32 burst_type = 29;
+			required AdversaryGroup partner = 30;
+			repeated AdversaryGroup foes = 31;
+			required uint32 echelon_id = 32;
+			required uint32 alliance_id = 33;
+			required uint32 platoon_id = 34;
+			required bytes ghost_data = 35;
+		}
+		message NetworkReport
+		{
+			message NetworkReportPcbData
+			{
+
+				required string pcb_serial = 1;
+				required string loc_id = 2;
+				required uint32 rtt = 3;
+				required float packet_lost_rate = 4;
+			}
+
+			repeated NetworkReportPcbData pcb_data = 1;
+			required uint32 battle_pad_input_delay_frame = 2;
+		}
+
+		required uint32 pilot_id = 1;
+		required string session_id = 2;
+		required bool shuffle_flag = 3;
+		required PlayResultGroup result = 4;
+		repeated UnfittedLocationGroup unfitted_locs = 5;
+		optional uint32 ragequit_num = 6;
+		required NetworkReport network_report = 7;
+	}
+
+	required MethodType type = 1;
+	required string request_id = 2;
+	required string pcb_serial = 10;
+	required string loc_id = 11;
+	optional uint32 am_id = 12;
+	optional RegisterPcb register_pcb = 101;
+	optional RegisterPcbAck register_pcb_ack = 102;
+	optional SaveInsideData save_inside_data = 103;
+	optional PreLoadCard pre_load_card = 104;
+	optional LoadCard load_card = 105;
+	optional RegisterCard register_card = 106;
+	optional SaveVsmResult save_vsm_result = 107;
+	optional SaveVscResult save_vsc_result = 108;
+	optional SaveCharge save_charge = 109;
+	optional SaveBattleLog save_battle_log = 110;
+	optional SaveLog save_log = 111;
+	optional PreSaveReplay pre_save_replay = 112;
+	optional SaveReplay save_replay = 113;
+	optional LoadSpotInfo load_spot_info = 116;
+	optional LoadRanking load_ranking = 117;
+	optional CheckTelop check_telop = 118;
+	optional LoadTelop load_telop = 119;
+	optional CheckMovieRelease check_movie_release = 121;
+	optional LoadSpotUrl load_spot_url = 122;
+	optional LoadReplayCard load_replay_card = 123;
+	optional LoadMeetingCard load_meeting_card = 124;
+	optional SaveTournamentResult save_tournament_result = 125;
+	optional LoadAccessCode load_access_code = 126;
+	optional Ping ping = 127;
+	optional CheckTime check_time = 128;
+	optional SaveBookkeeping save_bookkeeping = 129;
+	optional CheckTwoWeekUpdate check_two_week_update = 130;
+	optional LoadCqRaidBoss load_cq_raid_boss = 132;
+	optional LoadGhost load_ghost = 133;
+	optional SaveCqBattleLog save_cq_battle_log = 134;
+	optional SaveCqResult save_cq_result = 135;
+	optional LoadCqMap load_cq_map = 136;
+	optional CheckResourceData check_resource_data = 138;
+	optional SaveDownloadProgress save_download_progress = 139;
+	optional SaveUserPlayResearchData save_user_play_research_data = 140;
+	optional SaveCheckSum save_check_sum = 141;
+	optional LoadBlackList load_black_list = 142;
+	optional SaveVsmOnResult save_vsm_on_result = 143;
+	optional SaveBattleLogOn save_battle_log_on = 144;
+	optional CheckCommunication check_communication = 145;
+	optional SaveVslOnResult save_vsl_on_result = 146;
+	optional BnpcLock bnpc_lock = 147;
+	optional CheckFreeTicketInfo check_free_ticket_info = 148;
+	optional LoadBanacoinCharge load_banacoin_charge = 149;
+	optional BuyFreeTicket buy_free_ticket = 150;
+	optional LoadVsConquestGroup load_vs_conquest_group = 151;
+	optional LoadFreeTicketOwner load_free_ticket_owner = 152;
+	optional SaveVsmOnEventResult save_vsm_on_event_result = 153;
+}
+message Response
+{
+	message RegisterPcb
+	{
+		message ServerInfo
+		{
+
+			required ServerType server_type = 1;
+			required string uri = 2;
+			required uint32 port = 3;
+			optional string account_name = 4;
+			optional string account_pass = 5;
+		}
+		message EchelonTable
+		{
+
+			required uint32 echelon_id = 1;
+			required uint32 online_match_rank = 2;
+			optional sint32 down_default_exp = 3;
+			optional sint32 up_default_exp = 4;
+			required uint32 win_correction_rate = 5;
+			required uint32 lose_correction_rate = 6;
+		}
+		message EchelonMatchingTable
+		{
+
+			required uint32 online_match_rank = 1;
+			required uint32 matching_try_num = 2;
+			required uint32 seq_num = 3;
+			required bool make_room_flag = 4;
+		}
+		message OnVsInfo
+		{
+
+			required uint32 b_one_normal_div_rate = 1;
+			required uint32 b_one_lose_div_rate = 2;
+			required uint32 request_rank = 3;
+			required uint32 rule_time_limit_team = 4;
+			required uint32 rule_time_limit_shuffle = 5;
+			required uint32 rule_damage_level_team = 6;
+			required uint32 rule_damage_level_shuffle = 7;
+		}
+		message CreditSetting
+		{
+
+			required uint32 start_cost = 1;
+			required uint32 continue_cost = 2;
+		}
+		message OnlineEventCupSetting
+		{
+
+			required uint32 mst_online_event_cup_id = 1;
+			required uint32 event_name_id = 2;
+			required string event_name = 3;
+			required uint64 opened_at = 4;
+			required uint64 expired_at = 5;
+			required uint32 event_rule = 6;
+			repeated uint32 regulation_ms_id = 7;
+			required uint32 default_ms_id = 8;
+			required uint32 rule_time_limit = 9;
+			required uint32 rule_damage_level = 10;
+		}
+		message TagRateMatchingTable
+		{
+
+			required uint32 matching_try_num = 1;
+			required uint32 seq_num = 2;
+			required bool make_room_flag = 3;
+		}
+		message ExtremeMatchSetting
+		{
+
+			required uint32 tag_rate_term_id = 1;
+			required uint64 opened_at = 2;
+			required uint64 expired_at = 3;
+		}
+
+		repeated ServerInfo server_info = 1;
+		repeated uint32 release_ms_id = 2;
+		repeated uint32 new_ms_id = 3;
+		repeated uint32 displayable_ms_id = 4;
+		repeated uint32 release_guest_nav_id = 5;
+		repeated uint32 release_cpu_scene = 6;
+		repeated uint32 release_game_rule = 7;
+		repeated EchelonTable echelon_tables = 8;
+		required OnVsInfo on_vs_info = 9;
+		required bool sram_clear = 10;
+		required uint64 next_maintenance_start_at = 11;
+		required uint64 next_maintenance_end_at = 12;
+		required bool banacoin_available_loc = 13;
+		required BanacoinStateType banacoin_state = 14;
+		optional CreditSetting credit_setting = 15;
+		repeated EchelonMatchingTable echelon_matching_tables = 16;
+		optional OnlineEventCupSetting online_event_cup_setting = 17;
+		repeated TagRateMatchingTable tag_rate_matching_tables = 18;
+		optional ExtremeMatchSetting extreme_match_setting = 19;
+	}
+	message RegisterPcbAck
+	{
+
+	}
+	message SaveInsideData
+	{
+
+	}
+	message PreLoadCard
+	{
+		message LoadPlayer
+		{
+			message FreepassGroup
+			{
+
+				required uint32 freepass_id = 1;
+				required uint64 start_date = 2;
+				required uint64 end_date = 3;
+				required string loc_id = 4;
+			}
+
+			required uint32 pilot_id = 1;
+			optional uint64 last_played_at = 2;
+			required uint32 total_win = 3;
+			required uint32 total_lose = 4;
+			required uint32 echelon_id = 5;
+			required sint32 echelon_exp = 6;
+			optional uint32 exdx_echelon_id = 7;
+			required uint32 vsm_after_rank_up = 8;
+			repeated FreepassGroup freepass = 9;
+		}
+		message MobileUserGroup
+		{
+			message GuestNavGroup
+			{
+
+				required bool guest_nav_setting_flag = 1;
+				required uint32 guest_nav_id = 2;
+				required uint32 guest_nav_costume = 3;
+				required uint32 guest_nav_familiarity = 4;
+				required uint32 guest_nav_remains = 5;
+				required uint32 guest_nav_costume_used = 6;
+				required bool battle_nav_setting_flag = 7;
+				required uint32 battle_nav_remains = 8;
+			}
+			message FavoriteMSGroup
+			{
+
+				required uint32 ms_id = 1;
+				required uint32 ms_used_num = 2;
+				required uint32 gauge_design_id = 3;
+				repeated uint32 bgm_settings = 4;
+				required uint32 bgm_play_method = 5;
+				required uint32 battle_nav_id = 6;
+				required uint32 burst_type = 7;
+			}
+			message ChallengeMisData
+			{
+
+				required uint32 challenge_mis_id = 1;
+				required uint32 challenge_category = 2;
+				required uint32 current_num = 3;
+				required uint32 disired_num = 4;
+				required uint64 expires_at = 5;
+				required uint32 achivement_unit = 6;
+			}
+
+			required uint32 user_id = 1;
+			required string player_name = 2;
+			required uint32 open_record = 3;
+			required uint32 echelon_open = 4;
+			required uint32 title_plate_id = 5;
+			required uint32 title_plate_deco_id = 6;
+			required uint32 title_text_id = 7;
+			required uint32 title_deco_id = 8;
+			required string title_text = 9;
+			required uint32 emblem_plate_id = 10;
+			required uint32 emblem_icon_id = 11;
+			required uint32 emblem_plate_color_id = 12;
+			required uint32 emblem_icon_color_id1 = 13;
+			required uint32 emblem_icon_color_id2 = 14;
+			required uint32 ms_skill1 = 15;
+			required uint32 ms_skill2 = 16;
+			required uint32 gp_boost = 17;
+			required uint32 guest_nav_boost = 18;
+			required bool battle_nav_advise_flag = 19;
+			required bool battle_nav_notify_flag = 20;
+			repeated GuestNavGroup guest_navs = 21;
+			repeated FavoriteMSGroup favorite_mobile_suits = 22;
+			optional string tag_matching_keyword = 23;
+			repeated ChallengeMisData challenge_mis_data = 24;
+		}
+
+		required string session_id = 1;
+		optional AcidResponse acid_response = 2;
+		optional uint32 mb_id = 3;
+		optional LoadPlayer load_player = 4;
+		optional string access_code = 5;
+		optional bool is_new_card = 6;
+		optional uint32 am_id = 7;
+		optional MobileUserGroup user = 8;
+		optional AcidError acid_error = 9;
+		optional MatchingTag matching_tag = 10;
+	}
+	message LoadCard
+	{
+		message PilotDataGroup
+		{
+
+			repeated MSSkillGroup ms_skills = 1;
+			repeated CpuSceneData cpu_scenes = 2;
+			required uint32 branch_used_num = 3;
+			required bool is_first_conquest_play = 4;
+			required bool is_first_season_play = 5;
+			required uint32 alliance_id = 6;
+			optional bytes ghost_data = 7;
+			required bool is_penalty = 8;
+			optional PhaseEventProgress phase_event_progress = 9;
+			optional PhaseEventFoeProgress phase_event_foe_progress = 10;
+			required bool pre_phase_event_check = 11;
+			optional PrePhaseEvent pre_phase_event = 12;
+			repeated TagTeamGroup tag_teams = 13;
+		}
+		message MobileUserDataGroup
+		{
+
+			repeated MSEditDataGroup ms_edits = 1;
+			repeated uint32 extra_ms_id = 2;
+			optional MobileUserGroup mobile_user = 3;
+			optional ConquestDataGroup conquest = 4;
+		}
+		message MSSkillGroup
+		{
+
+			required uint32 ms_id = 1;
+			required uint32 ms_used_num = 2;
+		}
+		message MSEditDataGroup
+		{
+
+			required uint32 ms_id = 1;
+			required uint32 armor_level = 2;
+			required uint32 shoot_attack_level = 3;
+			required uint32 infight_attack_level = 4;
+			required uint32 booster_level = 5;
+			required uint32 ex_gauge_level = 6;
+			required uint32 pilot_costume = 7;
+			required uint32 ms_instanttag_flg = 8;
+		}
+		message CpuSceneData
+		{
+
+			required uint32 scene_id = 1;
+			required uint32 high_score = 2;
+			required uint32 clear_num = 3;
+			required bool exscene_open_flag = 4;
+			required bool spscene_open_flag = 5;
+		}
+		message ConquestDataGroup
+		{
+
+			required uint32 platoon_id = 1;
+			required uint32 platoon_cmd_a_id = 2;
+			required uint32 platoon_cmd_a_rate = 3;
+			required uint32 platoon_cmd_a_level = 4;
+			required uint32 platoon_cmd_b_id = 5;
+			required uint32 platoon_cmd_b_rate = 6;
+			required uint32 platoon_cmd_b_level = 7;
+			required uint32 partner_ghost_id = 8;
+			required bool is_prev_season_play = 9;
+			required uint32 prev_alliance_id = 10;
+		}
+		message PhaseEventProgress
+		{
+
+			required uint32 phase_event_alliance_id = 1;
+			required uint32 mst_phase_event_id = 2;
+			required uint32 alliance_amount = 3;
+		}
+		message PhaseEventFoeProgress
+		{
+
+			required uint32 phase_event_alliance_id = 1;
+			required uint32 alliance_id = 2;
+			required uint32 alliance_amount = 3;
+		}
+		message PrePhaseEvent
+		{
+
+			required uint32 phase_event_alliance_id = 1;
+			required uint32 mst_phase_event_id = 2;
+			required uint32 alliance_amount = 3;
+			repeated uint32 step_values = 4;
+			required uint32 duel_alliance_id = 5;
+			required uint32 duel_alliance_amount = 6;
+		}
+		message MobileUserGroup
+		{
+			message CommandMessageGroup
+			{
+
+				required uint32 command = 1;
+				required string message_text = 2;
+				required uint32 icon = 3;
+				required uint32 icon_position = 4;
+				required uint32 icon_se = 5;
+			}
+			message CustomizeCommentGroup
+			{
+
+				required uint32 base_panel_id = 1;
+				required uint32 comment_parts_a_id = 2;
+				required uint32 comment_parts_b_id = 3;
+			}
+
+			required uint32 default_gauge_design_id = 1;
+			repeated uint32 default_bgm_settings = 2;
+			required uint32 default_bgm_play_method = 3;
+			repeated CommandMessageGroup playing_messages = 4;
+			repeated CommandMessageGroup result_messages = 5;
+			repeated CommandMessageGroup online_shuffle_playing_messages = 6;
+			repeated CommandMessageGroup online_shuffle_result_messages = 7;
+			required CustomizeCommentGroup custom_comment = 8;
+			repeated uint32 stage_randoms = 9;
+			required uint32 conq_scene_num = 10;
+		}
+
+		required PilotDataGroup pilot_data_group = 1;
+		optional MobileUserDataGroup mobile_user_data_group = 2;
+	}
+	message RegisterCard
+	{
+
+		required string session_id = 1;
+		optional AcidResponse acid_response = 2;
+		optional uint32 pilot_id = 3;
+		optional string access_code = 4;
+		optional bool is_registered = 5;
+		required AcidError acid_error = 6;
+		optional uint32 cq_alliance_id = 7;
+	}
+	message SaveVsmResult
+	{
+
+	}
+	message SaveVscResult
+	{
+
+	}
+	message SaveCharge
+	{
+		message SaveChargeResult
+		{
+			enum Hc2Error
+			{
+
+				HC2_SUCCESS = 0;
+				HC2_ERROR = 1;
+			}
+
+			required Hc2Error hc2_error = 1;
+			optional string hc2_error_msg = 2;
+		}
+
+		repeated SaveChargeResult save_charge_result = 1;
+	}
+	message SaveBattleLog
+	{
+
+	}
+	message SaveLog
+	{
+
+	}
+	message PreSaveReplay
+	{
+
+		optional uint64 replay_id = 1;
+		optional uint32 interval = 2;
+	}
+	message SaveReplay
+	{
+
+	}
+	message LoadSpotInfo
+	{
+
+		optional uint32 sinfo_bgid = 1;
+		optional string sinfo_title = 2;
+		optional string sinfo_text = 3;
+		optional bool infbar_switch = 4;
+	}
+	message LoadRanking
+	{
+
+		optional RankMessageType rank_type = 1;
+		optional MsUsedRank ms_used_rank = 2;
+		optional PlayerPointRank player_point_rank = 3;
+		optional TagPointRank tag_point_rank = 4;
+		optional ConquestPlayerRank conquest_player_rank = 5;
+		optional ConquestPlatoonRank conquest_platoon_rank = 6;
+		optional OnlineEventCupRank online_event_cup_rank = 7;
+		optional uint64 timestamp = 8;
+	}
+	message CheckTelop
+	{
+
+		optional uint32 telop1_id = 1;
+		optional uint32 telop2_id = 2;
+		optional uint32 telop3_id = 3;
+		optional uint32 telop4_id = 4;
+		optional uint32 telop5_id = 5;
+		optional uint32 telop6_id = 6;
+	}
+	message LoadTelop
+	{
+
+		required string telop_data = 1;
+	}
+	message CheckMovieRelease
+	{
+
+		required uint32 release_flag = 1;
+		required uint64 open_date = 2;
+		required uint64 close_date = 3;
+	}
+	message LoadSpotUrl
+	{
+
+		required string url = 1;
+		required bytes qrcode = 2;
+		optional string temp_password = 3;
+	}
+	message LoadReplayCard
+	{
+		message MobileUserGroup
+		{
+
+			required uint32 user_id = 1;
+			required string player_name = 2;
+		}
+
+		optional uint32 pilot_id = 1;
+		optional string access_code = 2;
+		optional bool is_new_card = 3;
+		optional MobileUserGroup user = 4;
+		required AcidError acid_error = 5;
+	}
+	message LoadMeetingCard
+	{
+		message LoadPlayer
+		{
+
+			required uint32 pilot_id = 1;
+			optional uint64 last_played_at = 2;
+			required uint32 total_win = 3;
+			required uint32 total_lose = 4;
+			required uint32 echelon_id = 5;
+			repeated TagTeamGroup tag_teams = 6;
+		}
+		message MobileUserGroup
+		{
+			message GuestNavGroup
+			{
+
+				required bool guest_nav_setting_flag = 1;
+				required uint32 guest_nav_id = 2;
+				optional uint32 guest_nav_costume = 3;
+				required uint32 guest_nav_familiarity = 4;
+				optional uint32 guest_nav_remains = 5;
+				optional uint32 guest_nav_costume_used = 6;
+			}
+
+			required uint32 user_id = 1;
+			required string player_name = 2;
+			required uint32 open_record = 3;
+			required uint32 echelon_open = 4;
+			required uint32 title_plate_id = 5;
+			required uint32 title_plate_deco_id = 6;
+			required uint32 title_text_id = 7;
+			required uint32 title_deco_id = 8;
+			required string title_text = 9;
+			required uint32 emblem_plate_id = 10;
+			required uint32 emblem_icon_id = 11;
+			required uint32 emblem_plate_color_id = 12;
+			required uint32 emblem_icon_color_id1 = 13;
+			required uint32 emblem_icon_color_id2 = 14;
+			repeated GuestNavGroup guest_navs = 15;
+		}
+
+		optional AcidResponse acid_response = 1;
+		optional LoadPlayer load_player = 2;
+		optional string access_code = 3;
+		optional bool is_new_card = 4;
+		optional uint32 am_id = 5;
+		optional MobileUserGroup user = 6;
+		required AcidError acid_error = 7;
+	}
+	message SaveTournamentResult
+	{
+
+	}
+	message LoadAccessCode
+	{
+
+		optional AcidResponse acid_response = 1;
+		optional string access_code = 2;
+		optional uint32 am_id = 3;
+		optional AcidError acid_error = 4;
+	}
+	message Ping
+	{
+
+		required uint64 response_at = 1;
+		required bool game_server = 2;
+		required bool bnid_server = 3;
+		required bool acid_server = 4;
+		required bool matchmaking_server = 5;
+	}
+	message CheckTime
+	{
+
+		required uint64 at = 1;
+	}
+	message SaveBookkeeping
+	{
+
+	}
+	message CheckTwoWeekUpdate
+	{
+		message UpdaterGroup
+		{
+
+			required uint32 updater_ver = 1;
+			required uint32 updater_size = 2;
+			required uint32 crc = 3;
+			required bool release_flag = 4;
+			required string url = 5;
+			required DownloadStatus status = 6;
+		}
+
+		repeated UpdaterGroup updaters = 1;
+	}
+	message LoadCqRaidBoss
+	{
+		message RaidBossGroup
+		{
+
+			required uint64 boss_id = 1;
+			required uint32 ms_id = 2;
+			required uint32 level = 3;
+			required uint32 pattern = 4;
+			required uint32 max_armor_point = 5;
+			required uint32 armor_point = 6;
+			required uint64 expire_date = 7;
+			required uint32 damage_rate = 8;
+		}
+		message RaidBossCorpsGroup
+		{
+
+		}
+
+		repeated RaidBossGroup raid_boss = 1;
+		repeated RaidBossCorpsGroup raid_boss_corps = 2;
+	}
+	message LoadGhost
+	{
+		message GhostGroup
+		{
+
+			required bytes ghost_data = 1;
+			required uint32 echelon_id = 2;
+			required uint32 pilot_id = 3;
+		}
+
+		optional GhostGroup partner_ghost = 1;
+		repeated GhostGroup foe_ghosts = 2;
+	}
+	message SaveCqBattleLog
+	{
+
+	}
+	message SaveCqResult
+	{
+
+	}
+	message LoadCqMap
+	{
+		message SeasonGroup
+		{
+			message AreaDataGroup
+			{
+
+				required uint32 area_id = 1;
+				required uint32 element_id = 2;
+				required uint32 element_sub_id = 3;
+				required uint32 dominator_id = 4;
+				required uint32 alliance_a_rate = 5;
+				required uint32 alliance_b_rate = 6;
+				required uint32 alliance_c_rate = 7;
+				required uint32 alliance_d_rate = 8;
+				required uint32 alliance_e_rate = 9;
+				required uint32 alliance_cpu_rate = 10;
+			}
+			message PhaseEventAlliance
+			{
+
+				required uint32 phase_event_alliance_id = 1;
+				required uint32 mst_phase_event_id = 2;
+				required uint32 alliance_id = 3;
+			}
+
+			required uint32 season_id = 1;
+			required uint32 mucha_ver = 2;
+			required uint32 map_id = 3;
+			repeated AreaDataGroup area_data = 4;
+			required string season_name = 5;
+			required uint64 open_date = 6;
+			required uint64 close_date = 7;
+			required uint32 elapsed_days = 8;
+			required uint32 cpu_domination_rate = 9;
+			required uint64 timestamp = 10;
+			required bool is_canceled = 11;
+			optional string msg = 12;
+			required uint32 encounter_ghost_pattern = 13;
+			required uint32 cpu_alliance_ap_rate = 14;
+			optional uint32 alliance_numm = 15;
+			optional bool cpu_enabled = 16;
+			optional uint32 alliance_a_order = 17;
+			optional uint32 alliance_b_order = 18;
+			optional uint32 alliance_c_order = 19;
+			optional uint32 alliance_d_order = 20;
+			optional uint32 alliance_e_order = 21;
+			optional uint32 alliance_cpu_order = 22;
+			repeated PhaseEventAlliance phase_event_alliance = 23;
+		}
+
+		optional SeasonGroup season = 1;
+	}
+	message CheckResourceData
+	{
+
+		optional string url = 1;
+		optional uint32 size = 2;
+		optional uint64 resource_id = 3;
+	}
+	message SaveDownloadProgress
+	{
+
+	}
+	message SaveUserPlayResearchData
+	{
+
+	}
+	message SaveCheckSum
+	{
+
+	}
+	message LoadBlackList
+	{
+
+		required uint32 threshold_delayed_rtt = 1;
+		required uint32 max_blacklist_num = 2;
+		repeated UnfittedLocationGroup blacklist = 3;
+	}
+	message SaveVsmOnResult
+	{
+
+	}
+	message SaveBattleLogOn
+	{
+
+	}
+	message CheckCommunication
+	{
+
+	}
+	message SaveVslOnResult
+	{
+
+	}
+	message BnpcLock
+	{
+
+	}
+	message CheckFreeTicketInfo
+	{
+		message FreepassInfo
+		{
+
+			required uint32 freepass_id = 1;
+			required bool is_buy = 2;
+			required uint32 price = 3;
+			required string opened_day = 4;
+			required string expired_day = 5;
+			required string opened_at = 6;
+			required string expired_at = 7;
+		}
+		message CalenderInfo
+		{
+
+			required string day = 1;
+			required bool is_usable = 2;
+		}
+
+		optional FreepassInfo freepass_info = 1;
+		repeated CalenderInfo calender_info = 2;
+	}
+	message LoadBanacoinCharge
+	{
+		enum BuyStatus
+		{
+
+			FPBY_OK = 0;
+			FPBY_NG_NO_DATA = 1;
+			FPBY_NG_EXIST_PASS = 2;
+			FPBY_NG_NO_COIN = 3;
+			FPBY_NG_CARD_LOCKED = 4;
+			FPBY_NG_ACID_SERVER_ERR = 5;
+			FPBY_NG_BNID_SERVER_ERR = 6;
+			FPBY_NG_BNID_ERR = 7;
+			FPBY_NG_OTHER = 8;
+			FPBY_NG_NO_PURCHASABLE_PASS = 9;
+		}
+
+		required string session_id = 1;
+		required BuyStatus buy_status = 2;
+		optional string bnid_err_msg = 3;
+		optional string person_id = 4;
+		optional uint32 am_id = 5;
+		optional uint32 pilot_id = 6;
+		optional string player_name = 7;
+		optional uint32 echelon_id = 8;
+		optional uint32 remaining_banacoin = 9;
+		optional AcidResponse acid_response = 10;
+		optional AcidError acid_error = 11;
+	}
+	message BuyFreeTicket
+	{
+		enum BuyResultStatus
+		{
+
+			FPRS_SUCCESS = 0;
+			FPRS_NG_AC_TOKEN = 1;
+			FPRS_NG_NO_COIN = 2;
+			FPRS_NG_NO_STOCK = 3;
+			FPRS_NG_OUT_OF_TERM = 4;
+			FPRS_NG_CANNOT_USE_LOC = 5;
+			FPRS_NG_BNID_SERVER_ERR = 6;
+			FPRS_NG_BNID_ERR = 7;
+			FPRS_NG_BNID_UNKNOWN = 8;
+			FPRS_NG_OTHER = 9;
+			FPRS_NG_UNKNOWN_MEMBER = 10;
+			FPRS_NG_RESIGNED_MEMBER = 11;
+			FPRS_NG_SUSPENDED_MEMBER = 12;
+			FPRS_NG_BANNED_MEMBER = 13;
+			FPRS_NG_FOREIGN_MEMBER = 14;
+		}
+
+		required BuyResultStatus buy_result_status = 1;
+		optional string bnid_err_msg = 2;
+		optional uint32 paid_banacoin = 3;
+		optional uint32 remaining_banacoin = 4;
+		optional string contact_number = 5;
+		optional uint64 payment_at = 6;
+	}
+	message LoadVsConquestGroup
+	{
+		message ConquestGroup
+		{
+
+			required uint32 season_id = 1;
+			required uint32 mucha_ver = 2;
+			required string season_name = 3;
+			required uint64 opened_at = 4;
+			required uint64 expired_at = 5;
+			required uint32 alliance_num = 6;
+			required bool cpu_enabled = 7;
+			optional uint32 boss_ms_id = 8;
+			optional uint32 boss_corps_id = 9;
+			repeated PhaseEventAlliance phase_event_alliance = 10;
+			optional uint32 phase_no = 11;
+			optional uint32 phase_remained_date = 12;
+		}
+		message PhaseEventAlliance
+		{
+
+			required uint32 phase_event_alliance_id = 1;
+			required uint32 mst_phase_event_id = 2;
+			required uint32 alliance_id = 3;
+			repeated uint32 step_values = 4;
+			required uint32 duel_alliance_id = 5;
+			optional PhaseEventMisEffect mission_a = 6;
+			optional PhaseEventMisEffect mission_b = 7;
+		}
+		message PhaseEventMisEffect
+		{
+
+			required uint32 ap_rate = 1;
+			required uint32 ap_fixnum = 2;
+			required uint32 infight_attack_level = 3;
+			required uint32 shoot_attack_level = 4;
+			required uint32 ex_gauge_level = 5;
+			required uint32 armor_level = 6;
+		}
+		message PreConquestGroup
+		{
+
+			required uint32 season_id = 1;
+			required string season_name = 2;
+			required uint64 opened_at = 3;
+			required uint64 expired_at = 4;
+			optional uint32 alliance_a_order = 5;
+			optional uint32 alliance_b_order = 6;
+			optional uint32 alliance_c_order = 7;
+			optional uint32 alliance_d_order = 8;
+			optional uint32 alliance_e_order = 9;
+			optional uint32 alliance_cpu_order = 10;
+		}
+
+		optional ConquestGroup current_conquest = 1;
+		optional PreConquestGroup pre_conquest = 2;
+	}
+	message LoadFreeTicketOwner
+	{
+		message LoadPlayer
+		{
+
+			required uint32 pilot_id = 1;
+			optional uint64 last_played_at = 2;
+			required uint32 total_win = 3;
+			required uint32 total_lose = 4;
+			required uint32 echelon_id = 5;
+		}
+		message MobileUserGroup
+		{
+
+			required string player_name = 1;
+		}
+		message FreepassGroup
+		{
+
+			required string opened_day = 1;
+			required string expired_day = 2;
+			required string opened_at = 3;
+			required string expired_at = 4;
+			required uint32 price = 5;
+			required bool is_usable = 6;
+		}
+
+		optional FreepassGroup freepass = 1;
+		optional LoadPlayer load_player = 2;
+		optional MobileUserGroup user = 3;
+		optional AcidResponse acid_response = 4;
+		optional AcidError acid_error = 5;
+	}
+	message SaveVsmOnEventResult
+	{
+
+	}
+
+	required MethodType type = 1;
+	required string request_id = 2;
+	required Error error = 20;
+	optional string error_msg = 21;
+	optional RegisterPcb register_pcb = 101;
+	optional RegisterPcbAck register_pcb_ack = 102;
+	optional SaveInsideData save_inside_data = 103;
+	optional PreLoadCard pre_load_card = 104;
+	optional LoadCard load_card = 105;
+	optional RegisterCard register_card = 106;
+	optional SaveVsmResult save_vsm_result = 107;
+	optional SaveVscResult save_vsc_result = 108;
+	optional SaveCharge save_charge = 109;
+	optional SaveBattleLog save_battle_log = 110;
+	optional SaveLog save_log = 111;
+	optional PreSaveReplay pre_save_replay = 112;
+	optional SaveReplay save_replay = 113;
+	optional LoadSpotInfo load_spot_info = 116;
+	optional LoadRanking load_ranking = 117;
+	optional CheckTelop check_telop = 118;
+	optional LoadTelop load_telop = 119;
+	optional CheckMovieRelease check_movie_release = 121;
+	optional LoadSpotUrl load_spot_url = 122;
+	optional LoadReplayCard load_replay_card = 123;
+	optional LoadMeetingCard load_meeting_card = 124;
+	optional SaveTournamentResult save_tournament_result = 125;
+	optional LoadAccessCode load_access_code = 126;
+	optional Ping ping = 127;
+	optional CheckTime check_time = 128;
+	optional SaveBookkeeping save_bookkeeping = 129;
+	optional CheckTwoWeekUpdate check_two_week_update = 130;
+	optional LoadCqRaidBoss load_cq_raid_boss = 132;
+	optional LoadGhost load_ghost = 133;
+	optional SaveCqBattleLog save_cq_battle_log = 134;
+	optional SaveCqResult save_cq_result = 135;
+	optional LoadCqMap load_cq_map = 136;
+	optional CheckResourceData check_resource_data = 138;
+	optional SaveDownloadProgress save_download_progress = 139;
+	optional SaveUserPlayResearchData save_user_play_research_data = 140;
+	optional SaveCheckSum save_check_sum = 141;
+	optional LoadBlackList load_black_list = 142;
+	optional SaveVsmOnResult save_vsm_on_result = 143;
+	optional SaveBattleLogOn save_battle_log_on = 144;
+	optional CheckCommunication check_communication = 145;
+	optional SaveVslOnResult save_vsl_on_result = 146;
+	optional BnpcLock bnpc_lock = 147;
+	optional CheckFreeTicketInfo check_free_ticket_info = 148;
+	optional LoadBanacoinCharge load_banacoin_charge = 149;
+	optional BuyFreeTicket buy_free_ticket = 150;
+	optional LoadVsConquestGroup load_vs_conquest_group = 151;
+	optional LoadFreeTicketOwner load_free_ticket_owner = 152;
+	optional SaveVsmOnEventResult save_vsm_on_event_result = 153;
+}
+message MsUsedRank
+{
+	message Row
+	{
+
+		required uint32 rank_no = 1;
+		required uint32 prev_rank_no = 2;
+		required uint32 ms_id = 3;
+		required uint32 used_num = 4;
+		required double used_rate = 5;
+		required uint32 vsm_win = 6;
+		repeated uint32 burst_num = 7;
+		required uint32 total_used_num = 8;
+		required uint32 total_vsm_win = 9;
+		repeated uint32 partner_ms_id = 10;
+		repeated double partner_used_rate = 11;
+	}
+
+	required uint64 sum_start = 1;
+	required uint64 sum_end = 2;
+	repeated Row rows = 3;
+}
+message PlayerPointRank
+{
+	message Row
+	{
+
+		required uint32 rank_no = 1;
+		required uint32 prev_rank_no = 2;
+		required uint32 pilot_id = 3;
+		required string player_name = 4;
+		required uint32 score = 5;
+		required uint32 echelon_id = 6;
+		required uint32 title_plate_id = 7;
+		required uint32 title_plate_deco_id = 8;
+		required uint32 title_text_id = 9;
+		required uint32 title_deco_id = 10;
+		required string title_text = 11;
+		required uint32 emblem_plate_id = 12;
+		required uint32 emblem_icon_id = 13;
+		required uint32 emblem_plate_color_id = 14;
+		required uint32 emblem_icon_color_id1 = 15;
+		required uint32 emblem_icon_color_id2 = 16;
+		required uint32 fav_ms_id = 17;
+		required uint32 ms_used_num = 18;
+		required string home_loc_name = 19;
+		required uint32 home_loc_pref = 20;
+		required uint32 open_record = 21;
+		required uint32 play_num = 22;
+		required uint32 win_num = 23;
+		required uint32 total_play_num = 24;
+		required uint32 total_win_num = 25;
+	}
+
+	required uint64 sum_start = 1;
+	required uint64 sum_end = 2;
+	repeated Row rows = 3;
+}
+message TagPointRank
+{
+	message Row
+	{
+
+		required uint32 rank_no = 1;
+		required uint32 prev_rank_no = 2;
+		required uint32 tag_id = 3;
+		required string tag_name = 4;
+		required uint32 tag_deco_id = 5;
+		required uint32 tag_plate_id = 6;
+		required uint32 tag_plate_deco_id = 7;
+		required uint32 score = 8;
+		required string p_player_name = 9;
+		required uint32 p_pilot_id = 10;
+		required uint32 p_echelon_id = 11;
+		required uint32 p_title_plate_id = 12;
+		required uint32 p_title_plate_deco_id = 13;
+		required uint32 p_title_text_id = 14;
+		required uint32 p_title_deco_id = 15;
+		required string p_title_text = 16;
+		required uint32 p_fav_ms_id = 17;
+		required uint32 p_emblem_plate_id = 18;
+		required uint32 p_emblem_icon_id = 19;
+		required uint32 p_emblem_plate_color_id = 20;
+		required uint32 p_emblem_icon_color_id1 = 21;
+		required uint32 p_emblem_icon_color_id2 = 22;
+		required string p_home_loc_name = 23;
+		required uint32 p_home_loc_pref = 24;
+		required string c_player_name = 25;
+		required uint32 c_pilot_id = 26;
+		required uint32 c_echelon_id = 27;
+		required uint32 c_title_plate_id = 28;
+		required uint32 c_title_plate_deco_id = 29;
+		required uint32 c_title_text_id = 30;
+		required uint32 c_title_deco_id = 31;
+		required string c_title_text = 32;
+		required uint32 c_fav_ms_id = 33;
+		required uint32 c_emblem_plate_id = 34;
+		required uint32 c_emblem_icon_id = 35;
+		required uint32 c_emblem_plate_color_id = 36;
+		required uint32 c_emblem_icon_color_id1 = 37;
+		required uint32 c_emblem_icon_color_id2 = 38;
+		required uint32 play_num = 39;
+		required uint32 win_num = 40;
+		required uint32 total_play_num = 41;
+		required uint32 total_win_num = 42;
+		required uint32 skill_point = 43;
+	}
+
+	required uint64 sum_start = 1;
+	required uint64 sum_end = 2;
+	repeated Row rows = 3;
+}
+message ConquestPlayerRank
+{
+	message Row
+	{
+
+		required uint32 rank_no = 1;
+		required uint32 pilot_id = 2;
+		required string player_name = 3;
+		required uint32 cp = 4;
+		required uint32 prev_rank_no = 5;
+		required uint32 echelon_id = 6;
+		required uint32 title_plate_id = 7;
+		required uint32 title_plate_deco_id = 8;
+		required uint32 title_text_id = 9;
+		required uint32 title_deco_id = 10;
+		required string title_text = 11;
+		required uint32 emblem_plate_id = 12;
+		required uint32 emblem_icon_id = 13;
+		required uint32 emblem_plate_color_id = 14;
+		required uint32 emblem_icon_color_id1 = 15;
+		required uint32 emblem_icon_color_id2 = 16;
+		required string home_loc_name = 17;
+		required uint32 home_loc_pref = 18;
+		required uint32 alliance_id = 19;
+		required string platoon_name = 20;
+		required uint32 fav_ms_id = 21;
+		required uint32 ms_used_num = 22;
+		required uint32 scene_num = 23;
+		required uint32 boss_down_num = 24;
+	}
+
+	required uint64 sum_start = 1;
+	required uint64 sum_end = 2;
+	repeated Row rows = 3;
+	optional uint32 phase_no = 4;
+	optional uint32 season_id = 5;
+}
+message ConquestPlatoonRank
+{
+	message Row
+	{
+		message Member
+		{
+
+			required uint32 pilot_id = 1;
+			required string player_name = 2;
+			required uint32 echelon_id = 3;
+			required uint32 title_plate_id = 4;
+			required uint32 title_plate_deco_id = 5;
+			required uint32 title_text_id = 6;
+			required uint32 title_deco_id = 7;
+			required string title_text = 8;
+		}
+
+		required uint32 rank_no = 1;
+		required uint32 platoon_id = 2;
+		required string platoon_name = 3;
+		required uint32 cp = 4;
+		required uint32 prev_rank_no = 5;
+		required uint32 alliance_id = 6;
+		required uint32 emblem_plate_id = 7;
+		required uint32 emblem_icon_id = 8;
+		required uint32 emblem_plate_color_id = 9;
+		required uint32 emblem_icon_color_id1 = 10;
+		required uint32 emblem_icon_color_id2 = 11;
+		required string home_loc_name = 12;
+		required uint32 home_loc_pref = 13;
+		required uint32 scene_num = 14;
+		required uint32 boss_down_num = 15;
+		repeated Member members = 16;
+	}
+
+	required uint64 sum_start = 1;
+	required uint64 sum_end = 2;
+	repeated Row rows = 3;
+	optional uint32 season_id = 4;
+}
+message OnlineEventCupRank
+{
+	message Row
+	{
+
+		required uint32 rank_no = 1;
+		required uint32 prev_rank_no = 2;
+		required uint32 pilot_id = 3;
+		required string player_name = 4;
+		required uint32 event_point = 5;
+		required uint32 echelon_id = 6;
+		required uint32 title_plate_id = 7;
+		required uint32 title_plate_deco_id = 8;
+		required uint32 title_text_id = 9;
+		required uint32 title_deco_id = 10;
+		required string title_text = 11;
+		required uint32 emblem_plate_id = 12;
+		required uint32 emblem_icon_id = 13;
+		required uint32 emblem_plate_color_id = 14;
+		required uint32 emblem_icon_color_id1 = 15;
+		required uint32 emblem_icon_color_id2 = 16;
+		required uint32 latest_ms_id = 17;
+		required uint32 ms_used_num = 18;
+		required string home_loc_name = 19;
+		required uint32 home_loc_pref = 20;
+		required uint32 open_record = 21;
+		required uint32 play_num = 22;
+		required uint32 win_num = 23;
+	}
+
+	required uint64 sum_start = 1;
+	required uint64 sum_end = 2;
+	repeated Row rows = 3;
+}

@@ -15,7 +15,15 @@ import { createProject } from "gulp-typescript";
 //
 
 const project = createProject("tsconfig.json");
-const protos = ["gk4_db_msg", "pegasus"];
+const protos = [
+  // Kizuna
+  "gk4_db_msg",
+  "pegasus",
+
+  // Maxiboost
+  "nue.protocol.exvs",
+  "nue.protocol.mms",
+];
 
 const protoFiles = protos.map(x => `protobuf/${x}.proto`);
 const protojsFiles = protos.map(x => `generated/${x}.js`);
