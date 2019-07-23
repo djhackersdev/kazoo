@@ -1,4 +1,4 @@
-import { pegasus } from "../../../generated/pegasus";
+import { pegasus } from "../../../../generated/pegasus";
 import { Output } from "../proto/pipeline";
 import { PubSubWorld, Subscriber, Topic, TopicKey } from "../world/pubsub";
 import { Context } from "./context";

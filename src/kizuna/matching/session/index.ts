@@ -1,4 +1,4 @@
-import { pegasus } from "../../../generated/pegasus";
+import { pegasus } from "../../../../generated/pegasus";
 import { BasicSession } from "./basic";
 import { Context } from "./context";
 import { GroupSession } from "./group";

@@ -1,6 +1,6 @@
 import { Transform, TransformOptions } from "stream";
 
-import { pegasus } from "../../../generated/pegasus";
+import { pegasus } from "../../../../generated/pegasus";
 import { Logger } from "../logger";
 
 interface Options extends TransformOptions {

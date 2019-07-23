@@ -1,4 +1,4 @@
-import { pegasus } from "../../../generated/pegasus";
+import { pegasus } from "../../../../generated/pegasus";
 import { Output } from "../proto/pipeline";
 import { SessionId } from "../world/session";
 import { Context } from "./context";

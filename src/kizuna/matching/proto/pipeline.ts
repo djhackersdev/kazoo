@@ -1,7 +1,7 @@
 import { Socket } from "net";
 import { pipeline } from "stream";
 
-import { pegasus } from "../../../generated/pegasus";
+import { pegasus } from "../../../../generated/pegasus";
 import { Decoder } from "./decoder";
 import { Deframer } from "./deframer";
 import { Encoder } from "./encoder";

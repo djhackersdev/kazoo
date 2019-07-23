@@ -1,6 +1,6 @@
 import Long = require("long");
 
-import { pegasus } from "../../../generated/pegasus";
+import { pegasus } from "../../../../generated/pegasus";
 import { Context } from "./context";
 import { Output } from "../proto/pipeline";
 import {

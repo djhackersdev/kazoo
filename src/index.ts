@@ -3,9 +3,9 @@ import http = require("http");
 import https = require("https");
 import tls = require("tls");
 
-import accepter from "./accepter";
+import accepter from "./kizuna/accepter";
+import matching from "./kizuna/matching";
 import allnet from "./allnet";
-import matching from "./matching";
 
 http.createServer(allnet).listen(80);
 

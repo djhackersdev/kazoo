@@ -2,7 +2,7 @@ import express = require("express");
 import morgan = require("morgan");
 import read = require("raw-body");
 
-import { gk4db } from "../generated/gk4_db_msg";
+import { gk4db } from "../../generated/gk4_db_msg";
 
 //
 // Plumbing
