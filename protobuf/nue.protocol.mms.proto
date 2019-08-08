@@ -1,4 +1,4 @@
-package nue.protocol.mms;
+package mms;
 
 enum SystemConstant
 {

@@ -1,4 +1,4 @@
-package nue.protocol.exvs;
+package exvs;
 
 enum SystemConstant
 {
