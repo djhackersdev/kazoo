@@ -3,9 +3,10 @@
     "lib": ["es2017", "esnext.asynciterable"],
     "module": "commonjs",
     "moduleResolution": "node",
+    "esModuleInterop": true,
     "outDir": "./bin/",
     "strictNullChecks": true,
     "target": "es2017"
   },
-  "include": ["./generated","./src/"]
+  "include": ["./generated", "./src/"]
 }

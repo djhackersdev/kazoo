@@ -1,4 +1,4 @@
-import Long = require("long");
+import Long from "long";
 
 import { pegasus } from "../../../../generated/pegasus";
 import { Context } from "./context";

@@ -1,6 +1,6 @@
-import express = require("express");
-import morgan = require("morgan");
-import read = require("raw-body");
+import express from "express";
+import morgan from "morgan";
+import read from "raw-body";
 
 import { gk4db } from "../../generated/gk4_db_msg";
 

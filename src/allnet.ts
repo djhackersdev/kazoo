@@ -1,8 +1,7 @@
 import { findTimeZone, getZonedTime } from "timezone-support";
-
-import express = require("express");
-import read = require("raw-body");
-import zlib = require("zlib");
+import express from "express";
+import read from "raw-body";
+import zlib from "zlib";
 
 const app = express();
 const jst = findTimeZone("Asia/Tokyo");

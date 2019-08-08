@@ -1,7 +1,7 @@
 import { readFileSync } from "fs";
-import http = require("http");
-import https = require("https");
-import tls = require("tls");
+import http from "http";
+import https from "https";
+import tls from "tls";
 
 import accepter from "./kizuna/accepter";
 import matching from "./kizuna/matching";
