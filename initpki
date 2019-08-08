@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# This file is documentation. Use the checked-in PKI.
+
 set -e
 
 D=`dirname $0`
