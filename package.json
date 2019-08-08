@@ -25,14 +25,13 @@
     "lint-staged": "^8.1.0",
     "prettier": "^1.15.3",
     "ts-jest": "^23.10.5",
-    "ts-node": "^8.0.2",
     "typescript": "^3.3.1"
   },
   "scripts": {
     "build": "gulp",
-    "start": "ts-node src/index.ts",
     "test": "jest",
-    "precommit": "lint-staged && tsc --noEmit"
+    "precommit": "lint-staged && tsc --noEmit",
+    "watch": "tsc --watch"
   },
   "jest": {
     "preset": "ts-jest",
