@@ -3,90 +3,99 @@ import express from "express";
 import read from "raw-body";
 import zlib from "zlib";
 
-const app = express();
 const jst = findTimeZone("Asia/Tokyo");
 
-// Startup request is url-encoded-ish... except it's also zlibed and base64ed.
-// Also the values are not actually escaped. So in the absence of any exotic
-// Transfer-Encoding headers this Content-Type is incorrect and we have to
-// override Express' built-in handling.
+interface ServiceOpt {
+  host: string;
+  uri: string;
+}
 
-app.use(async function(req, resp, next) {
-  if (req.method !== "POST") {
-    return resp.status(405).end();
-  }
+export default function createAllnet(serviceOpt: ServiceOpt) {
+  const app = express();
 
-  const base64 = await read(req, { encoding: "ascii" });
-  const zbytes = Buffer.from(base64, "base64");
-  const bytes = zlib.unzipSync(zbytes);
-  const str = bytes.toString().trim();
+  // Startup request is url-encoded-ish... except it's also zlibed and base64ed.
+  // Also the values are not actually escaped. So in the absence of any exotic
+  // Transfer-Encoding headers this Content-Type is incorrect and we have to
+  // override Express' built-in handling.
 
-  const kvps = str.split("&");
-  const reqParams = {};
+  app.use(async function(req, resp, next) {
+    if (req.method !== "POST") {
+      return resp.status(405).end();
+    }
 
-  kvps.forEach(kvp => {
-    const [key, val] = kvp.split("=");
+    const base64 = await read(req, { encoding: "ascii" });
+    const zbytes = Buffer.from(base64, "base64");
+    const bytes = zlib.unzipSync(zbytes);
+    const str = bytes.toString().trim();
 
-    reqParams[key] = val;
+    const kvps = str.split("&");
+    const reqParams = {};
+
+    kvps.forEach(kvp => {
+      const [key, val] = kvp.split("=");
+
+      reqParams[key] = val;
+    });
+
+    req.body = function() {
+      return reqParams;
+    };
+
+    const send_ = resp.send;
+
+    resp.send = function(respParams) {
+      // Keys and values are not URL-escaped
+
+      const str =
+        Object.entries(respParams)
+          .map(([key, val]) => key + "=" + val)
+          .join("&") + "\n";
+
+      resp.set("content-type", "text/plain");
+
+      return send_.apply(this, [str]);
+    };
+
+    return next();
   });
 
-  req.body = function() {
-    return reqParams;
-  };
+  app.post("/sys/servlet/PowerOn", function(req, resp) {
+    const reqParams = req.body();
 
-  const send_ = resp.send;
+    console.log("\n--- Startup Request ---\n\n", reqParams);
 
-  resp.send = function(respParams) {
-    // Keys and values are not URL-escaped
+    const utc = new Date();
+    const local = getZonedTime(utc, jst);
+    const { host, uri } = serviceOpt;
 
-    const str =
-      Object.entries(respParams)
-        .map(([key, val]) => key + "=" + val)
-        .join("&") + "\n";
+    const respParams = {
+      stat: 2,
+      host,
+      name: "asdf",
+      place_id: 1234,
+      nickname: "fdsa",
+      region0: 1,
+      setting: 1,
+      country: "JPN",
+      timezone: "+09:00",
+      res_class: "PowerOnResponseVer2",
+      uri,
+      region_name0: "W",
+      region_name1: "X",
+      region_name2: "Y",
+      region_name3: "Z",
+      year: local.year,
+      month: local.month,
+      day: local.day,
+      hour: local.hours,
+      minute: local.minutes,
+      second: local.seconds,
+    };
 
-    resp.set("content-type", "text/plain");
+    console.log("\n--- Startup Response ---\n\n", respParams);
 
-    return send_.apply(this, [str]);
-  };
+    resp.send(respParams);
+  });
 
-  return next();
-});
-
-app.post("/sys/servlet/PowerOn", function(req, resp) {
-  const reqParams = req.body();
-
-  console.log("\n--- Startup Request ---\n\n", reqParams);
-
-  const utc = new Date();
-  const local = getZonedTime(utc, jst);
-
-  const respParams = {
-    stat: 2,
-    host: "local",
-    name: "asdf",
-    place_id: 1234,
-    nickname: "fdsa",
-    region0: 1,
-    setting: 1,
-    country: "JPN",
-    timezone: "+09:00",
-    res_class: "PowerOnResponseVer2",
-    uri: "example.com",
-    region_name0: "W",
-    region_name1: "X",
-    region_name2: "Y",
-    region_name3: "Z",
-    year: local.year,
-    month: local.month,
-    day: local.day,
-    hour: local.hours,
-    minute: local.minutes,
-    second: local.seconds,
-  };
-
-  console.log("\n--- Startup Response ---\n\n", respParams);
-
-  resp.send(respParams);
-});
-
-export default app;
+  return app;
+}

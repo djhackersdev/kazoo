@@ -5,7 +5,12 @@ import tls from "tls";
 
 import accepter from "./kizuna/accepter";
 import matching from "./kizuna/matching";
-import allnet from "./allnet";
+import createAllnet from "./allnet";
+
+const allnet = createAllnet({
+  host: "local",
+  uri: "",
+});
 
 http.createServer(allnet).listen(80);
 
