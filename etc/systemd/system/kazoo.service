@@ -1,0 +1,9 @@
+[Service]
+EnvironmentFile=/boot/kazoo.conf
+WorkingDirectory=/opt/kazoo
+ExecStart=/usr/bin/node bin/index.js ${MODE}
+Restart=on-failure
+RestartSec=1s
+
+[Install]
+WantedBy=multi-user.target
